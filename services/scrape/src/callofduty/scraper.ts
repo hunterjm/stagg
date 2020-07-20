@@ -58,7 +58,10 @@ export class Warzone {
         const { platform, username } = this.SelectProfile()
         this.options.logger(`[>] Scraping ${platform}/${username} @ ${this.player.scrape.timestamp}`)
         try {
-            const res = await this.API.Matches(username, platform, this.mode, this.game, this.player.scrape.timestamp)  
+            const res = await this.API.Matches(username, platform, this.mode, this.game, this.player.scrape.timestamp)
+            if (!res.matches || !res.matches.length) {
+                this.options.logger('[?] No matches returned')
+            }
             await this.OnResponse(res)
             const matchIds = res.matches.filter(m => m).map(m => m.matchID)
             this.player.scrape.failures = 0

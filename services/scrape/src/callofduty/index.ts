@@ -18,10 +18,29 @@ export const updateExistingPlayers = async () => {
         await update(player)
     }
 }
+export const initializeArtificialPlayers = async () => {
+    const db = await mdb.client()
+    while(true) {
+        const player = await db.collection('players').findOne({
+            origin: { $nin: ['self'] },
+            games: { $exists: true },
+            scrape: { $exists: false },
+            profiles: { $exists: true },
+        })
+        if (!player) continue
+        try {
+            await initialize(player)
+            await delay(cfg.scrape.wait)
+        } catch(e) {
+            // This can fail if they have no titleIdentities returned, so signal in the db to skip for now
+            await db.collection('players').updateOne({ _id: player._id }, { $set: { initFailure: true } })
+        }
+    }
+}
 export const initializeNewPlayers = async () => {
     const db = await mdb.client()
     while(true) {
-        const player = await db.collection('players').findOne({ scrape: { $exists: false }, initFailure: { $exists: false } })
+        const player = await db.collection('players').findOne({ origin: 'self', scrape: { $exists: false }, initFailure: { $exists: false } })
         if (!player) continue
         try {
             const { games, profiles } = await updateIdentity(player) // required on initialize
@@ -38,17 +57,19 @@ export const initializeNewPlayers = async () => {
 export const recheckExistingPlayers = async () => {
     const db = await mdb.client()
     while(true) {
-        const neverRechecked = await db.collection('players').findOne({ 'scrape.rechecked': { $exists: false } })
+        const neverRechecked = await db.collection('players').findOne({ scrape: { $exists: true }, 'scrape.rechecked': { $exists: false } })
         const [ player ] = neverRechecked ? [neverRechecked]
             : await db.collection('players')
-                .find({ 'scrape.rechecked': { $exists: true, $lt: timestamp() - cfg.scrape.cooldown } })
+                .find({ scrape: { $exists: true }, 'scrape.rechecked': { $exists: true, $lt: timestamp() - cfg.scrape.cooldown } })
                 .sort({ 'scrape.rechecked': 1 }).toArray()
         if (!player) continue
         await db.collection('players').updateOne({ _id: player._id }, { $set: { 'scrape.rechecked': timestamp() } })
         try {
-            const { games, profiles } = await updateIdentity(player) // optional on recheck (checks for new games)
-            player.games = games
-            player.profiles = profiles
+            if (player.origin === 'self') {
+                const { games, profiles } = await updateIdentity(player) // optional on recheck (checks for new games)
+                player.games = games
+                player.profiles = profiles
+            }
             await recheck(player)
             await delay(cfg.scrape.wait)
         } catch(e) {
@@ -57,18 +78,20 @@ export const recheckExistingPlayers = async () => {
     }
 }
 
+const playerLabel = (player:mdb.Schema.CallOfDuty.Player):string => player.email || player.profiles.uno || 'artificial player'
+
 export const update = async (player:mdb.Schema.CallOfDuty.Player) => {
-    console.log(`[+] Updating ${player.email}`)
+    console.log(`[+] Updating ${playerLabel(player)}`)
     const Scraper = new Scrape.Warzone(player, { start: 0, redundancy: false })
     return Scraper.Run(cfg.mongo)
 }
 export const recheck = async (player:mdb.Schema.CallOfDuty.Player) => {
-    console.log(`[+] Rechecking ${player.email}`)
+    console.log(`[+] Rechecking ${playerLabel(player)}`)
     const Scraper = new Scrape.Warzone(player, { start: 0, redundancy: true })
     return Scraper.Run(cfg.mongo)
 }
 export const initialize = async (player:mdb.Schema.CallOfDuty.Player, ) => {
-    console.log(`[+] Initializing ${player.email}`)
+    console.log(`[+] Initializing ${playerLabel(player)}`)
     // Now update db and scrape
     const start = player.scrape?.timestamp || 0
     const Scraper = new Scrape.Warzone(player, { start, redundancy: false })

@@ -50,7 +50,6 @@ export const search = async (m:Discord.Message, ...args:string[]) => {
 }
 
 export const register = async (m:Discord.Message, ...args:string[]) => {
-    console.log(args)
     const db = await Mongo.client('callofduty')
     if (!args.length) {
         relay(m, ['Invalid request, missing identifier(s); must include email or username/platform'])
@@ -67,6 +66,10 @@ export const register = async (m:Discord.Message, ...args:string[]) => {
                 ? 'Player record not found, try `search` or `help`'
                 : "Email not found, are you sure you've logged in at https://stagg.co/login?"
         ])
+        return
+    }
+    if (!player.email) {
+        msg.edit(['Cannot link non-organic profiles; if this profile belongs to you sign in at https://stagg.co/login'])
         return
     }
     if (player.discord?.id) {

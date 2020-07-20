@@ -7,7 +7,7 @@ export const shortcut = async (m:Discord.Message, key:string, ...payload:string[
     const db = await Mongo.client()
     const val = payload.join(' ')
     if (!key || !val) {
-        relay(m, ['⚠️ Invalid request, must supply shortcut keyword and value'])
+        relay(m, ['Invalid request, must supply shortcut keyword and value'])
         return
     }
     const msg = await relay(m, ['Working on it...'])

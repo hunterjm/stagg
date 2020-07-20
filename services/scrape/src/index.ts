@@ -16,5 +16,6 @@ app.use(cors({ credentials: false })).listen(cfg.port, async () => {
     cod.initializeNewPlayers()
     cod.updateExistingPlayers()
     cod.recheckExistingPlayers()
+    cod.initializeArtificialPlayers()
 })
 
