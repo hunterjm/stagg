@@ -51,7 +51,8 @@ PRs are always welcome so please feel free to fork or request contributor access
 
 #### Web UI
 
-- Discord bot help page
+- [Docs page](https://docusaurus.io/)
+- [Landing page](https://open.cruip.com/)
 - [MDX Storybook](https://storybook.js.org/docs/formats/mdx-syntax/) for components
 - Default charts below pies/polars
     - Show avg line of KGP in background
