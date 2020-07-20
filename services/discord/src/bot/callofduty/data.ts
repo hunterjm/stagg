@@ -15,6 +15,18 @@ export const findPlayer = async (pids:PlayerIdentifiers):Promise<Mongo.Schema.Ca
     return db.collection('players').findOne({ [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
 }
 
+// currently unused, adding kgp's manually
+export const addArtificialPlayer = async (origin:string, authSponsorUnoUsername:string, username:string, platform:string='uno', games:string[]=['mw']):Promise<boolean> => {
+    const db = await Mongo.client('callofduty')
+    const sponsor = await db.collection('players').findOne({ 'profiles.uno': authSponsorUnoUsername })
+    if (!sponsor) {
+        return false
+    }
+    const scaffold = { origin, auth: sponsor.auth, games, profiles: { [platform]: username } }
+    await db.collection('players').insertOne(scaffold)
+    return true
+}
+
 interface FetchedPlayer {
     query: {
         tag: string
