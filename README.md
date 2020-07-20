@@ -2,13 +2,46 @@
 
 Built with TypeScript, Node, Express, MongoDB, React, and Next; package management provided by Lerna
 
-## Contributing
+## Getting Started
 
-You will need a `.env` file in the root of each service you intend to run for local development. See the `README` of the `services` to learn more.
+All steps listed below should be ran in the project root. You will only need to install dependencies to nested `/packages/*` or `/services/*` when adding a new dependency that will be isolated to that package or service, respectively.
+
+1. [Clone the repo](https://github.com/mdlindsey/stagg)
+2. `npm i -g lerna` - needed for Lerna CLI below
+3. `yarn install` - installs all common and workspace dependencies
+4. `lerna link --force-local` - symlinks all internal `@stagg/*` dependencies to local compiled `/packages/*/lib`
+5. `lerna run tsc` - updates local symlinked packages and propogates package updates throughout repo after modification
+6. Setup environment variables (see below)
+7. `yarn dev` - use in the root of any `/services/*` to start the service locally
+8. `lerna publish` - use to publish changes to `/packages/*` to the NPM ecosystem (see more below)
+
+### Environment Variables
+
+You will need a `.env` file in the root of each `/services/*` you intend to run for local development. You may use a locally-installed instance of MongoDB to test development data or you may request access to the cloud-based staging cluster. All service environments will be identical with the exception of `/services/web-ui` where we specify `NODE_ENV` in place of `PORT`.
+
+```
+PORT=8081 # change port as needed; swap with NODE_ENV=local for web-ui
+JWT_SECRET=<JWT_SECRET>
+MONGO_DB=<GAME_OR_FRANCHISE_NAME>
+MONGO_HOST=<MONGO_HOST>
+MONGO_USER=<MONGO_AUTH_USER>
+MONGO_PASS=<MONGO_AUTH_PASS>
+DISCORD_TOKEN=<DISCORD_BOT_TOKEN>
+GMAIL_ADDRESS=<GMAIL_ADDRESS>
+GMAIL_PASSWORD=<GMAIL_PASSWORD>
+```
+
+### Publishing to NPM
+
+To publish new packages, you will need access to [Stagg NPM](https://www.npmjs.com/settings/stagg/packages). After gaining permissions to publish to this organization, use the following command to authenticate your local client.
+
+```
+npm login --registry=https://registry.npmjs.org/ --scope=stagg
+```
 
 ### To do
 
-PRs are always welcome so please feel free to fork or request feature branch access.
+PRs are always welcome so please feel free to fork or request contributor access.
 
 #### Misc
 
@@ -78,11 +111,3 @@ PRs are always welcome so please feel free to fork or request feature branch acc
 - Create new repo
 - Republish
 - Testing and error reporting
-
-### Publishing to NPM
-
-To publish new packages, you will need access to [Stagg NPM](https://www.npmjs.com/settings/stagg/packages). After gaining permissions to publish to this organization, use the following command to authenticate your local client.
-
-```
-npm login --registry=https://registry.npmjs.org/ --scope=stagg
-```

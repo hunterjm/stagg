@@ -27,7 +27,7 @@ export const profileStatus = async (req,res) => {
     if (!player?.profiles?.uno) {
         return res.send({ error: 'no uno profile' })
     }
-    const jwt = JWT.sign({ email, profiles: player.profiles, discord: player.discord, uno: player.uno }, cfg.jwt)
+    const jwt = JWT.sign({ email, profiles: player.profiles, discord: player.discord }, cfg.jwt)
     res.send({ jwt })
 }
 
@@ -88,9 +88,9 @@ export const login = async (req,res) => {
         }
         const userRecord = await mongo.collection('players').findOne({ email })
         if (userRecord) {
-            const prevAuth = userRecord.prevAuth ? userRecord.prevAuth : []
+            const prevAuth = userRecord.prev?.auth ? userRecord.prev.auth : []
             if (userRecord.auth) prevAuth.push(userRecord.auth)
-            await mongo.collection('players').updateOne({ _id: userRecord._id }, { $set: { auth, prevAuth } })
+            await mongo.collection('players').updateOne({ _id: userRecord._id }, { $set: { auth, 'prev.auth': prevAuth } })
             const { discord, profiles, uno } = userRecord
             const jwt = JWT.sign({ email, discord, profiles, uno }, cfg.jwt)
             return res.status(200).send({ jwt })
@@ -99,18 +99,18 @@ export const login = async (req,res) => {
         for(const title of titleIdentities) {
             const existing = await mongo.collection('players').findOne({ [`profiles.${title.platform}`]: title.username })
             if (existing) {
-                const prevAuth = existing.prevAuth ? existing.prevAuth : []
+                const prevAuth = existing.prev?.auth ? existing.prev.auth : []
                 if (existing.auth) prevAuth.push(existing.auth)
-                const prevEmails = existing.prevEmails ? existing.prevEmails : []
+                const prevEmails = existing.prev?.email ? existing.prev.email : []
                 prevEmails.push(existing.email)
-                await mongo.collection('players').updateOne({ _id: existing._id }, { $set: { email, auth, prevAuth, prevEmails } })
+                await mongo.collection('players').updateOne({ _id: existing._id }, { $set: { email, auth, 'prev.auth': prevAuth, 'prev.email': prevEmails } })
                 const { discord, profiles } = existing
                 const jwt = JWT.sign({ email, discord, profiles }, cfg.jwt)
                 return res.status(200).send({ jwt })
             }
         }
         // Player does not exist, create record
-        await mongo.collection('players').insertOne({ email, auth })
+        await mongo.collection('players').insertOne({ email, auth, origin: 'self' })
         const jwt = JWT.sign({ email }, cfg.jwt)
         res.status(200).send({ jwt })
     } catch(error) {

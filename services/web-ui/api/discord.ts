@@ -13,8 +13,8 @@ export const profileByEmail = async (email:string) => {
     const mongo = await Mongo.client()
     const player = await mongo.collection('players').findOne({ email })
     if (!player) return null
-    if (!player.discord) return null
-    return profileById(player.discord)
+    if (!player.discord?.id) return null
+    return profileById(player.discord?.id)
 }
 
 export const profile = async (req, res) => {

@@ -12,11 +12,11 @@ export const shortcut = async (m:Discord.Message, key:string, ...payload:string[
     }
     const msg = await relay(m, ['Working on it...'])
     if (key === 'delete') {
-        await db.collection('players').updateOne({ discord: m.author.id }, { $unset: { [`discordShortcuts.${val}`]: '' } })
+        await db.collection('players').updateOne({ 'discord.id': m.author.id }, { $unset: { [`discord.shortcuts.${val}`]: '' } })
         msg.edit(['Shortcut deleted'])
         return
     }
-    await db.collection('players').updateOne({ discord: m.author.id }, { $set: { [`discordShortcuts.${key}`]: val } })
+    await db.collection('players').updateOne({ 'discord.id': m.author.id }, { $set: { [`discord.shortcuts.${key}`]: val } })
     msg.edit(['Shortcut created'])
 }
 

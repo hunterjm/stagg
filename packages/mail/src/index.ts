@@ -27,7 +27,7 @@ export namespace send {
 
     export namespace confirmation {
         export const discord = async (email:string, username:string, discord:{id:string, tag:string, avatar:string}):Promise<boolean> => {
-            const token = jwt.sign({ email, profiles: { uno: username }, discord }, cfg.jwtSecret)
+            const token = jwt.sign({ email, profiles: { uno: username }, discord: { id: discord.id } }, cfg.jwtSecret)
             const emailHTML = templates.confirm.discord({
                 discord,
                 username,

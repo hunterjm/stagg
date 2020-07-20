@@ -37,6 +37,7 @@ export namespace stats {
             rly.edit(['Player not found...'])
             return
         }
+        console.log(fetchedPlayer)
         let teamSizes = [, 'solo', 'duo', 'trio', 'quad']
         const response = ['all', 'combined'].includes(method)
             ? await reports[method](fetchedPlayer.player, fetchedPlayer.query.platform)

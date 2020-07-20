@@ -44,6 +44,7 @@ export class Warzone {
         if (this.player.profiles.uno)    return { platform: 'uno',    username: this.player.profiles.uno    }
         if (this.player.profiles.xbl)    return { platform: 'xbl',    username: this.player.profiles.xbl    }
         if (this.player.profiles.psn)    return { platform: 'psn',    username: this.player.profiles.psn    }
+        if (this.player.profiles.steam)  return { platform: 'steam',  username: this.player.profiles.steam  }
         if (this.player.profiles.battle) return { platform: 'battle', username: this.player.profiles.battle }
         throw new Error(`No valid profiles found for player ${JSON.stringify(this.player)}`)
     }
@@ -87,7 +88,7 @@ export class Warzone {
         if (!this.player.uno) {
             const [ firstMatch ] = res.matches.filter((m:API.Schema.CallOfDuty.Res.Warzone.Match) => m.player.uno)
             this.player.uno = firstMatch.player.uno
-            await this.db.collection('players').updateOne({ _id: this.player._id }, { $set: { uno: this.player.uno } })
+            await this.db.collection('players').updateOne({ _id: this.player._id }, { $set: { 'profiles.id': this.player.uno } })
         }
         for(const rawMatch of res.matches) {
             const matchFound = await this.db.collection('matches.wz').findOne({ matchId: rawMatch.matchID })

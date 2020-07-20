@@ -3,20 +3,24 @@ import * as API from '@stagg/api'
 
 export interface Player extends Player.Scaffold {
     _id: Mongo.ObjectID
-    profiles: { [key:string] : string } // platform:username
     games: API.Schema.CallOfDuty.Game[]
-    uno: string
+    profiles: Player.Profiles
     scrape: {
         updated:   number
         failures:  number
         timestamp: number
         rechecked?: number // last time initialization recheck was ran
     }
-    discord?: string
-    prevAuth?: Player.Auth[]
-    prevEmails?: string[]
+    discord?: {
+        id: string
+        shortcuts?: { [key:string]: string }
+    }
+    prev: {
+        auth: []
+        email: []
+        discord: []
+    }
     initFailure?: boolean // true if titleIdentities was blank on init
-    discordShortcuts?: { [key:string]: string } // shortcut: payload
 }
 export namespace Player {
     export interface Auth {
@@ -24,9 +28,19 @@ export namespace Player {
         xsrf: string
         atkn: string
     }
+    export interface Profiles {
+        id?: string // uno id
+        uno: string
+        battle?: string
+        xbl?: string
+        psn?: string
+        steam?: string
+    }
     export interface Scaffold {
-        email: string
         auth: Auth
+        origin: 'self' | 'kgp' | 'friend' | 'enemy' | 'random'
+        email?: string // only for origin:self
+        profiles?: Player.Profiles // only for origin:!self, otherwise populated by scraper
     }
 }
 export interface Loadout {

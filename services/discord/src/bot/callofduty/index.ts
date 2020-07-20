@@ -69,8 +69,8 @@ export const register = async (m:Discord.Message, ...args:string[]) => {
         ])
         return
     }
-    if (player.discord) {
-        if (player.discord === m.author.id) {
+    if (player.discord?.id) {
+        if (player.discord?.id === m.author.id) {
             msg.edit(['Your Discord account is already linked'])
             return
         }

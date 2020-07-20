@@ -9,8 +9,8 @@ export interface PlayerIdentifiers {
 }
 export const findPlayer = async (pids:PlayerIdentifiers):Promise<Mongo.Schema.CallOfDuty.Player> => {
     const db = await Mongo.client('callofduty')
-    if (pids.uno) return db.collection('players').findOne({ uno: pids.uno })
-    if (pids.discord) return db.collection('players').findOne({ discord: pids.discord })
+    if (pids.uno) return db.collection('players').findOne({ 'profiles.id': pids.uno })
+    if (pids.discord) return db.collection('players').findOne({ 'discord.id': pids.discord })
     const { username='', platform='uno' } = pids
     return db.collection('players').findOne({ [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
 }
@@ -46,7 +46,7 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
         const pid = pids[i]
         if (pid.match(/<@!([0-9]+)>/)) {
             const discordId = pid.replace(/<@!([0-9]+)>/, '$1')
-            const player = await db.collection('players').findOne({ discord: discordId })
+            const player = await db.collection('players').findOne({ 'discord.id': discordId })
             if (player) {
                 foundPlayers.push({
                     player,
@@ -56,7 +56,7 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
         }
     }
     // all username + platform combos are gone, now reduce uno usernames and shortcuts if applicable
-    const player = await db.collection('players').findOne({ discord: authorId })
+    const player = await db.collection('players').findOne({ 'discord.id': authorId })
     if (player) {
         for(const i in pids) {
             if (!pids[i]) continue
@@ -66,8 +66,8 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
                 delete pids[i]
                 continue
             }
-            if (player.discordShortcuts && player.discordShortcuts[pid]) {
-                const shortcutPlayers = await hydratePlayerIdentifiers(authorId, player.discordShortcuts[pid].split(' '))
+            if (player.discord?.shortcuts && player.discord?.shortcuts[pid]) {
+                const shortcutPlayers = await hydratePlayerIdentifiers(authorId, player.discord.shortcuts[pid].split(' '))
                 if (shortcutPlayers.length) {
                     delete pids[i]
                     foundPlayers.push(...shortcutPlayers)
