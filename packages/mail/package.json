@@ -19,5 +19,6 @@
   "dependencies": {
     "gmail-send": "^1.8.10",
     "jsonwebtoken": "^8.5.1"
-  }
+  },
+  "gitHead": "b8bf9cb69f97d0bae15b055a5d6a016ccc877be4"
 }

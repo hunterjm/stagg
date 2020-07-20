@@ -85,10 +85,10 @@ export class Warzone {
     }
     async RecordResponse(res:API.Schema.CallOfDuty.Res.Warzone.Matches) {
         // Set player "uno" id if not already in db
-        if (!this.player.uno) {
+        if (!this.player.profiles.id) {
             const [ firstMatch ] = res.matches.filter((m:API.Schema.CallOfDuty.Res.Warzone.Match) => m.player.uno)
-            this.player.uno = firstMatch.player.uno
-            await this.db.collection('players').updateOne({ _id: this.player._id }, { $set: { 'profiles.id': this.player.uno } })
+            this.player.profiles.id = firstMatch.player.uno
+            await this.db.collection('players').updateOne({ _id: this.player._id }, { $set: { 'profiles.id': this.player.profiles.id } })
         }
         for(const rawMatch of res.matches) {
             const matchFound = await this.db.collection('matches.wz').findOne({ matchId: rawMatch.matchID })

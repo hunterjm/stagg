@@ -5,7 +5,7 @@ import { statsReport } from '../data'
 
 const type = 'br' // may do plunder in future but meh
 const header = (player:Mongo.Schema.CallOfDuty.Player, platform:string='uno'):string[] => [
-    `**${player.profiles[platform]}** (${player.uno})`,
+    `**${player.profiles[platform]}** (${player.profiles?.id})`,
     `Full profile: https://stagg.co/wz/${player.profiles?.uno?.split('#').join('@')}`,
 ]
 export const combined = async (player:Mongo.Schema.CallOfDuty.Player, platform:string='uno'):Promise<string[]> => {
