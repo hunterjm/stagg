@@ -115,6 +115,7 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
 export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
     const db = await Mongo.client()
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
+    const groupSum = stat !== 'downs' ? { $sum: `$stats.${stat}` } : { $sum: { $sum: `$stats.downs` } }
     return db.collection('performances.wz').aggregate([
         { $match: {
             'player._id': player._id,
@@ -124,7 +125,7 @@ export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:s
         {
             $group: {
                 _id: '$startTime',
-                [stat]: { $sum: `$stats.${stat}` },
+                [stat]: groupSum,
             }
         },
         { $sort: { _id: -1 } },
@@ -180,7 +181,8 @@ export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds
             timePlayed: { $sum: '$stats.timePlayed' },
             distanceTraveled: { $sum: '$stats.distanceTraveled' },
             percentTimeMoving: { $sum: '$stats.percentTimeMoving' },
-            // downs: { $sum: { $reduce: { input: '$stats.downs', initialValue: 0, in: { $add : ["$$value", "$$this"] } } } },
+            downs: { $sum: { $sum: '$stats.downs' } },
+            loadouts: { $sum: { $size: '$loadouts' } },
             gulagWins: {
                 $sum: {
                     $switch: { 
