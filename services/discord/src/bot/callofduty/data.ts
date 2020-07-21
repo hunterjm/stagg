@@ -112,10 +112,30 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
 //     { $limit: 50 },
 // ], { cursor: { batchSize: 1 } }).toArray()
 
+const groupSumObj = (stat:string) => {
+    let groupSum
+    switch(stat) {
+        case 'loadouts': groupSum = { $sum: { $size: `$loadouts` } }
+            break
+        case 'downs': groupSum = { $sum: { $sum: `$stats.downs` } }
+            break
+        default: groupSum = { $sum: `$stats.${stat}` }
+    }
+    return groupSum
+}
+
 export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
+    if (!player) return []
     const db = await Mongo.client()
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
-    const groupSum = stat !== 'downs' ? { $sum: `$stats.${stat}` } : { $sum: { $sum: `$stats.downs` } }
+    let groupSum
+    switch(stat) {
+        case 'loadouts': groupSum = { $sum: { $size: `$loadouts` } }
+            break
+        case 'downs': groupSum = { $sum: { $sum: `$stats.downs` } }
+            break
+        default: groupSum = { $sum: `$stats.${stat}` }
+    }
     return db.collection('performances.wz').aggregate([
         { $match: {
             'player._id': player._id,
@@ -125,7 +145,7 @@ export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:s
         {
             $group: {
                 _id: '$startTime',
-                [stat]: groupSum,
+                [stat]: groupSumObj(stat),
             }
         },
         { $sort: { _id: -1 } },
@@ -133,6 +153,7 @@ export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:s
     ]).toArray()
 }
 export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
+    if (!player) return []
     const db = await Mongo.client()
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
     const [dividend, divisor] = stat.split('/')
@@ -145,8 +166,8 @@ export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:stri
         {
             $group: {
                 _id: '$startTime',
-                divisor: { $sum: `$stats.${divisor}` },
-                dividend: { $sum: `$stats.${dividend}` },
+                divisor: groupSumObj(divisor),
+                dividend: groupSumObj(dividend),
             }
         },
         {
@@ -161,6 +182,7 @@ export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:stri
 }
 
 export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds:string[]=[], groupByModeId=false) => {
+    if (!player) return []
     const db = await Mongo.client()
     // if we're fetching "all" _id should be $modeId
     // if we're fetching anything else we should aggregate them all together
