@@ -60,7 +60,6 @@ PRs are always welcome so please feel free to fork or request contributor access
 - Add tooltips to each chart to explain correlations
 - Customizable dashboard with custom-built charts
 - Correlation creation tool
-- Implement landing page template: https://open.cruip.com/
 - Bugs
     - After expanding chart, labels do not go back to hidden
     - Large expandable charts dont fit mobile screen
@@ -75,6 +74,7 @@ PRs are always welcome so please feel free to fork or request contributor access
 - Correlations
     - kills/avgLifeTime
     - damageDone/timePlayed
+    - damageDone/damageTaken
 - Summarize with `wz barracks` and `mp barracks`
     - Time played
     - Games played
