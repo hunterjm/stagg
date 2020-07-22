@@ -119,7 +119,7 @@ export const login = async (req,res) => {
 }
 
 export namespace Stagg {
-    export const statsByFinish = (performances:Mongo.Schema.CallOfDuty.Performance[], stat:any) => {
+    export const statsByFinish = (performances:Mongo.Schema.CallOfDuty.WZ.Performance[], stat:any) => {
         const finishPosStats = []
         for(const p of performances) {
             const key = p.stats.teamPlacement - 1
@@ -133,7 +133,7 @@ export namespace Stagg {
         }
         return finishPosStats.map(f => f.stats[stat] / f.games)
     }
-    export const statOverTime = (performances:Mongo.Schema.CallOfDuty.Performance[], stat:any):number[] => 
+    export const statOverTime = (performances:Mongo.Schema.CallOfDuty.WZ.Performance[], stat:any):number[] => 
         performances.map(p => {
             if (typeof stat === typeof 'str') return p.stats[stat]
             let quotient = p.stats[stat.divisor]/p.stats[stat.dividend]
