@@ -6,8 +6,8 @@ export interface Player extends Player.Scaffold {
     games: API.Schema.CallOfDuty.Game[]
     profiles: Player.Profiles
     scrape: {
-        updated:   number
-        failures:  number
+        updated: number
+        failures: number
         timestamp: number
         rechecked?: number // last time initialization recheck was ran
     }
@@ -58,22 +58,168 @@ export namespace Loadout {
         attachments: string[]
     }
 }
+
 // Performances are player-specific
-export interface Performance {
-    mapId: string
-    modeId: string
-    matchId: string
-    endTime: number
-    startTime: number
-    player: {
-        _id: string
-        team: string
-        username: string
-        clantag: string
+export namespace WZ {
+    export interface Performance {
+        mapId: string
+        modeId: string
+        matchId: string
+        endTime: number
+        startTime: number
+        player: {
+            _id: Mongo.ObjectId
+            team: string
+            username: string
+            clantag: string
+        }
+        stats: Performance.Stats
+        loadouts: Loadout[]
     }
-    stats: Performance.Stats
-    loadouts: Loadout[]
+    export namespace Performance {
+        export interface Stats {
+            rank: number
+            score: number
+            kills: number
+            deaths: number
+            downs: number[] // [circleIndex:circleDowns]
+            gulagKills: number
+            gulagDeaths: number
+            eliminations: number
+            damageDone: number
+            damageTaken: number
+            teamWipes: number
+            revives: number
+            contracts: number
+            lootCrates: number
+            buyStations: number
+            assists: number
+            executions: number
+            headshots: number
+            wallBangs: number
+            nearMisses: number
+            clusterKills: number
+            airstrikeKills: number
+            longestStreak: number
+            trophyDefense: number
+            munitionShares: number
+            missileRedirects: number
+            equipmentDestroyed: number
+            percentTimeMoving: number
+            distanceTraveled: number
+            teamSurvivalTime: number
+            teamPlacement: number
+            timePlayed: number
+            xp: Stats.XP
+        }
+        export namespace Stats {
+            export interface XP {
+                misc: number
+                medal: number
+                match: number
+                score: number
+                bonus: number
+                challenge: number
+                total: number
+            }
+        }
+    }
 }
+
+// Performances are player-specific
+export namespace MW {
+    export interface Performance {
+        mapId: string
+        modeId: string
+        matchId: string
+        endTime: number
+        startTime: number
+        playlistName: string
+        result: string
+        winningTeam: string
+        gameBattle: boolean
+        team1Score: number
+        team2Score: number
+        isPresentAtEnd: boolean
+        arena: boolean
+        privateMatch: boolean
+        player: {
+            _id: Mongo.ObjectId
+            team: string
+            username: string
+            clantag: string
+        }
+        stats: Performance.Stats
+        loadouts: Loadout[]
+    }
+    export namespace Performance {
+        export interface Stats {
+            rank: number
+            score: number
+            kills: number
+            deaths: number
+            assists: number
+            accuracy: number
+            shotsLanded: number
+            shotsMissed: number
+            executions: number 
+            headshots: number
+            longestStreak: number
+            timePlayed: number
+            weapons: Stats.Weapon[]
+            killstreaks: Stats.Killstreak[]
+            xp: Stats.XP
+            objective: Stats.Objectives
+        }
+        export namespace Stats {
+            export interface XP {
+                misc: number
+                medal: number
+                match: number
+                score: number
+                total: number
+            }
+            export interface Weapon {
+                weaponId: string
+                hits: number
+                kills: number
+                headshots: number
+                loadoutIndex: number
+                shots: number
+                startingWeaponXp: number
+                deaths: number
+                xpEarned: number
+            }
+            export interface Killstreak {
+                killstreakId: string
+                count: number
+                // xp?
+                // kills?
+            }
+            export interface Objectives {
+                objectiveCaptureKill: number
+                objectiveObjProgDefend: number
+                objectiveGainedGunRank: number
+                objectiveKillConfirmed: number
+                objectiveKillDenied: number
+                objectiveKcFriendlyPickup: number
+                objectiveMedalModeKcOwnTagsScore: number
+                objectiveDestroyedEquipment: number
+                objectiveMedalScoreSsKillPrecisionAirstrike: number
+                objectiveMedalScoreSsKillCruisePredator: number
+                objectiveMedalScoreKillSsSentryGun: number
+                objectiveMedalScoreKillSsChopperGunner: number
+                objectiveMedalModeXAssaultScore: number
+                objectiveMedalModeXDefendScore: number
+                objectiveMedalModeDomSecureScore: number
+                objectiveMedalModeDomSecureBScore: number
+                objectiveMedalModeDomSecureNeutralScore: number
+                objectiveMedalModeDomSecureAssistScore: number
+            }
+        }
+    }
+}
+
 // Matches are generic game records
 export interface Match {
     mapId: string
@@ -88,54 +234,7 @@ export interface Match {
         players: Match.Player[]
     }[]
 }
-export namespace Performance {
-    export interface Stats {
-        rank: number
-        score: number
-        kills: number
-        deaths: number
-        downs: number[] // [circleIndex:circleDowns]
-        gulagKills: number
-        gulagDeaths: number
-        eliminations: number
-        damageDone: number
-        damageTaken: number
-        teamWipes: number
-        revives: number
-        contracts: number
-        lootCrates: number
-        buyStations: number
-        assists: number
-        executions: number
-        headshots: number
-        wallBangs: number
-        nearMisses: number
-        clusterKills: number
-        airstrikeKills: number
-        longestStreak: number
-        trophyDefense: number
-        munitionShares: number
-        missileRedirects: number
-        equipmentDestroyed: number
-        percentTimeMoving: number
-        distanceTraveled: number
-        teamSurvivalTime: number
-        teamPlacement: number
-        timePlayed: number
-        xp: Stats.XP
-    }
-    export namespace Stats {
-        export interface XP {
-            misc: number
-            medal: number
-            match: number
-            score: number
-            bonus: number
-            challenge: number
-            total: number
-        }
-    }
-}
+
 export namespace Match {
     export interface Player {
         uno: string

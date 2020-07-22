@@ -6,6 +6,23 @@ export default class {
     constructor(tokens?:Schema.CallOfDuty.Tokens) {
         this.Tokens(tokens)
     }
+
+    get WZ() {
+        return {
+           Matches: async (username: string, platform: Schema.CallOfDuty.Platform, next: number= 0):Promise<Schema.CallOfDuty.Res.Warzone.Matches> => {
+                return this.Matches(username, platform, 'wz', 'mw', next) as Promise<Schema.CallOfDuty.Res.Warzone.Matches>
+           }
+        }
+    }
+
+    get MW() {
+        return {
+            Matches: async (username: string, platform: Schema.CallOfDuty.Platform, next: number= 0):Promise<Schema.CallOfDuty.Res.ModernWarfare.Matches> => {
+                return this.Matches(username, platform, 'mp', 'mw', next) as Promise<Schema.CallOfDuty.Res.ModernWarfare.Matches>
+           }
+        }
+    }
+
     private async request(config:Partial<AxiosRequestConfig>):Promise<any> {
         if (!this.tokens.xsrf || !this.tokens.atkn || !this.tokens.sso) {
             throw new Error('Missing tokens for Call of Duty API')
@@ -40,7 +57,7 @@ export default class {
     async Profile(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw'):Promise<Schema.CallOfDuty.Res.Warzone.Profile> {
         return this.request({ url: `/stats/cod/v1/title/${game}/platform/${platform}/gamer/${encodeURIComponent(username)}/profile/type/${mode}` })
     }
-    async Matches(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw', next:number=0):Promise<Schema.CallOfDuty.Res.Warzone.Matches> {
+    async Matches(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw', next:number=0):Promise<Schema.CallOfDuty.Res.Warzone.Matches|Schema.CallOfDuty.Res.ModernWarfare.Matches> {
         return this.request({ url: `/crm/cod/v2/title/${game}/platform/${platform}/gamer/${encodeURIComponent(username)}/matches/${mode}/start/0/end/${next}/details` })
     }
     async Login(email:string, password:string):Promise<{ xsrf: string, atkn: string, sso: string }> {

@@ -82,20 +82,26 @@ const playerLabel = (player:mdb.Schema.CallOfDuty.Player):string => player.email
 
 export const update = async (player:mdb.Schema.CallOfDuty.Player) => {
     console.log(`[+] Updating ${playerLabel(player)}`)
-    const Scraper = new Scrape.Warzone(player, { start: 0, redundancy: false })
-    return Scraper.Run(cfg.mongo)
+    return [
+        new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: false }),
+        new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: false })
+    ].forEach(s => s.Run(cfg.mongo))
 }
 export const recheck = async (player:mdb.Schema.CallOfDuty.Player) => {
     console.log(`[+] Rechecking ${playerLabel(player)}`)
-    const Scraper = new Scrape.Warzone(player, { start: 0, redundancy: true })
-    return Scraper.Run(cfg.mongo)
+    return [
+        new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: true }),
+        new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: true })
+    ].forEach(s => s.Run(cfg.mongo))
 }
 export const initialize = async (player:mdb.Schema.CallOfDuty.Player, ) => {
     console.log(`[+] Initializing ${playerLabel(player)}`)
     // Now update db and scrape
     const start = player.scrape?.timestamp || 0
-    const Scraper = new Scrape.Warzone(player, { start, redundancy: false })
-    await Scraper.Run(cfg.mongo)
+    return [
+        new Scrape.CallOfDuty(player, { game: 'wz', start, redundancy: false }),
+        new Scrape.CallOfDuty(player, { game: 'mw', start, redundancy: false })
+    ].forEach(s => s.Run(cfg.mongo))
 }
 
 export const updateIdentity = async (player:mdb.Schema.CallOfDuty.Player, ) => {

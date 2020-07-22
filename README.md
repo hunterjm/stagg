@@ -104,6 +104,7 @@ PRs are always welcome so please feel free to fork or request contributor access
 - Multiplayer API/types
 - Some teamPlacement props are 0
 - Scrape isolated summary for each match with `start=(startTime-1)*1000, end=(endTime-1)*1000`
+- Alert/Logs to notify when the API returns a field we current don't include or ignore
 
 #### Republish
 
