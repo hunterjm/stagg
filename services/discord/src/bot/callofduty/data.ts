@@ -98,7 +98,7 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
     return foundPlayers
 }
 
-//["https://stagg.co/api/chart.png?c={type:'pie',data:{labels:['Solos','Duos','Trios','Quads'],datasets:[{data:[6,4,52,42]}]}}"]
+//['https://stagg.co/api/chart.png?c={type:'pie',data:{labels:['Solos','Duos','Trios','Quads'],datasets:[{data:[6,4,52,42]}]}}']
 
 // const aggr = await db.collection('performances.wz').aggregate([
 //     { $match: { 'player._id': player._id } },
@@ -145,6 +145,8 @@ export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:s
         {
             $group: {
                 _id: '$startTime',
+                startTime: { $sum: '$startTime' },
+                endTime: { $sum: '$endTime' },
                 [stat]: groupSumObj(stat),
             }
         },
@@ -166,14 +168,18 @@ export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:stri
         {
             $group: {
                 _id: '$startTime',
+                startTime: { $sum: '$startTime' },
+                endTime: { $sum: '$endTime' },
                 divisor: groupSumObj(divisor),
                 dividend: groupSumObj(dividend),
             }
         },
         {
             $project : {
-                _id : "$_id",
-                [stat] : { $cond: [ { $eq: [ "$divisor", 0 ] }, "$dividend", {"$divide":["$dividend", "$divisor"]} ] }
+                _id : '$_id',
+                startTime: '$startTime',
+                endTime: '$endTime',
+                [stat] : { $cond: [ { $eq: [ '$divisor', 0 ] }, '$dividend', {'$divide':['$dividend', '$divisor']} ] }
             }
         },
         { $sort: { _id: -1 } },
@@ -184,7 +190,7 @@ export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:stri
 export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds:string[]=[], groupByModeId=false) => {
     if (!player) return []
     const db = await Mongo.client()
-    // if we're fetching "all" _id should be $modeId
+    // if we're fetching 'all' _id should be $modeId
     // if we're fetching anything else we should aggregate them all together
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
     return db.collection('performances.wz').aggregate([
@@ -210,7 +216,7 @@ export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds
                     $switch: { 
                         branches: [ 
                             { 
-                                case: { $gt: [ "$stats.gulagKills", 0 ] }, 
+                                case: { $gt: [ '$stats.gulagKills', 0 ] }, 
                                 then: 1
                             }
                         ], 
@@ -223,11 +229,11 @@ export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds
                     $switch: { 
                         branches: [
                             { 
-                                case: { $gt: [ "$stats.gulagKills", 0 ] }, 
+                                case: { $gt: [ '$stats.gulagKills', 0 ] }, 
                                 then: 1
                             },
                             { 
-                                case: { $gt: [ "$stats.gulagDeaths", 0 ] }, 
+                                case: { $gt: [ '$stats.gulagDeaths', 0 ] }, 
                                 then: 1
                             }
                         ], 
@@ -240,7 +246,7 @@ export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds
                     $switch: { 
                         branches: [ 
                             { 
-                                case: { $eq: [ "$stats.teamPlacement", 1 ] }, 
+                                case: { $eq: [ '$stats.teamPlacement', 1 ] }, 
                                 then: 1
                             }
                         ], 
@@ -253,7 +259,7 @@ export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds
                     $switch: { 
                         branches: [ 
                             { 
-                                case: { $lt: [ "$stats.teamPlacement", 6 ] }, 
+                                case: { $lt: [ '$stats.teamPlacement', 6 ] }, 
                                 then: 1
                             }
                         ], 
@@ -266,7 +272,7 @@ export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds
                     $switch: { 
                         branches: [ 
                             { 
-                                case: { $lt: [ "$stats.teamPlacement", 11 ] }, 
+                                case: { $lt: [ '$stats.teamPlacement', 11 ] }, 
                                 then: 1
                             }
                         ], 

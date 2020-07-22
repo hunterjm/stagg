@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js'
 import * as Mongo from '@stagg/mdb'
+import * as humanTime from 'human-time'
 import { hydratePlayerIdentifiers, isolatedStat, ratioStat } from '../data'
 import relay from '../../relay'
 
@@ -25,9 +26,16 @@ const statOverTime = async (players:Mongo.Schema.CallOfDuty.Player[], stat:strin
     const data = await statMethod(player, stat)
     const chartData = []
     const chartLabels = []
-    let i = 1
     for(const doc of data) {
-        chartLabels.push(i++)
+        const ht = humanTime(new Date(doc.startTime * 1000))
+            .replace(/months?/gi, 'mo')
+            .replace(/weeks?/gi, 'wk')
+            .replace(/days?/gi, 'd')
+            .replace(/hours?/gi, 'hr')
+            .replace(/minutes?/gi, 'm')
+            .replace(/seconds?/gi, 's')
+            .replace(/^([0-9]+)\s*/, '$1')
+        chartLabels.push(`'${ht}'`)
         chartData.push(doc[stat])
     }
     const avgData = []
@@ -35,7 +43,6 @@ const statOverTime = async (players:Mongo.Schema.CallOfDuty.Player[], stat:strin
     for(let i = 0; i < chartData.length; i++) {
         avgData.push(avg)
     }
-    return [
-        `${chartUrlPrefix}{type:'line',data:{labels:[${chartLabels.join(',')}], datasets:[{label:'${stat.replace('/', ':')} over time', data: [${chartData.join(',')}], fill:false, borderColor:'%2301a2fc'},{label:'Avg ${stat.replace('/', ':')} over time', data: [${avgData.join(',')}], fill:false, borderColor:'%23aaa'}]}}`
-    ]
+    const url = `${chartUrlPrefix}{type:'line',data:{labels:[${chartLabels.join(',')}], datasets:[{label:'${stat.replace('/', ':')} over time', data: [${chartData.join(',')}], fill:false, borderColor:'%2301a2fc'},{label:'Avg ${stat.replace('/', ':')} over time', data: [${avgData.join(',')}], fill:false, borderColor:'%23aaa'}]}}`
+    return [url]
 }
