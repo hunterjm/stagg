@@ -82,26 +82,32 @@ const playerLabel = (player:mdb.Schema.CallOfDuty.Player):string => player.email
 
 export const update = async (player:mdb.Schema.CallOfDuty.Player) => {
     console.log(`[+] Updating ${playerLabel(player)}`)
-    return [
-        new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: false }),
-        new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: false })
-    ].forEach(s => s.Run(cfg.mongo))
+
+    const wzScraper = new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: false })
+    await wzScraper.Run(cfg.mongo)
+
+    const mpScraper = new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: false })
+    return await mpScraper.Run(cfg.mongo)
 }
 export const recheck = async (player:mdb.Schema.CallOfDuty.Player) => {
     console.log(`[+] Rechecking ${playerLabel(player)}`)
-    return [
-        new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: true }),
-        new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: true })
-    ].forEach(s => s.Run(cfg.mongo))
+    
+    const wzScraper = new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: true })
+    await wzScraper.Run(cfg.mongo)
+    
+    const mpScraper = new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: true })
+    return await mpScraper.Run(cfg.mongo)
 }
 export const initialize = async (player:mdb.Schema.CallOfDuty.Player, ) => {
     console.log(`[+] Initializing ${playerLabel(player)}`)
     // Now update db and scrape
     const start = player.scrape?.timestamp || 0
-    return [
-        new Scrape.CallOfDuty(player, { game: 'wz', start, redundancy: false }),
-        new Scrape.CallOfDuty(player, { game: 'mw', start, redundancy: false })
-    ].forEach(s => s.Run(cfg.mongo))
+
+    const wzScraper = new Scrape.CallOfDuty(player, { game: 'wz', start, redundancy: false })
+    await wzScraper.Run(cfg.mongo)
+    
+    const mpScraper = new Scrape.CallOfDuty(player, { game: 'mw', start, redundancy: false })
+    return await mpScraper.Run(cfg.mongo)
 }
 
 export const updateIdentity = async (player:mdb.Schema.CallOfDuty.Player, ) => {
