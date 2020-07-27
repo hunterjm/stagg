@@ -99,31 +99,33 @@ export namespace Runners {
                 this.options.logger(`[?] Normalize.${game.toUpperCase()}.${mode.toUpperCase()} not found, only raw matches will be recorded...`)
             }
             for (const rawMatch of res.matches) {
-                await this.RecordMatch(rawMatch)
+                const didWrite = await this.RecordMatch(rawMatch)
+                if (!didWrite && !this.options.redundancy) {
+                    // if redundancy isn't enabled we're now finished
+                    this.complete = true
+                    break
+                }
             }
             if (res.matches.length < 20) {
                 this.complete = true
             }
             return this
         }
-        private async RecordMatch(m:API.Schema.CallOfDuty.Match) {
+        private async RecordMatch(m:API.Schema.CallOfDuty.Match):Promise<boolean> {
             let newVersionAvailable = false // not implemented yet...
-            const rawMatchFound = await this.db.collection(this.Collection.Raw).findOne({ matchID: m.matchID })
+            const rawMatchFound = await this.db.collection(this.Collection.Raw).findOne({ matchID: m.matchID, 'player._id': this.player._id })
             if (!this.minEndTime || this.minEndTime > m.utcEndSeconds) {
                 this.minEndTime = m.utcEndSeconds
             }
             if (!rawMatchFound) {
-                await this.db.collection(this.Collection.Raw).insertOne(m)
+                await this.db.collection(this.Collection.Raw).insertOne({ player: { _id: this.player._id }, ...m })
             } else {
                 // check if we now have team data prop and didn't before
                 if (!rawMatchFound[this.TeamDataProp] && m[this.TeamDataProp]) {
                     newVersionAvailable = true
                     await this.db.collection(this.Collection.Raw).updateOne({ matchId: m.matchID }, { $set: { [this.TeamDataProp]: m[this.TeamDataProp] } })
                 }
-                // if redundancy isn't enabled we're now finished
-                if (!this.options.redundancy) {
-                    this.complete = true
-                }
+                return false
             }
             if (!this.Normalizer) {
                 // No normalizer setup yet, skip
@@ -145,6 +147,7 @@ export namespace Runners {
                     await this.db.collection(this.Collection.Performances).insertOne(normalizedPerformance)
                 }
             }
+            return true
         }
         private async SetupScraperRecord() {
             const defaultMode = { [this.options.mode]: { updated: 0, failures: 0, timestamp: 0 } }
