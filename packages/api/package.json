@@ -18,6 +18,7 @@
   },
   "gitHead": "b8bf9cb69f97d0bae15b055a5d6a016ccc877be4",
   "dependencies": {
+    "@stagg/util": "^0.6.0",
     "axios": "^0.19.2",
     "request": "^2.88.2"
   }
