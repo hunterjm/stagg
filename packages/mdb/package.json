@@ -1,6 +1,6 @@
 {
   "name": "@stagg/mdb",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -18,7 +18,7 @@
   },
   "gitHead": "b8bf9cb69f97d0bae15b055a5d6a016ccc877be4",
   "dependencies": {
-    "@stagg/api": "^0.5.0",
+    "@stagg/api": "^0.6.0",
     "mongodb": "^3.5.9"
   },
   "devDependencies": {
