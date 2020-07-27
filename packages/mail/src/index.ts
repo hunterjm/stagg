@@ -37,7 +37,7 @@ export namespace send {
                 await send.generic(email, 'Confirm your email address for Stagg.co', emailHTML)
                 return true
             } catch(e) {
-                console.log('Email confirmation failed', e)
+                console.log('[!] Email confirmation failed', e)
                 return false
             }
         }

@@ -20,7 +20,7 @@ export default async (m:Discord.Message, stat:string, ...pids:string[]) => {
     rly.delete()
 }
 
-const statOverTime = async (players:Mongo.Schema.CallOfDuty.Player[], stat:string):Promise<string[]> => {
+const statOverTime = async (players:Mongo.Schema.CallOfDuty.Account[], stat:string):Promise<string[]> => {
     const [player] = players
     const statMethod = stat.includes('/') ? ratioStat : isolatedStat
     const data = await statMethod(player, stat)

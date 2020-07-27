@@ -8,6 +8,7 @@ import Template from '../components/Template'
 import { Wrapper, FormWrapper } from './login'
 import cfg from '../config/ui'
 
+// does not forward even though it gets jwt in res
 export const Page = ({ user }) => {
   const [uno, setUno] = useState('')
   const recheck = async () => {
@@ -17,7 +18,7 @@ export const Page = ({ user }) => {
       })
     const { jwt, error } = await recheck.json()
     if (error) {
-        return console.log('Profile status:', error)
+        return console.log('[!] Profile status:', error)
     }
     Cookies.set('jwt', jwt, { expires: 365 })
     const { profiles } = JWT.decode(jwt) as any
@@ -42,7 +43,7 @@ export const Page = ({ user }) => {
                   <h2>Please wait while your profile is gathered...</h2>
               </Center>
           </FormWrapper>
-          <p><small>You will be forwarded in a moment</small></p>
+          <p><small>This may take several minutes, you will be forwarded upon completion...</small></p>
         </Center>
       </Wrapper>
     </Template>

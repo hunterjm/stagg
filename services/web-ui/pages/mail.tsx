@@ -35,13 +35,12 @@ export const Page = ({ user, success }) => {
 Page.getInitialProps = async (ctx) => {
   const token = new Buffer(ctx.query.t, 'base64')
   const jwt = token.toString('ascii')
-  console.log(`${cfg.api.host}/api/mail/confirm?jwt=${jwt}`)
   const confirmationRes = await fetch(`${cfg.api.host}/mail/confirm?jwt=${jwt}`)
   try {
     const { success } = await confirmationRes.json()
     return { success }
   } catch(e) {
-    console.log('Confirmation error', e)
+    console.log('[!] Confirmation error', e)
     return { success: false }
   }
 }

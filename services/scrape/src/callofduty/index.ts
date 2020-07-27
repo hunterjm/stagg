@@ -1,7 +1,7 @@
 import { delay } from '@stagg/util'
 import * as mdb from '@stagg/mdb'
 import * as API from '@stagg/api'
-import * as Scrape from './scraper'
+import * as Scraper from './scraper'
 import cfg from '../config'
 
 mdb.config(cfg.mongo)
@@ -11,8 +11,8 @@ export const timestamp = () => Math.round(new Date().getTime()/1000)
 export const updateExistingPlayers = async () => {
     const db = await mdb.client()
     while(true) {
-        const [ player ] = await db.collection('players')
-            .find({ 'scrape.updated': { $exists: true } })
+        const [ player ] = await db.collection('accounts')
+            .find({ 'scrape.updated': { $exists: true }, 'scrape.initialized': { $exists: true } })
             .sort({ 'scrape.updated': 1 }).toArray()
         if (!player) continue
         await update(player)
@@ -21,49 +21,51 @@ export const updateExistingPlayers = async () => {
 export const initializeArtificialPlayers = async () => {
     const db = await mdb.client()
     while(true) {
-        const player = await db.collection('players').findOne({
+        const player = await db.collection('accounts').findOne({
             origin: { $nin: ['self'] },
             games: { $exists: true },
-            scrape: { $exists: false },
             profiles: { $exists: true },
+            'scrape.initialized': { $exists: false },
         })
         if (!player) continue
         try {
             await initialize(player)
+            await db.collection('accounts').updateOne({ _id: player._id }, { $set: { 'scrape.initialized': timestamp() } })
             await delay(cfg.scrape.wait)
         } catch(e) {
             // This can fail if they have no titleIdentities returned, so signal in the db to skip for now
-            await db.collection('players').updateOne({ _id: player._id }, { $set: { initFailure: true } })
+            await db.collection('accounts').updateOne({ _id: player._id }, { $set: { initFailure: true } })
         }
     }
 }
 export const initializeNewPlayers = async () => {
     const db = await mdb.client()
     while(true) {
-        const player = await db.collection('players').findOne({ origin: 'self', scrape: { $exists: false }, initFailure: { $exists: false } })
+        const player = await db.collection('accounts').findOne({ origin: 'self', 'scrape.initialized': { $exists: false }, initFailure: { $exists: false } })
         if (!player) continue
         try {
             const { games, profiles } = await updateIdentity(player) // required on initialize
             player.games = games
             player.profiles = profiles
             await initialize(player)
+            await db.collection('accounts').updateOne({ _id: player._id }, { $set: { 'scrape.initialized': timestamp() } })
             await delay(cfg.scrape.wait)
         } catch(e) {
             // This can fail if they have no titleIdentities returned, so signal in the db to skip for now
-            await db.collection('players').updateOne({ _id: player._id }, { $set: { initFailure: true } })
+            await db.collection('accounts').updateOne({ _id: player._id }, { $set: { initFailure: true } })
         }
     }
 }
 export const recheckExistingPlayers = async () => {
     const db = await mdb.client()
     while(true) {
-        const neverRechecked = await db.collection('players').findOne({ scrape: { $exists: true }, 'scrape.rechecked': { $exists: false } })
+        const neverRechecked = await db.collection('accounts').findOne({ 'scrape.initialized': { $exists: true }, 'scrape.rechecked': { $exists: false } })
         const [ player ] = neverRechecked ? [neverRechecked]
-            : await db.collection('players')
-                .find({ scrape: { $exists: true }, 'scrape.rechecked': { $exists: true, $lt: timestamp() - cfg.scrape.cooldown } })
+            : await db.collection('accounts')
+                .find({ 'scrape.initialized': { $exists: true }, 'scrape.rechecked': { $exists: true, $lt: timestamp() - cfg.scrape.cooldown } })
                 .sort({ 'scrape.rechecked': 1 }).toArray()
         if (!player) continue
-        await db.collection('players').updateOne({ _id: player._id }, { $set: { 'scrape.rechecked': timestamp() } })
+        await db.collection('accounts').updateOne({ _id: player._id }, { $set: { 'scrape.rechecked': timestamp() } })
         try {
             if (player.origin === 'self') {
                 const { games, profiles } = await updateIdentity(player) // optional on recheck (checks for new games)
@@ -78,39 +80,40 @@ export const recheckExistingPlayers = async () => {
     }
 }
 
-const playerLabel = (player:mdb.Schema.CallOfDuty.Player):string => player.email || player.profiles.uno || 'artificial player'
+const playerLabel = (player:mdb.Schema.CallOfDuty.Account):string => player.email || player.profiles.uno || 'artificial player'
 
-export const update = async (player:mdb.Schema.CallOfDuty.Player) => {
+const modes:API.Schema.CallOfDuty.Mode[] = ['mp', 'wz']
+export const update = async (player:mdb.Schema.CallOfDuty.Account) => {
     console.log(`[+] Updating ${playerLabel(player)}`)
-
-    const wzScraper = new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: false })
-    await wzScraper.Run(cfg.mongo)
-
-    const mpScraper = new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: false })
-    return await mpScraper.Run(cfg.mongo)
+    for(const game of player.games) {
+        for(const mode of modes) {
+            const instance = new Scraper.Runners.Matches(player, { game, mode, start: 0, redundancy: false })
+            await instance.ETL(cfg.mongo)
+        }
+    }
 }
-export const recheck = async (player:mdb.Schema.CallOfDuty.Player) => {
+export const recheck = async (player:mdb.Schema.CallOfDuty.Account) => {
     console.log(`[+] Rechecking ${playerLabel(player)}`)
-    
-    const wzScraper = new Scrape.CallOfDuty(player, { game: 'wz', start: 0, redundancy: true })
-    await wzScraper.Run(cfg.mongo)
-    
-    const mpScraper = new Scrape.CallOfDuty(player, { game: 'mw', start: 0, redundancy: true })
-    return await mpScraper.Run(cfg.mongo)
+    for(const game of player.games) {
+        for(const mode of modes) {
+            const instance = new Scraper.Runners.Matches(player, { game, mode, start: 0, redundancy: true })
+            await instance.ETL(cfg.mongo)
+        }
+    }
 }
-export const initialize = async (player:mdb.Schema.CallOfDuty.Player, ) => {
+export const initialize = async (player:mdb.Schema.CallOfDuty.Account, ) => {
     console.log(`[+] Initializing ${playerLabel(player)}`)
-    // Now update db and scrape
-    const start = player.scrape?.timestamp || 0
-
-    const wzScraper = new Scrape.CallOfDuty(player, { game: 'wz', start, redundancy: false })
-    await wzScraper.Run(cfg.mongo)
-    
-    const mpScraper = new Scrape.CallOfDuty(player, { game: 'mw', start, redundancy: false })
-    return await mpScraper.Run(cfg.mongo)
+    for(const game of player.games) {
+        for(const mode of modes) {
+            const start = player.scrape && player.scrape[game] && player.scrape[game][mode] && player.scrape[game][mode].timestamp
+                ? player.scrape[game][mode].timestamp : 0
+            const instance = new Scraper.Runners.Matches(player, { game, mode, start, redundancy: false })
+            await instance.ETL(cfg.mongo)
+        }
+    }
 }
 
-export const updateIdentity = async (player:mdb.Schema.CallOfDuty.Player, ) => {
+export const updateIdentity = async (player:mdb.Schema.CallOfDuty.Account, ) => {
     const db = await mdb.client()
     const games:string[] = []
     const profiles:{[key:string]:string} = {}
@@ -124,30 +127,6 @@ export const updateIdentity = async (player:mdb.Schema.CallOfDuty.Player, ) => {
     for(const platform in platforms) {
         profiles[platform] = platforms[platform].username
     }
-    await db.collection('players').updateOne({ _id: player._id }, { $set: { games, profiles }})
+    await db.collection('accounts').updateOne({ _id: player._id }, { $set: { games, profiles }})
     return { games, profiles }
 }
-
-/*
-    Scrape profiles!
-    Scrape Multiplayer!
-
-    Warzone Matches:
-    Have one scraper that just does updates
-    {
-        start: 0,
-        redundancy: false,
-    }
-    
-    Have another scraper that just does initialization
-    {
-        start: <db> || 0,
-        redundancy: false,
-    }
-    
-    Have another scraper that just does redundancy checks
-    {
-        start: 0,
-        redundancy: true,
-    }
-*/

@@ -8,9 +8,7 @@ import { hydratePlayerIdentifiers } from '../data'
 export { teams }
 export { charts }
 
-export const help = (m:Discord.Message) => {
-    console.log('Woot!')
-}
+export const help = (m:Discord.Message) => { }
 
 export namespace list {
     export const stats = (m:Discord.Message) => {

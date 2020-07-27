@@ -27,11 +27,11 @@ export const search = async (m:Discord.Message, ...args:string[]) => {
     if (platform) {
         queries.push({ [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
     } else {
-        for( const p of Object.keys(API.Map.CallOfDuty.Platforms) ) {
+        for(const p in API.Map.CallOfDuty.Platforms) {
             queries.push({ [`profiles.${p}`]: { $regex: username, $options: 'i' } })
         }
     }
-    const players = await db.collection('players').find({ $or: queries }).toArray()
+    const players = await db.collection('accounts').find({ $or: queries }).toArray()
     if (!players || !players.length) {
         msg.edit(['No results :('])
         return
@@ -50,7 +50,10 @@ export const search = async (m:Discord.Message, ...args:string[]) => {
 }
 
 export const register = async (m:Discord.Message, ...args:string[]) => {
-    const db = await Mongo.client('callofduty')
+    const db = {
+        cod: await Mongo.client('callofduty'),
+        stagg: await Mongo.client('stagg'),
+    }
     if (!args.length) {
         relay(m, ['Invalid request, missing identifier(s); must include email or username/platform'])
         return
@@ -59,7 +62,7 @@ export const register = async (m:Discord.Message, ...args:string[]) => {
     const isEmail = args[0].match(/[^@]+@[^\.]+\..+$/)
     const player = !isEmail
         ? await findPlayer({ username: args[0], platform: args[1] })
-        : await db.collection('players').findOne({ email: args[0] })
+        : await db.cod.collection('accounts').findOne({ email: args[0] })
     if (!player) {
         msg.edit([
             !isEmail
@@ -68,11 +71,22 @@ export const register = async (m:Discord.Message, ...args:string[]) => {
         ])
         return
     }
-    if (!player.email) {
+    if (!player.email || player.origin !== 'self') {
         msg.edit(['Cannot link non-organic profiles; if this profile belongs to you sign in at https://stagg.co/login'])
         return
     }
-    if (player.discord?.id) {
+    // Check if this Discord is already linked to an account
+    const discordUsr = await db.stagg.collection('users').findOne({ discord: { $exists: true }, 'discord.id': m.author.id })
+    if (discordUsr) {
+        if (discordUsr.accounts?.callofduty === player._id) {
+            msg.edit(['Your Discord account is already linked'])
+            return
+        }
+        msg.edit(['Your Discord account is linked to a different Call of Duty account, check your settings at https://stagg.co'])
+        return
+    }
+    const playerUsr = await db.stagg.collection('users').findOne({ 'accounts.callofduty': player._id })
+    if (playerUsr.discord) {
         if (player.discord?.id === m.author.id) {
             msg.edit(['Your Discord account is already linked'])
             return
@@ -81,6 +95,7 @@ export const register = async (m:Discord.Message, ...args:string[]) => {
         return
     }
     msg.edit(['Sending confirmation email...'])
-    const sent = await mail.send.confirmation.discord(player.email, player.profiles.uno, { ...m.author })
-    msg.edit([sent ? 'Confirmation email sent, check your inbox' : 'Failed to send confirmation email, please try again or contact support'])
+    const discordAcct = { ...m.author, tag: `${m.author.username}#${m.author.discriminator}` }
+    const sent = await mail.send.confirmation.discord(player.email, player.profiles.uno, discordAcct)
+    msg.edit([sent ? 'Confirmation email sent, check your inbox (this may take a few mins)' : 'Failed to send confirmation email, please try again or contact support'])
 }

@@ -7,23 +7,23 @@ export interface PlayerIdentifiers {
     username?:string
     platform?:string
 }
-export const findPlayer = async (pids:PlayerIdentifiers):Promise<Mongo.Schema.CallOfDuty.Player> => {
+export const findPlayer = async (pids:PlayerIdentifiers):Promise<Mongo.Schema.CallOfDuty.Account> => {
     const db = await Mongo.client('callofduty')
-    if (pids.uno) return db.collection('players').findOne({ 'profiles.id': pids.uno })
-    if (pids.discord) return db.collection('players').findOne({ 'discord.id': pids.discord })
+    if (pids.uno) return db.collection('accounts').findOne({ 'profiles.id': pids.uno })
+    if (pids.discord) return db.collection('accounts').findOne({ 'discord.id': pids.discord })
     const { username='', platform='uno' } = pids
-    return db.collection('players').findOne({ [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
+    return db.collection('accounts').findOne({ [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
 }
 
 // currently unused, adding kgp's manually
 export const addArtificialPlayer = async (origin:string, authSponsorUnoUsername:string, username:string, platform:string='uno', games:string[]=['mw']):Promise<boolean> => {
     const db = await Mongo.client('callofduty')
-    const sponsor = await db.collection('players').findOne({ 'profiles.uno': authSponsorUnoUsername })
+    const sponsor = await db.collection('accounts').findOne({ 'profiles.uno': authSponsorUnoUsername })
     if (!sponsor) {
         return false
     }
     const scaffold = { origin, auth: sponsor.auth, games, profiles: { [platform]: username } }
-    await db.collection('players').insertOne(scaffold)
+    await db.collection('accounts').insertOne(scaffold)
     return true
 }
 
@@ -33,10 +33,13 @@ interface FetchedPlayer {
         username: string
         platform: string
     }
-    player: Mongo.Schema.CallOfDuty.Player
+    player: Mongo.Schema.CallOfDuty.Account
 }
 export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):Promise<FetchedPlayer[]> => {
-    const db = await Mongo.client('callofduty')
+    const db = {
+        cod: await Mongo.client('callofduty'),
+        stagg: await Mongo.client('stagg')
+    }
     const queries = []
     for(const i in pids) {
         const pid = pids[i].toLowerCase()
@@ -58,8 +61,9 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
         const pid = pids[i]
         if (pid.match(/<@!([0-9]+)>/)) {
             const discordId = pid.replace(/<@!([0-9]+)>/, '$1')
-            const player = await db.collection('players').findOne({ 'discord.id': discordId })
-            if (player) {
+            const user = await db.stagg.collection('users').findOne({ 'discord.id': discordId })
+            if (user?.accounts?.callofduty) {
+                const player = await db.cod.collection('accounts').findOne({ _id: user.accounts.callofduty })
                 foundPlayers.push({
                     player,
                     query: { discord: discordId, tag: `<@!${discordId}>` },
@@ -68,8 +72,9 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
         }
     }
     // all username + platform combos are gone, now reduce uno usernames and shortcuts if applicable
-    const player = await db.collection('players').findOne({ 'discord.id': authorId })
-    if (player) {
+    const user = await db.stagg.collection('users').findOne({ 'discord.id': authorId })
+    if (user?.accounts?.callofduty) {
+        const player = await db.cod.collection('accounts').findOne({ _id: user.accounts.callofduty })
         for(const i in pids) {
             if (!pids[i]) continue
             const pid = pids[i].toLowerCase()
@@ -78,8 +83,8 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
                 delete pids[i]
                 continue
             }
-            if (player.discord?.shortcuts && player.discord?.shortcuts[pid]) {
-                const shortcutPlayers = await hydratePlayerIdentifiers(authorId, player.discord.shortcuts[pid].split(' '))
+            if (user.discord?.shortcuts && user.discord?.shortcuts[pid]) {
+                const shortcutPlayers = await hydratePlayerIdentifiers(authorId, user.discord.shortcuts[pid].split(' '))
                 if (shortcutPlayers.length) {
                     delete pids[i]
                     foundPlayers.push(...shortcutPlayers)
@@ -100,7 +105,7 @@ export const hydratePlayerIdentifiers = async (authorId:string, pids:string[]):P
 
 //['https://stagg.co/api/chart.png?c={type:'pie',data:{labels:['Solos','Duos','Trios','Quads'],datasets:[{data:[6,4,52,42]}]}}']
 
-// const aggr = await db.collection('performances.wz').aggregate([
+// const aggr = await db.collection('mw.wz.performances').aggregate([
 //     { $match: { 'player._id': player._id } },
 //     { $sort: { startTime: -1 } },
 //     { $group: {
@@ -124,7 +129,7 @@ const groupSumObj = (stat:string) => {
     return groupSum
 }
 
-export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
+export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Account, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
     if (!player) return []
     const db = await Mongo.client()
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
@@ -136,7 +141,7 @@ export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:s
             break
         default: groupSum = { $sum: `$stats.${stat}` }
     }
-    return db.collection('performances.wz').aggregate([
+    return db.collection('mw.wz.performances').aggregate([
         { $match: {
             'player._id': player._id,
             modeId: { [modeIdOp]: modeIds || [] },
@@ -154,12 +159,12 @@ export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:s
         { $limit: limit },
     ]).toArray()
 }
-export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
+export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Account, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
     if (!player) return []
     const db = await Mongo.client()
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
     const [dividend, divisor] = stat.split('/')
-    return db.collection('performances.wz').aggregate([
+    return db.collection('mw.wz.performances').aggregate([
         { $match: {
             'player._id': player._id,
             modeId: { [modeIdOp]: modeIds || [] },
@@ -187,13 +192,13 @@ export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Player, stat:stri
     ]).toArray()
 }
 
-export const statsReport = async (player:Mongo.Schema.CallOfDuty.Player, modeIds:string[]=[], groupByModeId=false) => {
+export const statsReport = async (player:Mongo.Schema.CallOfDuty.Account, modeIds:string[]=[], groupByModeId=false) => {
     if (!player) return []
     const db = await Mongo.client()
     // if we're fetching 'all' _id should be $modeId
     // if we're fetching anything else we should aggregate them all together
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
-    return db.collection('performances.wz').aggregate([
+    return db.collection('mw.wz.performances').aggregate([
         { $match: { 'player._id': player._id, modeId: { [modeIdOp]: modeIds || [] } } },
         { $sort: { startTime: -1 } },
         { $group: {

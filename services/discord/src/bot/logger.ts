@@ -5,13 +5,13 @@ import cfg from '../config'
 
 (async () => {
     Mongo.config(cfg.mongo)
-    const db = await Mongo.client()
+    const db = await Mongo.client('_log')
     while(true) {
         for(const item of queue) {
             if (item.method === 'insertOne') {
-                await db.collection('log.discord').insertOne(item.payload)
+                await db.collection('discord').insertOne(item.payload)
             } else {
-                await db.collection('log.discord').updateOne(item.query, item.payload)
+                await db.collection('discord').updateOne(item.query, item.payload)
             }
             queue.splice(0, 1)
         }

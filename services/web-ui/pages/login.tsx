@@ -112,7 +112,7 @@ export default ({ user }) => {
     const { jwt, error } = await login.json()
     if (error) {
       setForm({ ...form, status: Status.Idle })
-      return formErr(JSON.stringify(Object.keys(error)))
+      return formErr(error)
     }
     Cookies.set('jwt', jwt, { expires: 365 })
     const decodedJwt = JWT.decode(jwt) as any
@@ -143,7 +143,7 @@ export default ({ user }) => {
                       <TextField autoComplete={'false'} label="Password" type="password" variant="outlined" onChange={e => setPassword(e.target.value)} />
                       <Spacer />
                       <Button disabled={buttonDisabled} onClick={submitForm} variant="contained" color="primary">{ buttonDisabled ? 'Loading...' : 'Sign In' }</Button>
-                      <p className={['response', form.status === Status.Error ? '' : 'success'].join(' ')}>{form.response}</p>
+                      <p className={['response', form.status === Status.Success ? 'success' : ''].join(' ')}>{form.response}</p>
                   </InputWrapper>
               </Center>
           </FormWrapper>

@@ -2,34 +2,21 @@ import * as deprecatedRequest from 'request'
 import axios, { AxiosRequestConfig } from 'axios'
 import { Schema } from '..'
 export default class {
+    private logger:Function
     private tokens:Schema.CallOfDuty.Tokens
-    constructor(tokens?:Schema.CallOfDuty.Tokens) {
+    private readonly baseUrl:string = 'https://my.callofduty.com/api/papi-client'
+    constructor(tokens?:Schema.CallOfDuty.Tokens, logger:Function=console.log) {
         this.Tokens(tokens)
+        this.logger = logger
     }
-
-    get WZ() {
-        return {
-           Matches: async (username: string, platform: Schema.CallOfDuty.Platform, next: number= 0):Promise<Schema.CallOfDuty.Res.Warzone.Matches> => {
-                return this.Matches(username, platform, 'wz', 'mw', next) as Promise<Schema.CallOfDuty.Res.Warzone.Matches>
-           }
-        }
-    }
-
-    get MW() {
-        return {
-            Matches: async (username: string, platform: Schema.CallOfDuty.Platform, next: number= 0):Promise<Schema.CallOfDuty.Res.ModernWarfare.Matches> => {
-                return this.Matches(username, platform, 'mp', 'mw', next) as Promise<Schema.CallOfDuty.Res.ModernWarfare.Matches>
-           }
-        }
-    }
-
     private async request(config:Partial<AxiosRequestConfig>):Promise<any> {
         if (!this.tokens.xsrf || !this.tokens.atkn || !this.tokens.sso) {
             throw new Error('Missing tokens for Call of Duty API')
         }
+        this.logger(`[>] API.CallOfDuty: ${this.baseUrl}${config.url}`)
         const { data:res, status } = await axios({
             method: 'GET',
-            baseURL: 'https://my.callofduty.com/api/papi-client',
+            baseURL: this.baseUrl,
             headers: {
                 'Cache-Control': 'no-cache',
                 Cookie: `ACT_SSO_COOKIE=${this.tokens.sso}; ACT_SSO_COOKIE_EXPIRY=1591153892430; atkn=${this.tokens.atkn}; API_CSRF_TOKEN=${this.tokens.xsrf}`
@@ -45,19 +32,19 @@ export default class {
         this.tokens = tokens
         return this
     }
-    async Identity():Promise<Schema.CallOfDuty.Res.Identity> {
+    async Identity():Promise<Schema.CallOfDuty.Identity> {
         return this.request({ url: `/crm/cod/v2/identities` })
     }
-    async Friends():Promise<Schema.CallOfDuty.Res.Friends> {
+    async Friends():Promise<Schema.CallOfDuty.Friends> {
         return this.request({ url: `/codfriends/v1/compendium` })
     }
-    async Platforms(username:string, platform:Schema.CallOfDuty.Platform='uno'):Promise<Schema.CallOfDuty.Res.Platforms> {
+    async Platforms(username:string, platform:Schema.CallOfDuty.Platform='uno'):Promise<Schema.CallOfDuty.Platforms> {
         return this.request({ url: `/crm/cod/v2/accounts/platform/${platform}/gamer/${encodeURIComponent(username)}` })
     }
-    async Profile(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw'):Promise<Schema.CallOfDuty.Res.Warzone.Profile> {
+    async Profile(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw'):Promise<Schema.CallOfDuty.MW.WZ.Profile> {
         return this.request({ url: `/stats/cod/v1/title/${game}/platform/${platform}/gamer/${encodeURIComponent(username)}/profile/type/${mode}` })
     }
-    async Matches(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw', next:number=0):Promise<Schema.CallOfDuty.Res.Warzone.Matches|Schema.CallOfDuty.Res.ModernWarfare.Matches> {
+    async Matches(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw', next:number=0):Promise<Schema.CallOfDuty.MW.WZ.Matches|Schema.CallOfDuty.MW.MP.Matches> {
         return this.request({ url: `/crm/cod/v2/title/${game}/platform/${platform}/gamer/${encodeURIComponent(username)}/matches/${mode}/start/0/end/${next}/details` })
     }
     async Login(email:string, password:string):Promise<{ xsrf: string, atkn: string, sso: string }> {

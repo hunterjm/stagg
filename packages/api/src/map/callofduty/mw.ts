@@ -1,11 +1,47 @@
-export const Platforms = {
-    uno:    { label: 'ATV', name: 'Activision'          },
-    xbl:    { label: 'XBL', name: 'Xbox Live'           },
-    psn:    { label: 'PSN', name: 'PlayStation Network' },
-    steam:  { label: 'STM', name: 'Steam'               },
-    battle: { label: 'BTL', name: 'Battle.net'          },
+import { snakeToPascal } from '@stagg/util'
+
+export const Img = {
+    Map: {
+        MiniMap(mapId:string):string {
+            return `https://www.callofduty.com/cdn/app/maps/mw/compass_map_${mapId}.jpg`
+        },
+        Thumbnail(mapId:string):string {
+            return `https://www.callofduty.com/cdn/app/base-maps/mw/${mapId}.jpg`
+        }
+    },
+    Weapon(weaponId:string):string {
+        return `https://titles.trackercdn.com/modern-warfare/db/images/icon_cac_weapon_${weaponId.replace('iw8_', '')}.png`
+    }
 }
-export const WeaponIcon = (weaponId:string) => `https://titles.trackercdn.com/modern-warfare/db/images/icon_cac_weapon_${weaponId.replace('iw8_', '')}.png`
+
+export const Killstreaks = {
+    radar_drone_overwatch: 'Personal Radar',
+    manual_turret: 'Shield Turret',
+    scrambler_drone_guard: 'Counter UAV',
+    uav: 'UAV',
+    airdrop: 'Care Package',
+    toma_strike: 'Cluster Strike',
+    cruise_predator: 'Cruise Missile',
+    precision_airstrike: 'Precision Airstrike',
+    bradley: 'Infantry Assault Vehicle',
+    sentry_gun: 'Sentry Gun',
+    pac_sentry: 'Wheelson',
+    airdrop_multiple: 'Emergency Airdrop',
+    hover_jet: 'VTOL Jet',
+    white_phosphorus: 'White Phosphorus',
+    chopper_gunner: 'Chopper Gunner',
+    chopper_support: 'Support Helo',
+    gunship: 'Gunship',
+    directional_uav: 'Advanced UAV',
+    juggernaut: 'Juggernaut',
+    nuke: 'Nuke',
+}
+
+export const KillstreakKillsProp = (killstreakId:string) => `objectiveMedalScoreSsKill${snakeToPascal(killstreakId)}`
+export const KillstreakTakedownsProp = (killstreakId:string) => `objectiveMedalScoreKillSs${snakeToPascal(killstreakId)}`
+export const KillstreakObjectiveId = (objectiveProp:string) => 
+    objectiveProp.replace('objectiveMedalScoreSsKill', '').replace('objectiveMedalScoreKillSs', '').match(/[A-Z]*[^A-Z]+/g).map(s => s.toLowerCase()).join('_')
+
 export const Modes = {
     br_87:                  { type: 'br', teamSize: 1, lobbySize: 150, name: 'BR Solos' },
     br_71:                  { type: 'br', teamSize: 1, lobbySize: 150, name: 'BR Solos' },
@@ -57,6 +93,7 @@ export const Modes = {
     hc_cyber:               { type: 'mp', teamSize: 6, lobbySize: 12, hardcore: true, name: 'Hardcore Cyber Attack' },
     cyber_hc:               { type: 'mp', teamSize: 6, lobbySize: 12, hardcore: true, name: 'Hardcore Cyber Attack' },
 }
+
 export const Weapons = {
     pi_cpapa: '.357',
     pi_decho: '.50 GS',
@@ -113,7 +150,7 @@ export const Weapons = {
     pi_golf21: 'X16'
 }
 
-export namespace Warzone {
+export namespace WZ {
     export const Circle = (timePlayedSeconds:number):{ circle:number, gas:boolean } => {
         // Circle 1 - 4m 30s time before Circle starts to close. Then 4m 30s for the circle to shrink
         if (timePlayedSeconds < 4.5 * 60)   return { circle: 1, gas: false }

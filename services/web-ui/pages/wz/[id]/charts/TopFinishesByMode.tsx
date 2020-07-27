@@ -9,7 +9,7 @@ export default ({ performances }) => {
         Quads: [0, 0],
     }
     for(const p of performances) {
-        const mode = Map.CallOfDuty.Modes[p.modeId]
+        const mode = Map.CallOfDuty.MW.Modes[p.modeId]
         if (!mode) continue
         const teamSizeLabels = ['Solos', 'Duos', 'Trios', 'Quads']
         groups[teamSizeLabels[mode.teamSize-1]][0]++

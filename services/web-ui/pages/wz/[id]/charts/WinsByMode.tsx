@@ -9,9 +9,9 @@ export default ({ performances }) => {
         Quads: 0,
     }
     for(const p of performances) {
-        const mode = Map.CallOfDuty.Modes[p.modeId]
+        const mode = Map.CallOfDuty.MW.Modes[p.modeId]
         if (!mode) {
-            console.log(`No mode for "${p.modeId}" in`, Map.CallOfDuty.Modes)
+            console.log(`No mode for "${p.modeId}" in`, Map.CallOfDuty.MW.Modes)
             continue
         }
         if (p.stats.teamPlacement === 1) groups[Object.keys(groups)[mode.teamSize-1]]++

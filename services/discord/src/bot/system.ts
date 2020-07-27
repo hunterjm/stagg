@@ -4,7 +4,7 @@ import relay from './relay'
 
 
 export const shortcut = async (m:Discord.Message, key:string, ...payload:string[]) => {
-    const db = await Mongo.client()
+    const db = await Mongo.client('stagg')
     const val = payload.join(' ')
     if (!key || !val) {
         relay(m, ['Invalid request, must supply shortcut keyword and value'])
@@ -12,11 +12,11 @@ export const shortcut = async (m:Discord.Message, key:string, ...payload:string[
     }
     const msg = await relay(m, ['Working on it...'])
     if (key === 'delete') {
-        await db.collection('players').updateOne({ 'discord.id': m.author.id }, { $unset: { [`discord.shortcuts.${val}`]: '' } })
+        await db.collection('users').updateOne({ 'discord.id': m.author.id }, { $unset: { [`discord.shortcuts.${val}`]: '' } })
         msg.edit(['Shortcut deleted'])
         return
     }
-    await db.collection('players').updateOne({ 'discord.id': m.author.id }, { $set: { [`discord.shortcuts.${key}`]: val } })
+    await db.collection('users').updateOne({ 'discord.id': m.author.id }, { $set: { [`discord.shortcuts.${key}`]: val } })
     msg.edit(['Shortcut created'])
 }
 

@@ -4,11 +4,11 @@ import { commaNum, percentage } from '@stagg/util'
 import { statsReport } from '../data'
 
 const type = 'br' // may do plunder in future but meh
-const header = (player:Mongo.Schema.CallOfDuty.Player, platform:string='uno'):string[] => [
+const header = (player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):string[] => [
     `**${player.profiles[platform]}** (${player.profiles?.id})`,
     `Full profile: https://stagg.co/wz/${player.profiles?.uno?.split('#').join('@')}`,
 ]
-export const combined = async (player:Mongo.Schema.CallOfDuty.Player, platform:string='uno'):Promise<string[]> => {
+export const combined = async (player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):Promise<string[]> => {
     const data = await statsReport(player)
     return [
         ...header(player, platform),
@@ -18,15 +18,15 @@ export const combined = async (player:Mongo.Schema.CallOfDuty.Player, platform:s
         '```',
     ]
 }
-export const isolated = async (teamSize:number, player:Mongo.Schema.CallOfDuty.Player, platform:string='uno'):Promise<string[]> => {
+export const isolated = async (teamSize:number, player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):Promise<string[]> => {
     if (teamSize < 1 || teamSize > 4) {
         return ['Invalid request, team size must be between 1-4']
     }
     const teamSizeLables = ['Solos', 'Duos', 'Trios', 'Quads']
     // get all modeIds for this teamSize
     const modeIds = []
-    for(const modeId in API.Map.CallOfDuty.Modes) {
-        const modeDetails = API.Map.CallOfDuty.Modes[modeId]
+    for(const modeId in API.Map.CallOfDuty.MW.Modes) {
+        const modeDetails = API.Map.CallOfDuty.MW.Modes[modeId]
         if (modeDetails.type === type && modeDetails.teamSize === teamSize) {
             modeIds.push(modeId)
         }
@@ -40,7 +40,7 @@ export const isolated = async (teamSize:number, player:Mongo.Schema.CallOfDuty.P
         '```',
     ]
 }
-export const all = async (player:Mongo.Schema.CallOfDuty.Player, platform:string='uno'):Promise<string[]> => {
+export const all = async (player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):Promise<string[]> => {
     const data = await statsReport(player, [], true)
     const teamSizeLables = ['Combined', 'Solos', 'Duos', 'Trios', 'Quads']
     const output = [
@@ -50,7 +50,7 @@ export const all = async (player:Mongo.Schema.CallOfDuty.Player, platform:string
     // Combine groups from different modeIds of the same teamSize
     const groupedByTeamSizeLabel = {}
     for(const modeData of data) {
-        const modeDetails = API.Map.CallOfDuty.Modes[modeData._id]
+        const modeDetails = API.Map.CallOfDuty.MW.Modes[modeData._id]
         if (!modeDetails || modeDetails.type !== type) {
             continue
         }

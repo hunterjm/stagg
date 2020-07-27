@@ -33,7 +33,7 @@ export default {
         delay: 100,
         attempts: 10,
         token: process.env.DISCORD_TOKEN,
-        staffRoles: ['Stagg', '@moderator', '@admin'],
+        staffRoles: ['@staff'],
     },
     gmail: {
         user: process.env.GMAIL_ADDRESS,

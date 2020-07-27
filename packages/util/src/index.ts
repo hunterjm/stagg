@@ -9,3 +9,5 @@ export const spaces = (num:number) => {
     }
     return spaces
 }
+export const snakeToPascal = (input:string) => 
+    (input + '').split('_').map(s => s.slice(0,1).toUpperCase() + s.slice(1, s.length)).join('')
