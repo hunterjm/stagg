@@ -118,7 +118,12 @@ export namespace Runners {
                 this.minEndTime = m.utcEndSeconds
             }
             if (!rawMatchFound) {
-                await this.db.collection(this.Collection.Raw).insertOne({ player: { _id: this.player._id }, ...m })
+                const mAsAny = m as any
+                const rawMatchDoc:any = {
+                    ...mAsAny,
+                    player: mAsAny.player ? { ...mAsAny.player, _id: this.player._id } : { _id: this.player._id }
+                }
+                await this.db.collection(this.Collection.Raw).insertOne(rawMatchDoc)
             } else {
                 // check if we now have team data prop and didn't before
                 if (!rawMatchFound[this.TeamDataProp] && m[this.TeamDataProp]) {
