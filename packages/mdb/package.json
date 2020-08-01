@@ -16,7 +16,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "b8bf9cb69f97d0bae15b055a5d6a016ccc877be4",
+  "gitHead": "653f86b1f553040da9549a2fbd9b70ed45d198ea",
   "dependencies": {
     "@stagg/api": "^0.6.2",
     "mongodb": "^3.5.9"

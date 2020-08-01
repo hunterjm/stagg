@@ -1,6 +1,7 @@
 {
-  "name": "quickchart",
+  "name": "stagg-quickchart",
   "version": "0.6.2",
+  "private": true,
   "main": "index.js",
   "license": "GPL-3.0",
   "homepage": "https://quickchart.io/",
@@ -57,5 +58,6 @@
     "prettier": "^1.18.2",
     "qrcode-reader": "^1.0.4",
     "supertest": "^4.0.2"
-  }
+  },
+  "gitHead": "653f86b1f553040da9549a2fbd9b70ed45d198ea"
 }

@@ -1,5 +1,5 @@
 {
-  "name": "stagg-views",
+  "name": "stagg-view-render",
   "version": "0.6.2",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
