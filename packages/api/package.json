@@ -1,6 +1,6 @@
 {
   "name": "@stagg/api",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -18,7 +18,7 @@
   },
   "gitHead": "653f86b1f553040da9549a2fbd9b70ed45d198ea",
   "dependencies": {
-    "@stagg/util": "^0.6.2",
+    "@stagg/util": "^0.6.3",
     "axios": "^0.19.2",
     "request": "^2.88.2"
   }

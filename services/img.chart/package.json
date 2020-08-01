@@ -1,6 +1,6 @@
 {
   "name": "stagg-quickchart",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "private": true,
   "main": "index.js",
   "license": "GPL-3.0",
