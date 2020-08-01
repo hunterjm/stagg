@@ -9,11 +9,16 @@ for(const v of envVars) {
     fs.unlinkSync(`${__dirname}/.env.${v}`)
 }
 const genericYaml = yaml.safeDump(objYaml)
-const defaultService = 'web-ui'
-const services = ['discord', 'scrape', 'img.chart', 'img.view', 'web-ui']
+const serviceMaps = [
+    { dir: 'discord',   service: 'discord' },
+    { dir: 'scrape',    service: 'scrape' },
+    { dir: 'img.chart', service: 'render-chart' },
+    { dir: 'img.view',  service: 'render-view' },
+    { dir: 'web-ui',    service: 'default' },
+]
 console.log('[+] Secret app.yaml generated')
-for(const service of services) {
-    const serviceYaml = genericYaml.replace('<% SERVICE %>', service === defaultService ? 'default' : service)
+for(const { dir, service } of serviceMaps) {
+    const serviceYaml = genericYaml.split('<% SERVICE %>').join(service)
     fs.writeFileSync(`${__dirname}/../services/${service}/app.yaml`, serviceYaml, 'utf8')
-    console.log(`    ${service}/app.yaml ready`)
+    console.log(`    Service "${service}" complete; ${dir}/app.yaml ready`)
 }
