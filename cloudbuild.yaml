@@ -1,5 +1,5 @@
+timeout: 1800s
 steps:
-  timeout: 1800s
     - name: node:12.13.0
       entrypoint: yarn
       args: ['install']
