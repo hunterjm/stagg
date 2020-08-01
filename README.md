@@ -4,7 +4,9 @@ Built with TypeScript, Node, Express, MongoDB, React, and Next; package manageme
 
 ## Getting Started
 
-All steps listed below should be ran in the project root. You will only need to install dependencies to nested `/packages/*` or `/services/*` when adding a new dependency that will be isolated to that package or service, respectively.
+All steps listed below should be ran in the project root. You will only need to install dependencies to nested `/packages/*` or `/services/*` when adding a new dependency that will be isolated to that package or service.
+
+Exclude all instructions below for the chart rendering service located in `/services/img.chart`; this open-source implementation is provided by [QuickChart](https://quickchart.io/) and does not require any additional setup or modification.
 
 1. [Clone the repo](https://github.com/mdlindsey/stagg)
 2. `npm i -g lerna` - needed for Lerna CLI below
@@ -22,13 +24,12 @@ You will need a `.env` file in the root of each `/services/*` you intend to run 
 ```
 PORT=8081 # change port as needed; swap with NODE_ENV=local for web-ui
 JWT_SECRET=<JWT_SECRET>
-MONGO_DB=<GAME_OR_FRANCHISE_NAME>
 MONGO_HOST=<MONGO_HOST>
 MONGO_USER=<MONGO_AUTH_USER>
 MONGO_PASS=<MONGO_AUTH_PASS>
-DISCORD_TOKEN=<DISCORD_BOT_TOKEN>
 GMAIL_ADDRESS=<GMAIL_ADDRESS>
 GMAIL_PASSWORD=<GMAIL_PASSWORD>
+DISCORD_TOKEN=<DISCORD_BOT_TOKEN>
 ```
 
 ### Publishing to NPM
@@ -45,14 +46,11 @@ PRs are always welcome so please feel free to fork or request contributor access
 
 #### Misc
 
-- update player db schema
-    - add DrDisrespect#9218550 to KGP
-- use separate dbs for discord (supercedes games)
+- Allow easy secret setup
 
 #### Web UI
 
 - [Docs page](https://docusaurus.io/)
-- [Landing page](https://open.cruip.com/)
 - [MDX Storybook](https://storybook.js.org/docs/formats/mdx-syntax/) for components
 - Default charts below pies/polars
     - Show avg line of KGP in background
@@ -67,9 +65,7 @@ PRs are always welcome so please feel free to fork or request contributor access
 
 #### Discord Bot
 
-- Show avg KPG line in background
 - Matchmaking (auto-move to channels)
-- Make X axis date/time for OT charts
 - Group by time of day (eg: compare 8pm-9pm vs 12am-1am)
 - Correlations
     - kills/avgLifeTime

@@ -1,7 +1,11 @@
 dispatch:
+    - url: chart.stagg.co/*
+      service: chart
     - url: discord.stagg.co/*
       service: discord
     - url: scrape.stagg.co/*
       service: scrape
     - url: stagg.co/*
       service: default
+    - url: view.stagg.co/*
+      service: view
