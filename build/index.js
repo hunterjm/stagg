@@ -19,6 +19,6 @@ const serviceMaps = [
 console.log('[+] Secret app.yaml generated')
 for(const { dir, service } of serviceMaps) {
     const serviceYaml = genericYaml.split('<% SERVICE %>').join(service)
-    fs.writeFileSync(`${__dirname}/../services/${service}/app.yaml`, serviceYaml, 'utf8')
+    fs.writeFileSync(`${__dirname}/../services/${dir}/app.yaml`, serviceYaml, 'utf8')
     console.log(`    Service "${service}" complete; ${dir}/app.yaml ready`)
 }
