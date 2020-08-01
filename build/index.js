@@ -10,7 +10,7 @@ for(const v of envVars) {
 }
 const genericYaml = yaml.safeDump(objYaml)
 const defaultService = 'web-ui'
-const services = ['chart', 'discord', 'scrape', 'view', 'web-ui']
+const services = ['discord', 'scrape', 'img.chart', 'img.view', 'web-ui']
 console.log('[+] Secret app.yaml generated')
 for(const service of services) {
     const serviceYaml = genericYaml.replace('<% SERVICE %>', service === defaultService ? 'default' : service)
