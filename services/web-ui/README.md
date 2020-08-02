@@ -1,7 +1,15 @@
-# Stagg Web UI
+# Stagg
 
-Built with TypeScript, React, and Next
+Gaming Made Easy
 
-## Getting started
+## Development
 
-After cloning the repo, run `yarn install` to get started.
+### yarn install
+
+### yarn dev
+
+## Production
+
+### yarn build
+
+### yarn start

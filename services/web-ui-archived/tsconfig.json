@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -11,11 +16,17 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": ".",
-    "downlevelIteration": true
+    "experimentalDecorators": true,
+    "isolatedModules": true
   },
-  "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "custom.d.ts"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "server.ts",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx", "next.config.js"
+  ]
 }

@@ -1,0 +1,23 @@
+import Head from 'next/head';
+import React, { ReactNode } from 'react';
+
+import { Footer } from './Footer';
+import { Header } from './Header';
+
+interface LayoutProps {
+  title: string;
+  children: ReactNode;
+}
+
+export const Layout = ({ title, children }: LayoutProps) => {
+  return (
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <Header navPosition="right" className="reveal-from-bottom" />
+      <main className="site-content">{children}</main>
+      <Footer />
+    </>
+  );
+};
