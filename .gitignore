@@ -12,6 +12,5 @@
 /packages/*/lib
 /services/*/lib
 /services/*/app.yaml
-!/services/web-ui/app.yaml
 !/services/img.chart/lib
 /**/.next

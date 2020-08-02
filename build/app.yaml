@@ -1,13 +1,12 @@
-service: <% SERVICE %>
 runtime: nodejs12
-instance_class: F2
+service: <% SERVICE %>
+instance_class: <% INSTANCE %>
 env_variables:
     PORT: 8080
-    MONGO_DB: <% MONGO_DB %>
+    JWT_SECRET: <% JWT_SECRET %>
     MONGO_USER: <% MONGO_USER %>
     MONGO_PASS: <% MONGO_PASS %>
     MONGO_HOST: <% MONGO_HOST %>
-    JWT_SECRET: <% JWT_SECRET %>
     DISCORD_TOKEN: <% DISCORD_TOKEN %>
-    GMAIL_ACCOUNT: <% GMAIL_ACCOUNT %>
+    GMAIL_ADDRESS: <% GMAIL_ADDRESS %>
     GMAIL_PASSWORD: <% GMAIL_PASSWORD %>

@@ -10,15 +10,15 @@ for(const v of envVars) {
 }
 const genericYaml = yaml.safeDump(objYaml)
 const serviceMaps = [
-    { dir: 'discord',   service: 'discord' },
-    { dir: 'scrape',    service: 'scrape' },
-    { dir: 'img.chart', service: 'render-chart' },
-    { dir: 'img.view',  service: 'render-view' },
-    { dir: 'web-ui',    service: 'default' },
-]
+    { dir: 'web-ui',    service: 'default',      instance: 'F1' },
+    { dir: 'scrape',    service: 'scrape',       instance: 'F1' },
+    { dir: 'discord',   service: 'discord',      instance: 'F1' },
+    { dir: 'img.view',  service: 'render-view',  instance: 'F2' },
+    { dir: 'img.chart', service: 'render-chart', instance: 'F1' },
+] // Pricing: F1=$0.05/hr, F2=$0.10/hr, F4=$0.20/hr, F4_1G=$0.30/hr
 console.log('[+] Secret app.yaml generated')
-for(const { dir, service } of serviceMaps) {
-    const serviceYaml = genericYaml.split('<% SERVICE %>').join(service)
+for(const { dir, service, instance } of serviceMaps) {
+    const serviceYaml = genericYaml.split('<% SERVICE %>').join(service).split('<% INSTANCE %>').join(instance)
     fs.writeFileSync(`${__dirname}/../services/${dir}/app.yaml`, serviceYaml, 'utf8')
     console.log(`    Service "${service}" complete; ${dir}/app.yaml ready`)
 }
