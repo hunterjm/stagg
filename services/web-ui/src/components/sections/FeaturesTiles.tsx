@@ -166,7 +166,7 @@ export const FeaturesTiles = ({
                   <h4 className="mt-0 mb-8">Community Driven</h4>
                   <p className="m-0 text-sm">
                     Got an idea for a feature you'd like to see? We'd love to hear all about it. &nbsp;
-                    <a href={config.discord.url.join} target="_blank">Tell us in our Discord</a>!
+                    <a href={config.discord.url.join} target="_blank">Tell us in our Discord!</a>
                   </p>
                 </div>
               </div>

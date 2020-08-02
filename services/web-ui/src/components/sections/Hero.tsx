@@ -60,7 +60,7 @@ export const Hero = ({
               data-reveal-delay="200"
             >
               We help you {' '}
-              <span className="text-color-primary">git gud</span>
+              <span className="text-color-primary">git&nbsp;gud</span>
             </h1>
             <div className="container-xs">
               <p
