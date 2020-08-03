@@ -75,7 +75,7 @@ export const Hero = ({
                     as="a"
                     color="primary"
                     wideMobile
-                    href="https://cruip.com/"
+                    href="/login"
                   >
                     Create Profile
                   </Button>

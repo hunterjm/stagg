@@ -43,9 +43,9 @@ export const FeaturesTiles = ({
   );
 
   const sectionHeader = {
-    title: 'Drive more wins',
+    title: 'Play deliberately',
     paragraph: `
-      Everyone wants to play better — luckily we have the secret sauce.
+      Everyone wants to get better — luckily we have the secret sauce.
       Improving your play is a combination of personal gains and methodical
       team-building; we have solutions for both.
     `

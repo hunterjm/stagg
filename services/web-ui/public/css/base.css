@@ -94,7 +94,7 @@ footer i.icon-discord:after {
 }
 
 .featured-games i {
-    color: #333;
+    color: #aaa;
     margin: 16px;
     font-size: 45px;
     display: inline-block;
@@ -112,6 +112,7 @@ footer i.icon-discord:after {
 
 .featured-games.hoverable i {
     color: #555;
+    font-size: 64px;
     transition: all 0.3s ease-in-out;
 }
 .featured-games.hoverable i.supported {

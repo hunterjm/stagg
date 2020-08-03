@@ -17,6 +17,19 @@ module.exports = {
   plugins: [
     ['inline-react-svg', { svgo: false }],
     [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    [
+      "styled-components",
+      {
+        "ssr": true,
+        "displayName": false
+      }
+    ],
+    [
       'module-resolver',
       {
         root: ['.'],

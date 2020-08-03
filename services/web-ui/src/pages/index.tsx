@@ -4,6 +4,7 @@ import { Cta } from 'src/components/sections/Cta';
 import { FeaturesSplit } from 'src/components/sections/FeaturesSplit';
 import { FeaturesTiles } from 'src/components/sections/FeaturesTiles';
 import { Hero } from 'src/components/sections/Hero';
+import { SignUp } from 'src/components/sections/SignUp';
 import { Testimonial } from 'src/components/sections/Testimonial';
 
 const IndexContent = () => {
@@ -19,13 +20,7 @@ const IndexContent = () => {
       />
       {/* <Testimonial topDivider />
       <Cta split /> */}
-      <div className="featured-games hoverable center-content-mobile reveal-from-bottom" data-reveal-delay="600">
-        <h4>Select a game below to get started</h4>
-        <i className="icon-pubg" title="Coming soon!" />
-        <i className="icon-callofduty supported" title="Supports Warzone &amp; Multiplayer for Modern Warfare &amp; Black Ops 4" />
-        <i className="icon-csgo" title="Coming soon!" />
-        <i className="icon-fortnite" title="Coming soon!" />
-      </div>
+      <SignUp />
     </>
   );
 };
