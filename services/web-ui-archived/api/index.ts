@@ -18,7 +18,7 @@ export const jwt = async (req, res) => {
 }
 
 export const profileStatus = async (req,res) => {
-    const mongo = await Mongo.client()
+    const mongo = await Mongo.client('callofduty')
     const { email } = JSON.parse(req.body)
     const player = await mongo.collection('accounts').findOne({ email })
     if (!player) {
@@ -35,7 +35,7 @@ export const profileStatus = async (req,res) => {
 }
 
 export const meta = async (req, res) => {
-    const mongo = await Mongo.client()
+    const mongo = await Mongo.client('callofduty')
     const players = await mongo.collection('accounts').countDocuments()
     const matches = await mongo.collection('mw.wz.matches').countDocuments()
     const performances = await mongo.collection('mw.wz.performances').countDocuments()
@@ -43,7 +43,7 @@ export const meta = async (req, res) => {
 }
 
 export const search = async (req,res) => {
-    const mongo = await Mongo.client()
+    const mongo = await Mongo.client('callofduty')
     const { username, platform } = JSON.parse(req.body)
     const queries = []
     if (platform) {
@@ -58,7 +58,7 @@ export const search = async (req,res) => {
 }
 
 export const ping = async (req,res) => {
-    const mongo = await Mongo.client()
+    const mongo = await Mongo.client('callofduty')
     const { username, platform } = JSON.parse(req.body)
     const player = await mongo.collection('accounts').findOne(Mongo.Queries.CallOfDuty.Account.Find(username, platform))
     if (!player) return res.status(404).send({ error: 'player not found' })
@@ -68,7 +68,7 @@ export const ping = async (req,res) => {
 }
 
 export const download = async (req,res) => {
-    const mongo = await Mongo.client()
+    const mongo = await Mongo.client('callofduty')
     const { username, platform } = req.query
     const player = await mongo.collection('accounts').findOne(Mongo.Queries.CallOfDuty.Account.Find(username, platform))
     if (!player) return res.status(404).send({ error: 'player not found' })

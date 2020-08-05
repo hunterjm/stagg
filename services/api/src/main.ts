@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
-import { AppModule } from './app.module'
+import { RootModule } from './module'
 import { PORT } from './config'
 
 async function bootstrap() {
@@ -11,7 +11,7 @@ async function bootstrap() {
       `| http://localhost:${PORT}\n`+
       `----------------------------------------------------------${'\x1b[0m' /* reset */}`
   )
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(RootModule)
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(PORT)
 }

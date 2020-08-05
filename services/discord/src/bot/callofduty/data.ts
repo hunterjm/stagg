@@ -131,7 +131,7 @@ const groupSumObj = (stat:string) => {
 
 export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Account, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
     if (!player) return []
-    const db = await Mongo.client()
+    const db = await Mongo.client('callofduty')
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
     let groupSum
     switch(stat) {
@@ -161,7 +161,7 @@ export const isolatedStat = async (player:Mongo.Schema.CallOfDuty.Account, stat:
 }
 export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Account, stat:string, modeIds:string[]=[], sort?:'time'|'best', limit:number=25) => {
     if (!player) return []
-    const db = await Mongo.client()
+    const db = await Mongo.client('callofduty')
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
     const [dividend, divisor] = stat.split('/')
     return db.collection('mw.wz.performances').aggregate([
@@ -194,7 +194,7 @@ export const ratioStat = async (player:Mongo.Schema.CallOfDuty.Account, stat:str
 
 export const statsReport = async (player:Mongo.Schema.CallOfDuty.Account, modeIds:string[]=[], groupByModeId=false) => {
     if (!player) return []
-    const db = await Mongo.client()
+    const db = await Mongo.client('callofduty')
     // if we're fetching 'all' _id should be $modeId
     // if we're fetching anything else we should aggregate them all together
     const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'

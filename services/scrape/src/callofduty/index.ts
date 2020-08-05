@@ -9,7 +9,7 @@ mdb.config(cfg.mongo)
 export const timestamp = () => Math.round(new Date().getTime()/1000)
 
 export const updateExistingPlayers = async () => {
-    const db = await mdb.client()
+    const db = await mdb.client('callofduty')
     while(true) {
         const [ player ] = await db.collection('accounts')
             .find({ 'scrape.updated': { $exists: true }, 'scrape.initialized': { $exists: true } })
@@ -19,7 +19,7 @@ export const updateExistingPlayers = async () => {
     }
 }
 export const initializeArtificialPlayers = async () => {
-    const db = await mdb.client()
+    const db = await mdb.client('callofduty')
     while(true) {
         const player = await db.collection('accounts').findOne({
             origin: { $nin: ['self'] },
@@ -39,7 +39,7 @@ export const initializeArtificialPlayers = async () => {
     }
 }
 export const initializeNewPlayers = async () => {
-    const db = await mdb.client()
+    const db = await mdb.client('callofduty')
     while(true) {
         const player = await db.collection('accounts').findOne({ origin: 'self', 'scrape.initialized': { $exists: false }, initFailure: { $exists: false } })
         if (!player) continue
@@ -57,7 +57,7 @@ export const initializeNewPlayers = async () => {
     }
 }
 export const recheckExistingPlayers = async () => {
-    const db = await mdb.client()
+    const db = await mdb.client('callofduty')
     while(true) {
         const neverRechecked = await db.collection('accounts').findOne({ 'scrape.initialized': { $exists: true }, 'scrape.rechecked': { $exists: false } })
         const [ player ] = neverRechecked ? [neverRechecked]
@@ -114,7 +114,7 @@ export const initialize = async (player:mdb.Schema.CallOfDuty.Account, ) => {
 }
 
 export const updateIdentity = async (player:mdb.Schema.CallOfDuty.Account, ) => {
-    const db = await mdb.client()
+    const db = await mdb.client('callofduty')
     const games:string[] = []
     const profiles:{[key:string]:string} = {}
     const CallOfDutyAPI = new API.CallOfDuty(player.auth)

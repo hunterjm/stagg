@@ -8,9 +8,6 @@ steps:
       args: ['gcp:tsc']
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_DB > build/.env.MONGO_DB' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
       args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_HOST > build/.env.MONGO_HOST' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'

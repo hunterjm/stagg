@@ -10,7 +10,7 @@ discord.login(apiCfg.discord.token)
 
 export const profileById = async (id:string) => discord.users.fetch(id)
 export const profileByEmail = async (email:string) => {
-    const mongo = await Mongo.client()
+    const mongo = await Mongo.client('callofduty')
     const player = await mongo.collection('accounts').findOne({ email })
     if (!player) return null
     if (!player.discord?.id) return null
