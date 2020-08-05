@@ -1,6 +1,5 @@
 runtime: nodejs12
 service: <% SERVICE %>
-instance_class: <% INSTANCE %>
 env_variables:
     PORT: 8080
     JWT_SECRET: <% JWT_SECRET %>
