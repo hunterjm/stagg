@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import config from 'config/ui';
 import React, { useState, MouseEvent } from 'react';
 import { SectionSharedProps } from 'src/interfaces/SectionProps';
 
@@ -7,7 +8,6 @@ import { ButtonGroup } from '../elements/ButtonGroup';
 import { Image } from '../elements/Image';
 import { Modal } from '../elements/Modal';
 
-import config from 'config/ui'
 
 export const Hero = ({
   className,
@@ -59,7 +59,7 @@ export const Hero = ({
               className="mt-0 mb-16 reveal-from-bottom"
               data-reveal-delay="200"
             >
-              We help you {' '}
+              We help you{' '}
               <span className="text-color-primary">git&nbsp;gud</span>
             </h1>
             <div className="container-xs">
@@ -67,16 +67,12 @@ export const Hero = ({
                 className="m-0 mb-32 reveal-from-bottom"
                 data-reveal-delay="400"
               >
-                Unrivaled stat tracking combined with a proprietary Discord integration to provide personalized coaching and so much more
+                Unrivaled stat tracking combined with a proprietary Discord
+                integration to provide personalized coaching and so much more
               </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
                 <ButtonGroup>
-                  <Button
-                    as="a"
-                    color="primary"
-                    wideMobile
-                    href="/login"
-                  >
+                  <Button as="a" color="primary" wideMobile href="/login">
                     Create Profile
                   </Button>
                   <Button
@@ -91,9 +87,15 @@ export const Hero = ({
               </div>
             </div>
           </div>
-          <div className="featured-games center-content-mobile reveal-from-bottom" data-reveal-delay="600">
+          <div
+            className="featured-games center-content-mobile reveal-from-bottom"
+            data-reveal-delay="600"
+          >
             <i className="icon-pubg" title="Coming soon!" />
-            <i className="icon-callofduty supported" title="Supports Warzone &amp; Multiplayer for Modern Warfare &amp; Black Ops 4" />
+            <i
+              className="icon-callofduty supported"
+              title="Supports Warzone &amp; Multiplayer for Modern Warfare &amp; Black Ops 4"
+            />
             <i className="icon-csgo" title="Coming soon!" />
             <i className="icon-fortnite" title="Coming soon!" />
           </div>

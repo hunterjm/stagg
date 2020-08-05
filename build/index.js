@@ -10,11 +10,11 @@ for(const v of envVars) {
 }
 const genericYaml = yaml.safeDump(objYaml)
 const serviceMaps = [
-    { dir: 'web-ui',    service: 'default',      instance: 'F1' },
-    { dir: 'scrape',    service: 'scrape',       instance: 'F1' },
-    { dir: 'discord',   service: 'discord',      instance: 'F1' },
-    { dir: 'img.view',  service: 'render-view',  instance: 'F2' },
-    { dir: 'img.chart', service: 'render-chart', instance: 'F1' },
+    { dir: 'web-ui',    service: 'default',      instance: 'B1' },
+    { dir: 'scrape',    service: 'scrape',       instance: 'B1' },
+    { dir: 'discord',   service: 'discord',      instance: 'B1' },
+    { dir: 'img.view',  service: 'render-view',  instance: 'B1' },
+    { dir: 'img.chart', service: 'render-chart', instance: 'B1' },
 ] // Pricing: F1=$0.05/hr, F2=$0.10/hr, F4=$0.20/hr, F4_1G=$0.30/hr
 console.log('[+] Secret app.yaml generated')
 for(const { dir, service, instance } of serviceMaps) {

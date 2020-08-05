@@ -20,6 +20,7 @@ export namespace Options {
         }
     }
 }
+
 export namespace Runners {
     export class Matches {
         private db: Db

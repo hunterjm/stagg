@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import config from 'config/ui';
 import FeatureSplitIconOne from 'public/icons/feature-tile-icon-01.svg';
 import FeatureSplitIconTwo from 'public/icons/feature-tile-icon-02.svg';
 import FeatureSplitIconThree from 'public/icons/feature-tile-icon-03.svg';
@@ -9,7 +10,6 @@ import React from 'react';
 import { SectionTilesProps } from 'src/interfaces/SectionProps';
 
 import { SectionHeader } from './partials/SectionHeader';
-import config from 'config/ui'
 
 export const FeaturesTiles = ({
   className,
@@ -43,12 +43,12 @@ export const FeaturesTiles = ({
   );
 
   const sectionHeader = {
-    title: 'Play deliberately',
     paragraph: `
       Everyone wants to get better — luckily we have the secret sauce.
       Improving your play is a combination of personal gains and methodical
       team-building; we have solutions for both.
-    `
+    `,
+    title: 'Play deliberately',
   };
 
   return (
@@ -67,8 +67,8 @@ export const FeaturesTiles = ({
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">Professional Profiles</h4>
                   <p className="m-0 text-sm">
-                    Known Good Players (KGP) help us levelset
-                    your performances to identify strengths and weaknesses.
+                    Known Good Players (KGP) help us levelset your performances
+                    to identify strengths and weaknesses.
                   </p>
                 </div>
               </div>
@@ -87,9 +87,8 @@ export const FeaturesTiles = ({
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">Unlimited Reports</h4>
                   <p className="m-0 text-sm">
-                    Render custom charts and reports
-                    to check progress in real-time
-                    without ever leaving Discord.
+                    Render custom charts and reports to check progress in
+                    real-time without ever leaving Discord.
                   </p>
                 </div>
               </div>
@@ -108,8 +107,8 @@ export const FeaturesTiles = ({
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">LFG + SBMM</h4>
                   <p className="m-0 text-sm">
-                    Automate your LFG server with SBMM and do your
-                    part to stop the KD-spamming madness.
+                    Automate your LFG server with SBMM and do your part to stop
+                    the KD-spamming madness.
                   </p>
                 </div>
               </div>
@@ -125,8 +124,8 @@ export const FeaturesTiles = ({
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">Playstyle Analysis</h4>
                   <p className="m-0 text-sm">
-                    Game-changing ability to identify your playstyle
-                    based on performance history and profile trends.
+                    Game-changing ability to identify your playstyle based on
+                    performance history and profile trends.
                   </p>
                 </div>
               </div>
@@ -145,8 +144,8 @@ export const FeaturesTiles = ({
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">Personalized Coaching</h4>
                   <p className="m-0 text-sm">
-                    Get personalized, digestible tips in real-time to help
-                    you take the guess-work out of improving performance.
+                    Get personalized, digestible tips in real-time to help you
+                    take the guess-work out of improving performance.
                   </p>
                 </div>
               </div>
@@ -165,8 +164,11 @@ export const FeaturesTiles = ({
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">Community Driven</h4>
                   <p className="m-0 text-sm">
-                    Got an idea for a feature you'd like to see? We'd love to hear all about it. &nbsp;
-                    <a href={config.discord.url.join} target="_blank">Tell us in our Discord!</a>
+                    Got an idea for a feature you'd like to see? We'd love to
+                    hear all about it. &nbsp;
+                    <a href={config.discord.url.join} target="_blank">
+                      Tell us in our Discord!
+                    </a>
                   </p>
                 </div>
               </div>

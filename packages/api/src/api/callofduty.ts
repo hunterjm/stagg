@@ -32,6 +32,10 @@ export default class {
         this.tokens = tokens
         return this
     }
+    PlayerURL(username:string, platform:Schema.CallOfDuty.Platform='uno') {
+        const profileType = !username.match('[^0-9]') ? 'uno' : 'gamer'
+        return `platform/${platform}/${profileType}/${encodeURIComponent(username)}`
+    }
     async Identity():Promise<Schema.CallOfDuty.Identity> {
         return this.request({ url: `/crm/cod/v2/identities` })
     }
@@ -42,10 +46,13 @@ export default class {
         return this.request({ url: `/crm/cod/v2/accounts/platform/${platform}/gamer/${encodeURIComponent(username)}` })
     }
     async Profile(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw'):Promise<Schema.CallOfDuty.MW.WZ.Profile> {
-        return this.request({ url: `/stats/cod/v1/title/${game}/platform/${platform}/gamer/${encodeURIComponent(username)}/profile/type/${mode}` })
+        return this.request({ url: `/stats/cod/v1/title/${game}/${this.PlayerURL(username, platform)}/profile/type/${mode}` })
     }
     async Matches(username:string, platform:Schema.CallOfDuty.Platform='uno', mode:Schema.CallOfDuty.Mode='wz', game:Schema.CallOfDuty.Game='mw', next:number=0):Promise<Schema.CallOfDuty.MW.WZ.Matches|Schema.CallOfDuty.MW.MP.Matches> {
-        return this.request({ url: `/crm/cod/v2/title/${game}/platform/${platform}/gamer/${encodeURIComponent(username)}/matches/${mode}/start/0/end/${next}/details` })
+        return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${mode}/start/0/end/${next}/details` })
+    }
+    async MatchEvents(matchId:string, game:Schema.CallOfDuty.Game='mw') {
+        return this.request({ url: `/ce/v1/title/${game}/platform/battle/match/${matchId}/matchMapEvents` })
     }
     async Login(email:string, password:string):Promise<{ xsrf: string, atkn: string, sso: string }> {
         const response = await axios.get('https://profile.callofduty.com/login')

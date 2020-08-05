@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "types": ["node", "mongodb"],
     "outDir": "./lib"
   },
   "include": [

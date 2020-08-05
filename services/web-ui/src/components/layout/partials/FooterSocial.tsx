@@ -1,6 +1,6 @@
 import classNames from 'classnames';
+import config from 'config/ui';
 import React from 'react';
-import config from 'config/ui'
 
 interface FooterSocialProps {
   className?: string;

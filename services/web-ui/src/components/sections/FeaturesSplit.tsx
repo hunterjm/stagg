@@ -1,8 +1,9 @@
 import classNames from 'classnames';
+import config from 'config/ui';
 import React from 'react';
 import { Image } from 'src/components/elements/Image';
 import { SectionSplitProps } from 'src/interfaces/SectionProps';
-import config from 'config/ui'
+
 import { SectionHeader } from './partials/SectionHeader';
 
 export const FeaturesSplit = ({
@@ -42,11 +43,11 @@ export const FeaturesSplit = ({
   );
 
   const sectionHeader = {
-    title: 'See the bigger picture',
     paragraph: `
       The same approach won't always work — that's why we provide personalized, 1-on-1 feedback
       that adapts to your natural skill-level and playstyle evolution.
-    `
+    `,
+    title: 'See the bigger picture',
   };
 
   return (
@@ -65,9 +66,10 @@ export const FeaturesSplit = ({
                 </div>
                 <h3 className="mt-0 mb-12">Full match history</h3>
                 <p className="m-0">
-                  Unlike traditional stat trackers, we aggregate your entire match history for
-                  all applicable games and use this enormous amount of compiled data in every
-                  feature and decision. Observing trends is important; isolated stats are not.
+                  Unlike traditional stat trackers, we aggregate your entire
+                  match history for all applicable games and use this enormous
+                  amount of compiled data in every feature and decision.
+                  Observing trends is important; isolated stats are not.
                 </p>
               </div>
               <div
@@ -96,11 +98,11 @@ export const FeaturesSplit = ({
                 </div>
                 <h3 className="mt-0 mb-12">KPI-driven matchmaking</h3>
                 <p className="m-0">
-                  When you join one of our partnered LFG servers, our bot
-                  will automatically compare your profile to other active
-                  players in the server and smoothly transition you to a private
-                  voice channel. There you'll find other appropriately skilled teammates and
-                  a game invite awaiting your acceptance.
+                  When you join one of our partnered LFG servers, our bot will
+                  automatically compare your profile to other active players in
+                  the server and smoothly transition you to a private voice
+                  channel. There you'll find other appropriately skilled
+                  teammates and a game invite awaiting your acceptance.
                 </p>
               </div>
               <div
@@ -129,10 +131,14 @@ export const FeaturesSplit = ({
                 </div>
                 <h3 className="mt-0 mb-12">Built in future-proofing</h3>
                 <p className="m-0">
-                  We want this community to continue growing so we've paved the way to make that happen.
-                  Even when the servers for your favorite game go down, we'll still be here
-                  serving your data uninterrupted. If you ever need any assistance for any reason you can always {' '}
-                  <a href={config.discord.url.join} target="_blank">find help 24/7 in our Discord</a>
+                  We want this community to continue growing so we've paved the
+                  way to make that happen. Even when the servers for your
+                  favorite game go down, we'll still be here serving your data
+                  uninterrupted. If you ever need any assistance for any reason
+                  you can always{' '}
+                  <a href={config.discord.url.join} target="_blank">
+                    find help 24/7 in our Discord
+                  </a>
                 </p>
               </div>
               <div
