@@ -17,24 +17,24 @@ app.use(cors({ credentials: false })).listen(cfg.port, async () => {
     )
     
     // Init db connection so we don't have race condition and multiple connections
-    let total = 950
+    // let total = 19500
     const db = await mdb.config(cfg.mongo).client('callofduty')
-    const { auth } = await db.collection('accounts').findOne({ auth: { $exists: true } })
-    const CallOfDutyAPI = new API.CallOfDuty(auth)
-    const matchIds = await db.collection('mw.mp.performances').distinct('matchId')
-    for(const matchId of matchIds.slice(950)) {
-        total++
-        console.log(`Fetching match events #${total}`)
-        const matchEvents = await CallOfDutyAPI.MatchEvents(matchId)
-        const existing = await db.collection('_raw.mw.mp.events').findOne({ matchId })
-        if (!existing) {
-            console.log(`Inserting match events for ${matchId}`)
-            await db.collection('_raw.mw.mp.events').insertOne(matchEvents)
-        }
-    }
-    // cod.initializeNewPlayers()
-    // cod.updateExistingPlayers()
-    // cod.recheckExistingPlayers()
-    // cod.initializeArtificialPlayers()
+    // const { auth } = await db.collection('accounts').findOne({ auth: { $exists: true } })
+    // const CallOfDutyAPI = new API.CallOfDuty(auth)
+    // const matchIds = await db.collection('mw.mp.performances').distinct('matchId')
+    // for(const matchId of matchIds.slice(total)) {
+    //     total++
+    //     console.log(`Fetching match events #${total}`)
+    //     const matchEvents = await CallOfDutyAPI.MatchEvents(matchId)
+    //     const existing = await db.collection('_raw.mw.mp.events').findOne({ matchId })
+    //     if (!existing) {
+    //         console.log(`Inserting match events for ${matchId}`)
+    //         await db.collection('_raw.mw.mp.events').insertOne(matchEvents)
+    //     }
+    // }
+    cod.initializeNewPlayers()
+    cod.updateExistingPlayers()
+    cod.recheckExistingPlayers()
+    cod.initializeArtificialPlayers()
 })
 
