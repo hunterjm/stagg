@@ -3,12 +3,12 @@ import * as API from '@stagg/api'
 import { Injectable } from '@nestjs/common'
 import { MONGO } from '../../config'
 
-mdb.config({ db: 'callofduty', host: MONGO.HOST, user: MONGO.USER, password: MONGO.PASS })
+mdb.config({ host: MONGO.HOST, user: MONGO.USER, password: MONGO.PASS })
 
 @Injectable()
 export class CallOfDutyOAuthService {
   async AccountByEmail(email:string): Promise<mdb.Schema.CallOfDuty.Account> {
-    const db = await mdb.config({ db: 'callofduty', host: MONGO.HOST, user: MONGO.USER, password: MONGO.PASS }).client('callofduty')
+    const db = await mdb.client('callofduty')
     const account = await db.collection('accounts').findOne({ email })
     return account
   }

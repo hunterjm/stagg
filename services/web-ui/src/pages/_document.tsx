@@ -12,7 +12,7 @@ class AppDocument extends Document {
           <script
             async
             src="https://www.googletagmanager.com/gtag/js?id=UA-171798332-1"
-           />
+          />
           <script src="/assets/js/ga.js" />
         </Head>
         <body className="has-animations" data-gr-c-s-loaded="true">

@@ -8,7 +8,6 @@ import { ButtonGroup } from '../elements/ButtonGroup';
 import { Image } from '../elements/Image';
 import { Modal } from '../elements/Modal';
 
-
 export const Hero = ({
   className,
   topOuterDivider,
