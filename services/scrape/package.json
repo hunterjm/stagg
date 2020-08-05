@@ -1,6 +1,6 @@
 {
   "name": "stagg-scraper",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -11,9 +11,9 @@
     "test": "exit 0"
   },
   "dependencies": {
-    "@stagg/api": "^0.6.3",
-    "@stagg/mdb": "^0.6.3",
-    "@stagg/util": "^0.6.3",
+    "@stagg/api": "^0.7.0",
+    "@stagg/mdb": "^0.7.0",
+    "@stagg/util": "^0.7.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1"
