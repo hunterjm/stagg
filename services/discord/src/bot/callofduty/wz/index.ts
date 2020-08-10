@@ -31,7 +31,7 @@ export namespace stats {
     const handler = async (m:Discord.Message, method:string, pids:string[]) => {
         const rly = await relay(m, ['Loading player...'])
         const [fetchedPlayer] = await hydratePlayerIdentifiers(m.author.id, pids)
-        if (!fetchedPlayer) {
+        if (!fetchedPlayer || !fetchedPlayer.player) {
             rly.edit(['Player not found...'])
             return
         }

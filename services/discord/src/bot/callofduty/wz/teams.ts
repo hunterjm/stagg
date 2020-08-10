@@ -1,7 +1,7 @@
 import { spaces } from '@stagg/util'
 import * as Discord from 'discord.js'
 import relay from '../../relay'
-import { hydratePlayerIdentifiers, ratioStat } from '../data'
+import { hydratePlayerIdentifiers, Warzone as WarzoneReports } from '../data'
 
 export default async (m:Discord.Message, ...pids:string[]) => {
     const rly = await relay(m, ['Loading players...'])
@@ -18,7 +18,7 @@ export default async (m:Discord.Message, ...pids:string[]) => {
     const stats:[string, number][] = [] // [key,val]
     for(const fp of foundPlayers) {
         const stat = 'damageDone/timePlayed'
-        const dmgPerSecArr = await ratioStat(fp.player, stat)
+        const dmgPerSecArr = await WarzoneReports.ratioStat(fp.player, stat)
         let total = 0
         for(const dmg of dmgPerSecArr) total += dmg[stat]
         stats.push([fp.player.profiles?.uno || fp.query.tag, total / dmgPerSecArr.length])

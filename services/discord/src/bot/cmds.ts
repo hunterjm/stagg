@@ -19,8 +19,12 @@ const cmd:DispatcherMap = {
         search: cod.search,
         register: cod.register,
     },
-    mw: {
-
+    mp: {
+        _default: cod.mp._default,
+        stats: {
+            _default: cod.mp.stats._default,
+            all: cod.mp.stats.all
+        }
     },
     wz: {
         _default: cod.wz._default,

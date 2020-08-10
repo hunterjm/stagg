@@ -1,7 +1,7 @@
 import * as Mongo from '@stagg/mdb'
 import * as API from '@stagg/api'
 import { commaNum, percentage } from '@stagg/util'
-import { statsReport } from '../data'
+import { Warzone as WarzoneReports } from '../data'
 
 const type = 'br' // may do plunder in future but meh
 const header = (player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):string[] => [
@@ -9,7 +9,7 @@ const header = (player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):s
     `Full profile: https://stagg.co/wz/${player.profiles?.uno?.split('#').join('@')}`,
 ]
 export const combined = async (player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):Promise<string[]> => {
-    const data = await statsReport(player)
+    const data = await WarzoneReports.statsReport(player)
     return [
         ...header(player, platform),
         '```',
@@ -31,7 +31,7 @@ export const isolated = async (teamSize:number, player:Mongo.Schema.CallOfDuty.A
             modeIds.push(modeId)
         }
     }
-    const data = await statsReport(player, modeIds)
+    const data = await WarzoneReports.statsReport(player, modeIds)
     return [
         ...header(player, platform),
         '```',
@@ -41,7 +41,7 @@ export const isolated = async (teamSize:number, player:Mongo.Schema.CallOfDuty.A
     ]
 }
 export const all = async (player:Mongo.Schema.CallOfDuty.Account, platform:string='uno'):Promise<string[]> => {
-    const data = await statsReport(player, [], true)
+    const data = await WarzoneReports.statsReport(player, [], true)
     const teamSizeLables = ['Combined', 'Solos', 'Duos', 'Trios', 'Quads']
     const output = [
         ...header(player, platform),

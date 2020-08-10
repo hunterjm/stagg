@@ -3,6 +3,7 @@ import * as Mongo from '@stagg/mdb'
 import * as mail from '@stagg/mail'
 import * as Discord from 'discord.js'
 import * as wz from './wz'
+import * as mp from './mp'
 import relay from '../relay'
 import { findPlayer } from './data'
 import cfg from '../../config'
@@ -14,6 +15,7 @@ mail.config({
 })
 
 export { wz }
+export { mp }
 
 export const search = async (m:Discord.Message, ...args:string[]) => {
     const [username, platform] = args

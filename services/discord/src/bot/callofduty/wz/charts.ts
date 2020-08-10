@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js'
 import * as Mongo from '@stagg/mdb'
 import * as humanTime from 'human-time'
-import { hydratePlayerIdentifiers, isolatedStat, ratioStat } from '../data'
+import { hydratePlayerIdentifiers, Warzone as WarzoneReports } from '../data'
 import relay from '../../relay'
 
 const chartUrlPrefix = 'https://stagg.co/api/chart.png?c='
@@ -22,7 +22,7 @@ export default async (m:Discord.Message, stat:string, ...pids:string[]) => {
 
 const statOverTime = async (players:Mongo.Schema.CallOfDuty.Account[], stat:string):Promise<string[]> => {
     const [player] = players
-    const statMethod = stat.includes('/') ? ratioStat : isolatedStat
+    const statMethod = stat.includes('/') ? WarzoneReports.ratioStat : WarzoneReports.isolatedStat
     const data = await statMethod(player, stat)
     const chartData = []
     const chartLabels = []
