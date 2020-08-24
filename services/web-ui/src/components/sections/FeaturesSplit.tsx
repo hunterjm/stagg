@@ -1,10 +1,16 @@
 import classNames from 'classnames';
 import config from 'config/ui';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image } from 'src/components/elements/Image';
 import { SectionSplitProps } from 'src/interfaces/SectionProps';
 
 import { SectionHeader } from './partials/SectionHeader';
+
+let ScrollReveal: scrollReveal.ScrollRevealObject;
+
+if (typeof window !== 'undefined') {
+  ScrollReveal = require('scrollreveal').default;
+}
 
 export const FeaturesSplit = ({
   className,
@@ -20,6 +26,28 @@ export const FeaturesSplit = ({
   imageFill,
   ...props
 }: SectionSplitProps) => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      ScrollReveal().reveal('#featureSplitOne', {
+        origin: 'left',
+        delay: 200,
+      });
+      ScrollReveal().reveal('#featureSplitOneImage', { delay: 200 });
+
+      ScrollReveal().reveal('#featureSplitTwo', {
+        origin: 'right',
+        delay: 200,
+      });
+      ScrollReveal().reveal('#featureSplitTwoImage', { delay: 200 });
+
+      ScrollReveal().reveal('#featureSplitThree', {
+        origin: 'left',
+        delay: 200,
+      });
+      ScrollReveal().reveal('#featureSplitThreeImage', { delay: 200 });
+    }
+  }, []);
+
   const outerClasses = classNames(
     'features-split section',
     topOuterDivider && 'has-top-divider',
@@ -58,8 +86,8 @@ export const FeaturesSplit = ({
           <div className={splitClasses}>
             <div className="split-item">
               <div
-                className="split-item-content center-content-mobile reveal-from-left"
-                data-reveal-container=".split-item"
+                className="split-item-content center-content-mobile"
+                id="featureSplitOne"
               >
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
                   Big data means bigger gains
@@ -74,10 +102,10 @@ export const FeaturesSplit = ({
               </div>
               <div
                 className={classNames(
-                  'split-item-image center-content-mobile reveal-from-bottom',
+                  'split-item-image center-content-mobile',
                   imageFill && 'split-item-image-fill'
                 )}
-                data-reveal-container=".split-item"
+                id="featureSplitOneImage"
               >
                 <Image
                   src="/images/features-split-image-01.png"
@@ -90,8 +118,8 @@ export const FeaturesSplit = ({
 
             <div className="split-item">
               <div
-                className="split-item-content center-content-mobile reveal-from-right"
-                data-reveal-container=".split-item"
+                className="split-item-content center-content-mobile"
+                id="featureSplitTwo"
               >
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
                   Key Performance Indicators
@@ -107,10 +135,10 @@ export const FeaturesSplit = ({
               </div>
               <div
                 className={classNames(
-                  'split-item-image center-content-mobile reveal-from-bottom',
+                  'split-item-image center-content-mobile',
                   imageFill && 'split-item-image-fill'
                 )}
-                data-reveal-container=".split-item"
+                id="featureSplitTwoImage"
               >
                 <Image
                   src="/images/features-split-image-02.png"
@@ -123,8 +151,8 @@ export const FeaturesSplit = ({
 
             <div className="split-item">
               <div
-                className="split-item-content center-content-mobile reveal-from-left"
-                data-reveal-container=".split-item"
+                className="split-item-content center-content-mobile"
+                id="featureSplitThree"
               >
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
                   Zero outages. Period.
@@ -143,10 +171,10 @@ export const FeaturesSplit = ({
               </div>
               <div
                 className={classNames(
-                  'split-item-image center-content-mobile reveal-from-bottom',
+                  'split-item-image center-content-mobile',
                   imageFill && 'split-item-image-fill'
                 )}
-                data-reveal-container=".split-item"
+                id="featureSplitThreeImage"
               >
                 <Image
                   src="/images/features-split-image-03.png"

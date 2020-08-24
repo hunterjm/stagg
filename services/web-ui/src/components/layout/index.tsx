@@ -15,7 +15,7 @@ export const Layout = ({ title, children }: LayoutProps) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <Header navPosition="right" className="reveal-from-bottom" />
+      <Header navPosition="right" />
       <main className="site-content">{children}</main>
       <Footer />
     </>

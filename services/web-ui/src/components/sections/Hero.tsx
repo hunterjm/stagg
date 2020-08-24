@@ -1,12 +1,18 @@
 import classNames from 'classnames';
 import config from 'config/ui';
-import React, { useState, MouseEvent } from 'react';
+import React, { useState, MouseEvent, useEffect } from 'react';
 import { SectionSharedProps } from 'src/interfaces/SectionProps';
 
 import { Button } from '../elements/Button';
 import { ButtonGroup } from '../elements/ButtonGroup';
 import { Image } from '../elements/Image';
 import { Modal } from '../elements/Modal';
+
+let ScrollReveal: scrollReveal.ScrollRevealObject;
+
+if (typeof window !== 'undefined') {
+  ScrollReveal = require('scrollreveal').default;
+}
 
 export const Hero = ({
   className,
@@ -19,6 +25,22 @@ export const Hero = ({
   ...props
 }: SectionSharedProps) => {
   const [videoModalActive, setVideomodalactive] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      ScrollReveal().reveal('#hero-text-h2', {
+        delay: 200,
+      });
+      ScrollReveal().reveal('#hero-text-p', {
+        delay: 400,
+      });
+      ScrollReveal().reveal('#hero-button', {
+        delay: 600,
+      });
+      ScrollReveal().reveal('.featured-games', { delay: 600 });
+      ScrollReveal().reveal('.hero-figure', { delay: 800, distance: '20px' });
+    }
+  }, []);
 
   const openModal = (
     event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>
@@ -50,26 +72,20 @@ export const Hero = ({
   );
 
   return (
-    <section {...props} className={outerClasses}>
+    <section {...props} className={outerClasses} id="hero">
       <div className="container-sm">
         <div className={innerClasses}>
           <div className="hero-content">
-            <h1
-              className="mt-0 mb-16 reveal-from-bottom"
-              data-reveal-delay="200"
-            >
+            <h2 className="mt-0 mb-16" id="hero-text-h2">
               We help you{' '}
               <span className="text-color-primary">git&nbsp;gud</span>
-            </h1>
+            </h2>
             <div className="container-xs">
-              <p
-                className="m-0 mb-32 reveal-from-bottom"
-                data-reveal-delay="400"
-              >
+              <p id="hero-text-p">
                 Unrivaled stat tracking combined with a proprietary Discord
                 integration to provide personalized coaching and so much more
               </p>
-              <div className="reveal-from-bottom" data-reveal-delay="600">
+              <div id="hero-button">
                 <ButtonGroup>
                   <Button as="a" color="primary" wideMobile href="/login">
                     Create Profile
@@ -86,10 +102,7 @@ export const Hero = ({
               </div>
             </div>
           </div>
-          <div
-            className="featured-games center-content-mobile reveal-from-bottom"
-            data-reveal-delay="600"
-          >
+          <div className="featured-games center-content-mobile">
             <i className="icon-pubg" title="Coming soon!" />
             <i
               className="icon-callofduty supported"
@@ -98,11 +111,7 @@ export const Hero = ({
             <i className="icon-csgo" title="Coming soon!" />
             <i className="icon-fortnite" title="Coming soon!" />
           </div>
-          <div
-            className="hero-figure reveal-from-bottom illustration-element-01"
-            data-reveal-value="20px"
-            data-reveal-delay="800"
-          >
+          <div className="hero-figure illustration-element-01">
             <a
               data-video="https://www.youtube.com/embed/5-ulSMDLUrc"
               href="#0"

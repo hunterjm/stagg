@@ -14,6 +14,12 @@ interface HeaderProps {
   bottomDivider?: boolean;
 }
 
+let ScrollReveal: scrollReveal.ScrollRevealObject;
+
+if (typeof window !== 'undefined') {
+  ScrollReveal = require('scrollreveal').default;
+}
+
 export const Header = ({
   className,
   navPosition,
@@ -32,6 +38,7 @@ export const Header = ({
     isActive && openMenu();
     document.addEventListener('keydown', keyPress);
     document.addEventListener('click', clickOutside);
+    ScrollReveal().reveal('#header');
     return () => {
       document.removeEventListener('keydown', keyPress);
       document.addEventListener('click', clickOutside);
@@ -73,7 +80,7 @@ export const Header = ({
   );
 
   return (
-    <header {...props} className={classes}>
+    <header {...props} className={classes} id="header">
       <div className="container">
         <div
           className={classNames(

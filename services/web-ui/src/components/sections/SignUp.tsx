@@ -1,12 +1,24 @@
 import config from 'config/ui';
 import Link from 'next/link';
+import { useEffect } from 'react';
+
+let ScrollReveal: scrollReveal.ScrollRevealObject;
+
+if (typeof window !== 'undefined') {
+  ScrollReveal = require('scrollreveal').default;
+}
 
 export const SignUp: any = () => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      ScrollReveal().reveal('#footer-hero', {
+        delay: 600,
+      });
+    }
+  }, []);
+
   return (
-    <div
-      className="center-content-mobile reveal-from-bottom"
-      data-reveal-delay="600"
-    >
+    <div className="center-content-mobile" id="footer-hero">
       <div className="featured-games hoverable">
         <h4>Select a game below to get started</h4>
         {config.games.map((game) => (

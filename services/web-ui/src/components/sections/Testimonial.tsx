@@ -1,8 +1,14 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SectionTilesProps } from 'src/interfaces/SectionProps';
 
 import { SectionHeader } from './partials/SectionHeader';
+
+let ScrollReveal: scrollReveal.ScrollRevealObject;
+
+if (typeof window !== 'undefined') {
+  ScrollReveal = require('scrollreveal').default;
+}
 
 export const Testimonial = ({
   className,
@@ -15,6 +21,20 @@ export const Testimonial = ({
   pushLeft,
   ...props
 }: SectionTilesProps) => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      ScrollReveal().reveal('#testimonialOne', {
+        origin: 'right',
+        delay: 200,
+      });
+      ScrollReveal().reveal('#testimonialTwo');
+      ScrollReveal().reveal('#testimonialThree', {
+        origin: 'left',
+        delay: 200,
+      });
+    }
+  }, []);
+
   const outerClasses = classNames(
     'testimonial section',
     topOuterDivider && 'has-top-divider',
@@ -44,10 +64,7 @@ export const Testimonial = ({
         <div className={innerClasses}>
           <SectionHeader data={sectionHeader} className="center-content" />
           <div className={tilesClasses}>
-            <div
-              className="tiles-item reveal-from-right"
-              data-reveal-delay="200"
-            >
+            <div className="tiles-item" id="testimonialOne">
               <div className="tiles-item-inner">
                 <div className="testimonial-item-content">
                   <p className="text-sm mb-0">
@@ -69,7 +86,7 @@ export const Testimonial = ({
               </div>
             </div>
 
-            <div className="tiles-item reveal-from-bottom">
+            <div className="tiles-item" id="testimonialTwo">
               <div className="tiles-item-inner">
                 <div className="testimonial-item-content">
                   <p className="text-sm mb-0">
@@ -91,10 +108,7 @@ export const Testimonial = ({
               </div>
             </div>
 
-            <div
-              className="tiles-item reveal-from-left"
-              data-reveal-delay="200"
-            >
+            <div className="tiles-item" id="testimonialThree">
               <div className="tiles-item-inner">
                 <div className="testimonial-item-content">
                   <p className="text-sm mb-0">

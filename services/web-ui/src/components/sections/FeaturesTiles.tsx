@@ -6,10 +6,16 @@ import FeatureSplitIconThree from 'public/icons/feature-tile-icon-03.svg';
 import FeatureSplitIconFour from 'public/icons/feature-tile-icon-04.svg';
 import FeatureSplitIconFive from 'public/icons/feature-tile-icon-05.svg';
 import FeatureSplitIconSix from 'public/icons/feature-tile-icon-06.svg';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SectionTilesProps } from 'src/interfaces/SectionProps';
 
 import { SectionHeader } from './partials/SectionHeader';
+
+let ScrollReveal: scrollReveal.ScrollRevealObject;
+
+if (typeof window !== 'undefined') {
+  ScrollReveal = require('scrollreveal').default;
+}
 
 export const FeaturesTiles = ({
   className,
@@ -22,6 +28,21 @@ export const FeaturesTiles = ({
   pushLeft,
   ...props
 }: SectionTilesProps) => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      ScrollReveal().reveal('#features-tiles-one');
+      ScrollReveal().reveal('##features-tiles-two', { delay: 200 });
+      ScrollReveal().reveal('#features-tiles-three', {
+        delay: 400,
+      });
+      ScrollReveal().reveal('##features-tiles-four');
+      ScrollReveal().reveal('#features-tiles-five', {
+        delay: 200,
+      });
+      ScrollReveal().reveal('##features-tiles-six', { delay: 400 });
+    }
+  }, []);
+
   const outerClasses = classNames(
     'features-tiles section',
     topOuterDivider && 'has-top-divider',
@@ -57,7 +78,7 @@ export const FeaturesTiles = ({
         <div className={innerClasses}>
           <SectionHeader data={sectionHeader} className="center-content" />
           <div className={tilesClasses}>
-            <div className="tiles-item reveal-from-bottom">
+            <div className="tiles-item" id="features-tiles-one">
               <div className="tiles-item-inner">
                 <div className="features-tiles-item-header">
                   <div className="features-tiles-item-image mb-16">
@@ -74,10 +95,7 @@ export const FeaturesTiles = ({
               </div>
             </div>
 
-            <div
-              className="tiles-item reveal-from-bottom"
-              data-reveal-delay="200"
-            >
+            <div className="tiles-item" id="features-tiles-two">
               <div className="tiles-item-inner">
                 <div className="features-tiles-item-header">
                   <div className="features-tiles-item-image mb-16">
@@ -94,10 +112,7 @@ export const FeaturesTiles = ({
               </div>
             </div>
 
-            <div
-              className="tiles-item reveal-from-bottom"
-              data-reveal-delay="400"
-            >
+            <div className="tiles-item" id="features-tiles-three">
               <div className="tiles-item-inner">
                 <div className="features-tiles-item-header">
                   <div className="features-tiles-item-image mb-16">
@@ -114,7 +129,7 @@ export const FeaturesTiles = ({
               </div>
             </div>
 
-            <div className="tiles-item reveal-from-bottom">
+            <div className="tiles-item" id="features-tiles-four">
               <div className="tiles-item-inner">
                 <div className="features-tiles-item-header">
                   <div className="features-tiles-item-image mb-16">
@@ -131,10 +146,7 @@ export const FeaturesTiles = ({
               </div>
             </div>
 
-            <div
-              className="tiles-item reveal-from-bottom"
-              data-reveal-delay="200"
-            >
+            <div className="tiles-item" id="features-tiles-five">
               <div className="tiles-item-inner">
                 <div className="features-tiles-item-header">
                   <div className="features-tiles-item-image mb-16">
@@ -151,10 +163,7 @@ export const FeaturesTiles = ({
               </div>
             </div>
 
-            <div
-              className="tiles-item reveal-from-bottom"
-              data-reveal-delay="400"
-            >
+            <div className="tiles-item" id="features-tiles-six">
               <div className="tiles-item-inner">
                 <div className="features-tiles-item-header">
                   <div className="features-tiles-item-image mb-16">
