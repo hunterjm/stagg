@@ -47,6 +47,9 @@ PRs are always welcome so please feel free to fork or request contributor access
 #### Misc
 
 - Allow easy secret setup
+- Free Features
+    - Can pull your own profile
+    
 
 #### Web UI
 

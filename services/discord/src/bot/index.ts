@@ -48,4 +48,9 @@ export const listen = async () => {
         }
         dispatcher(m, ...chain.slice(lastDispatcherIndex+1))
     })
+    bot.on('voiceStateUpdate', (oldState:Discord.VoiceState, newState:Discord.VoiceState) => {
+        console.log(oldState.member.id)
+        console.log(oldState.channelID)
+        console.log(newState.channelID)
+    })
 }

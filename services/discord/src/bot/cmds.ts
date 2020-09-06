@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js'
 import * as cod from './callofduty'
 import * as sys from './system'
+import lfg from './lfg'
 
 type Dispatcher = (m:Discord.Message, ...args:string[]) => void
 interface DispatcherMap {
@@ -9,6 +10,7 @@ interface DispatcherMap {
 }
 
 const cmd:DispatcherMap = {
+    lfg,
     help: sys.help,
     shortcut: sys.shortcut,
     search: cod.search,

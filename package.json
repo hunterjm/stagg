@@ -8,7 +8,8 @@
     "link": "lerna link --force-local",
     "publish": "lerna run tsc && lerna publish",
     "gcp:tsc": "lerna run tsc",
-    "gcp:build": "node build && lerna run build"
+    "gcp:build": "node build && lerna run build",
+    "discord": "cd services/discord && yarn dev"
   },
   "workspaces": [
     "build",

@@ -6,11 +6,9 @@ import { CallOfDutyOAuthService } from './services'
 export class CallOfDutyOAuthController {
     constructor(private readonly service: CallOfDutyOAuthService) {}
 
-    @Post('cred/callofduty')
-    async CallOfDutyCredentialLogin(@Body() dto: CallOfDutyOAuthCredentialsDTO):Promise<CallOfDutyOAuthCredentialsDTO> {
-        // await this.service.CallOfDuty.SignIn(dto.email, dto.password)
-        return {
-            ...dto
-        }
+    @Post('credentials/callofduty')
+    async CallOfDutyCredentialLogin(@Body() dto: CallOfDutyOAuthCredentialsDTO):Promise<string> {
+        const jwt = await this.service.SignIn(dto.email, dto.password)
+        return jwt
     }
 }

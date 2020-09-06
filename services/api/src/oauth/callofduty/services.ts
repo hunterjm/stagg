@@ -1,40 +1,61 @@
 import * as mdb from '@stagg/mdb'
 import * as API from '@stagg/api'
-import { Injectable } from '@nestjs/common'
-import { MONGO } from '../../config'
+import * as JWT from 'jsonwebtoken'
+import { Connection } from 'mongoose'
+import { InjectConnection } from '@nestjs/mongoose'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { JWT_SECRET } from '../../config'
 
-mdb.config({ host: MONGO.HOST, user: MONGO.USER, password: MONGO.PASS })
 
 @Injectable()
 export class CallOfDutyOAuthService {
-  async AccountByEmail(email:string): Promise<mdb.Schema.CallOfDuty.Account> {
-    const db = await mdb.client('callofduty')
-    const account = await db.collection('accounts').findOne({ email })
+  constructor(
+    @InjectConnection('stagg') private db_stg: Connection,
+    @InjectConnection('callofduty') private db_cod: Connection,
+  ) {}
+  private async AccountByEmail(email:string): Promise<mdb.Schema.CallOfDuty.Account> {
+    const account = await this.db_cod.collection('accounts').findOne({ email })
     return account
   }
-  async InsertAccount(account:mdb.Schema.CallOfDuty.Account): Promise<void> {
-    
+  private async InsertAccount(email:string, auth:mdb.Schema.CallOfDuty.Account.Auth): Promise<mdb.Schema.CallOfDuty.Account> {
+    await this.db_cod.collection('accounts').insertOne({
+      origin: 'self',
+      email,
+      auth,
+    })
+    const account = await this.db_cod.collection('accounts').findOne({ email })
+    await this.db_stg.collection('users').insertOne({ accounts: { callofduty: account._id } })
+    return account
   }
-  async UpdateAccount(account:mdb.Schema.CallOfDuty.Account, auth:mdb.Schema.CallOfDuty.Account.Auth): Promise<void> {
+  private async UpdateAccount(account:mdb.Schema.CallOfDuty.Account, auth:mdb.Schema.CallOfDuty.Account.Auth): Promise<void> {
     const prevAuth = account.prev?.auth ? account.prev.auth : []
-    // if (account.auth) prevAuth.push(account.auth)
-    // await mongo.collection('accounts').updateOne({ _id: userRecord._id }, { $set: { auth, 'prev.auth': prevAuth } })
-    // const { discord, profiles, uno } = userRecord
-    // const jwt = JWT.sign({ email, discord, profiles, uno }, cfg.jwt)
-    // return res.status(200).send({ jwt })
+    if (account.auth) {
+      prevAuth.push(account.auth)
+    }
+    await this.db_cod.collection('accounts').updateOne({ _id: account._id }, { $set: { auth, 'prev.auth': prevAuth } })
   }
-  async SignIn(email:string, password:string): Promise<void> {
+  private async AccountJWT(account:mdb.Schema.CallOfDuty.Account): Promise<string> {
+    const user = await this.db_stg.collection('users').findOne({ 'accounts.callofduty': account._id })
+    return JWT.sign({
+      email: account.email,
+      profiles: account.profiles,
+      discord: user.discord,
+      scrape: account.scrape,
+    }, JWT_SECRET)
+  }
+  async SignIn(email:string, password:string): Promise<string> {
     const CallOfDutyAPI = new API.CallOfDuty()
     try {
       const tokens = await CallOfDutyAPI.Login(email, password)
-      const account = await this.AccountByEmail(email)
+      let account = await this.AccountByEmail(email)
       if (account) {
         await this.UpdateAccount(account, tokens)
       } else {
-        await this.InsertAccount(account)
+        account = await this.InsertAccount(email, tokens)
       }
+      return await this.AccountJWT(account)
     } catch(e) {
-      // Login failed for reason "e"
+      throw new UnauthorizedException(e)
     }
   }
 }

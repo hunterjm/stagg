@@ -32,7 +32,7 @@ export default (m:Discord.Message, output:string[], options?:{ files: string[] }
     )
 }
 
-const formatOutput = (linesArr:string[]) => truncate(linesArr.reduce((prev, curr) => prev + `> ${curr}\n`, ''))
+export const formatOutput = (linesArr:string[]) => truncate(linesArr.reduce((prev, curr) => prev + `> ${curr}\n`, ''))
 const truncate = (output:string):string => {
     let truncatedResponse = output
     if (truncatedResponse.length > 2000) {

@@ -59,6 +59,7 @@ export const Modes = {
     br_86:                  { type: 'br', teamSize: 4, lobbySize: 150, realism: true, name: 'BR Realism Quads' },
     br_br_real:             { type: 'br', teamSize: 4, lobbySize: 150, realism: true, name: 'BR Realism Quads' },
     br_brthquad:            { type: 'br', teamSize: 4, lobbySize: 200, name: 'BR Quads 200' },
+    br_mini_miniroyale:     { type: 'br_mini', teamSize: 3, lobbySize: 75, name: 'Mini Royale' },
     brtdm_rmbl:             { type: 'br_tdm', teamSize: 6, lobbySize: 150, name: 'Warzone Rumble' },
     br_dmz_38:              { type: 'plunder', teamSize: 3, lobbySize: 150, name: 'Plunder' },
     br_dmz_76:              { type: 'plunder', teamSize: 4, lobbySize: 150, name: 'Plunder' },

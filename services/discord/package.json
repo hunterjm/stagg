@@ -20,7 +20,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "human-time": "^0.0.2",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "short-hash": "^1.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
