@@ -1,24 +1,76 @@
 {
   "name": "stagg-builder",
   "version": "1.0.0",
+  "author": "Dan Lindsey",
   "description": "Stagg Monorepo Builder",
   "main": "index.js",
   "scripts": {
-    "test": "exit 0",
-    "build": "node .",
-    "build:env": "yarn build:env:jwt && yarn build:env:discord && build:env:mongo && build:env:gmail",
-    "build:env:mongo": "yarn build:env:host && yarn build:env:user && yarn build:env:pass",
-    "build:env:gmail": "yarn build:env:gmail:user && yarn build:env:gmail:pass",
-    "build:env:jwt": "gcloud secrets versions access latest --secret=JWT_SECRET > .env.JWT_SECRET",
-    "build:env:host": "gcloud secrets versions access latest --secret=MONGO_HOST > .env.MONGO_HOST",
-    "build:env:user": "gcloud secrets versions access latest --secret=MONGO_USER > .env.MONGO_USER",
-    "build:env:pass": "gcloud secrets versions access latest --secret=MONGO_PASS > .env.MONGO_PASS",
-    "build:env:discord": "gcloud secrets versions access latest --secret=DISCORD_TOKEN > .env.DISCORD_TOKEN",
-    "build:env:gmail:user": "gcloud secrets versions access latest --secret=GMAIL_ACCOUNT > .env.GMAIL_ACCOUNT",
-    "build:env:gmail:pass": "gcloud secrets versions access latest --secret=GMAIL_PASSWORD > .env.GMAIL_PASSWORD"
+    "build": "node ."
   },
-  "author": "Dan Lindsey",
-  "license": "MIT",
+  "hydration": {
+    "apps": {
+      "api": {
+        "port": 8080,
+        "service": "api",
+        "runtime": "nodejs12",
+        "instance": "F1",
+        "secrets": [
+          "JWT_SECRET",
+          "MONGO_HOST",
+          "MONGO_USER",
+          "MONGO_PASS"
+        ]
+      },
+      "discord": {
+        "port": 8080,
+        "service": "discord",
+        "runtime": "nodejs12",
+        "instance": "F1",
+        "secrets": [
+          "JWT_SECRET",
+          "DISCORD_TOKEN",
+          "GMAIL_ADDRESS",
+          "GMAIL_PASSWORD",
+          "MONGO_HOST",
+          "MONGO_USER",
+          "MONGO_PASS"
+        ]
+      },
+      "web-ui": {
+        "port": 8080,
+        "service": "default",
+        "runtime": "nodejs12",
+        "instance": "F1",
+        "secrets": []
+      }
+    },
+    "services": {
+      "render-chart": {
+        "memory": "128MB",
+        "region": "us-east1",
+        "secrets": []
+      },
+      "render-view": {
+        "memory": "512MB",
+        "region": "us-east1",
+        "secrets": []
+      },
+      "scrape-cod-cron": {
+        "memory": "128MB",
+        "region": "us-east1",
+        "secrets": []
+      },
+      "scrape-cod-worker": {
+        "memory": "128MB",
+        "region": "us-east1",
+        "secrets": [
+          "MONGO_HOST",
+          "MONGO_USER",
+          "MONGO_PASS"
+        ]
+      }
+    }
+  },
   "dependencies": {
     "js-yaml": "^3.14.0"
   }

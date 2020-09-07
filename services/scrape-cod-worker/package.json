@@ -1,0 +1,29 @@
+{
+  "name": "@stagg/faas-scrape-worker-cod",
+  "version": "0.7.0",
+  "author": "Dan Lindsey",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts NODE_ENV=development",
+    "build": "tsc",
+    "deploy": "yarn build && gcloud functions deploy scrape-cod-worker --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --env-vars-file=.env.yaml",
+    "start": "node dist/index.js",
+    "test": "exit 0"
+  },
+  "dependencies": {
+    "@stagg/api": "^0.7.0",
+    "@stagg/mdb": "^0.7.0",
+    "@stagg/util": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.13",
+    "@types/node": "^14.0.13",
+    "dotenv": "^8.2.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.49",
+    "typescript": "^3.9.5"
+  }
+}

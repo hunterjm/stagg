@@ -46,7 +46,6 @@ PRs are always welcome so please feel free to fork or request contributor access
 
 #### Misc
 
-- Allow easy secret setup
 - Free Features
     - Can pull your own profile
     
@@ -68,7 +67,6 @@ PRs are always welcome so please feel free to fork or request contributor access
 
 #### Discord Bot
 
-- Matchmaking (auto-move to channels)
 - Group by time of day (eg: compare 8pm-9pm vs 12am-1am)
 - Correlations
     - kills/avgLifeTime
@@ -104,11 +102,3 @@ PRs are always welcome so please feel free to fork or request contributor access
 - Some teamPlacement props are 0
 - Scrape isolated summary for each match with `start=(startTime-1)*1000, end=(endTime-1)*1000`
 - Alert/Logs to notify when the API returns a field we current don't include or ignore
-
-#### Republish
-
-- Set all packages to empty with no deps
-- Unpublish all packages
-- Create new repo
-- Republish
-- Testing and error reporting

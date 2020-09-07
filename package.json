@@ -9,10 +9,13 @@
     "publish": "lerna run tsc && lerna publish",
     "gcp:tsc": "lerna run tsc",
     "gcp:build": "node build && lerna run build",
-    "discord": "cd services/discord && yarn dev"
+    "api": "cd apps/api && yarn dev",
+    "discord": "cd apps/discord && yarn dev",
+    "web-ui": "cd apps/web-ui && yarn dev"
   },
   "workspaces": [
     "build",
+    "apps/*",
     "packages/*",
     "services/*"
   ],

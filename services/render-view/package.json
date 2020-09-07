@@ -1,0 +1,26 @@
+{
+  "name": "@stagg/faas-render-view",
+  "version": "0.7.0",
+  "author": "Dan Lindsey",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts NODE_ENV=development",
+    "build": "tsc",
+    "deploy": "yarn build && gcloud functions deploy render-view --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=512MB",
+    "start": "node dist/index.js",
+    "test": "ts-jest"
+  },
+  "dependencies": {
+    "node-html-to-image": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.13",
+    "@types/node": "^14.0.13",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.49",
+    "typescript": "^3.9.5"
+  }
+}
