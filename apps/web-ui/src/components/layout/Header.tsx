@@ -44,7 +44,7 @@ export const Header = ({
       document.addEventListener('click', clickOutside);
       closeMenu();
     };
-  });
+  }, []);
 
   const openMenu = () => {
     document.body.classList.add('off-nav-is-active');
@@ -88,7 +88,11 @@ export const Header = ({
             bottomDivider && 'has-bottom-divider'
           )}
         >
-          <Logo />
+          <Link href="/">
+            <a href="/">
+              <Logo />
+            </a>
+          </Link>
           {!hideNav && (
             <>
               <button
