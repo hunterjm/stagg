@@ -11,7 +11,7 @@ export default ({ performances }) => {
     for(const p of performances) {
         const mode = Normalize.MW.Modes[p.modeId]
         if (!mode) {
-            console.log(`No mode for "${p.modeId}" in`, Map.CallOfDuty.MW.Modes)
+            console.log(`No mode for "${p.modeId}" in`, Normalize.MW.Modes)
             continue
         }
         if (p.stats.teamPlacement === 1) groups[Object.keys(groups)[mode.teamSize-1]]++
