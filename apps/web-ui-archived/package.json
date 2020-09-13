@@ -1,6 +1,6 @@
 {
   "name": "stagg-ui-web-archive",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Web UI for Stagg.co",
   "scripts": {
     "dev": "next dev -p 8080",
@@ -14,8 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
-    "@stagg/callofduty": "^0.8.0",
-    "@stagg/mdb": "^0.8.0",
+    "@stagg/callofduty": "^0.8.1",
+    "@stagg/mdb": "^0.8.1",
     "@stagg/util": "^0.8.0",
     "JSONStream": "^1.3.5",
     "axios": "^0.19.2",
