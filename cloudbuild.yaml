@@ -31,6 +31,12 @@ steps:
       entrypoint: yarn
       args: ['gcp:build']
     - name: gcr.io/cloud-builders/gcloud
+      args: ['app', 'deploy', 'apps/api', '--version=production']
+    - name: gcr.io/cloud-builders/gcloud
+      args: ['app', 'deploy', 'apps/discord', '--version=production']
+    - name: gcr.io/cloud-builders/gcloud
+      args: ['app', 'deploy', 'apps/web-ui', '--version=production']
+    - name: gcr.io/cloud-builders/gcloud
       args: ['functions', 'deploy', 'render-chart', '--trigger-http', '--source=services/render-chart', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=128MB']
     - name: gcr.io/cloud-builders/gcloud
       args: ['functions', 'deploy', 'render-view', '--trigger-http', '--source=services/render-view', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=512MB']
@@ -38,11 +44,5 @@ steps:
       args: ['functions', 'deploy', 'scrape-cod-cron', '--trigger-http', '--source=services/scrape-cod-cron', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=128MB']
     - name: gcr.io/cloud-builders/gcloud
       args: ['functions', 'deploy', 'scrape-cod-worker', '--trigger-http', '--source=services/scrape-cod-worker', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=128MB', '--env-vars-file=services/scrape-cod-worker/.env.yaml']
-    - name: gcr.io/cloud-builders/gcloud
-      args: ['app', 'deploy', 'apps/api', '--version=production']
-    - name: gcr.io/cloud-builders/gcloud
-      args: ['app', 'deploy', 'apps/discord', '--version=production']
-    - name: gcr.io/cloud-builders/gcloud
-      args: ['app', 'deploy', 'apps/web-ui', '--version=production']
     - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'dispatch.yaml', '--version=production']
