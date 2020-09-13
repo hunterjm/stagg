@@ -39,6 +39,8 @@ steps:
     - name: gcr.io/cloud-builders/gcloud
       args: ['functions', 'deploy', 'scrape-cod-worker', '--trigger-http', '--source=services/scrape-cod-worker', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=128MB', '--env-vars-file=services/scrape-cod-worker/.env.yaml']
     - name: gcr.io/cloud-builders/gcloud
+      args: ['app', 'deploy', 'apps/api', '--version=production']
+    - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'apps/discord', '--version=production']
     - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'apps/web-ui', '--version=production']

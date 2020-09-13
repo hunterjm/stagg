@@ -143,7 +143,7 @@ Modes.sd = {
     type: 'mp',
     lobbySize: 12,
     teamSize: 6,
-    respawns: true,
+    respawns: false,
 }
 Modes.cyber = {
     id: 'cyber',
@@ -152,7 +152,7 @@ Modes.cyber = {
     type: 'mp',
     lobbySize: 12,
     teamSize: 6,
-    respawns: true,
+    respawns: false,
 }
 Modes.arm = {
     id: 'arm',
