@@ -1,4 +1,6 @@
 dispatch:
+    - url: api.stagg.co/*
+      service: api
     - url: discord.stagg.co/*
       service: discord
     - url: stagg.co/*
