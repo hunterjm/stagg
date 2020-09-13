@@ -12,7 +12,7 @@
     "test": "exit 0"
   },
   "dependencies": {
-    "@stagg/api": "^0.8.0",
+    "@stagg/callofduty": "^0.8.0",
     "@stagg/mdb": "^0.8.0",
     "@stagg/util": "^0.8.0"
   },

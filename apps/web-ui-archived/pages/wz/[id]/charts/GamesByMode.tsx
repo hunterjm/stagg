@@ -1,4 +1,4 @@
-import { Map } from '@stagg/api'
+import { Normalize } from '@stagg/callofduty'
 import Pie from '../../../../components/charts/Pie'
 
 export default ({ performances }) => {
@@ -9,9 +9,9 @@ export default ({ performances }) => {
         Quads: 0,
     }
     for(const p of performances) {
-        const mode = Map.CallOfDuty.MW.Modes[p.modeId]
+        const mode = Normalize.MW.Modes[p.modeId]
         if (!mode) {
-            console.log(`[?] No mode for "${p.modeId}" in`, Map.CallOfDuty.MW.Modes)
+            console.log(`[?] No mode for "${p.modeId}" in`, Normalize.MW.Modes)
             continue
         }
         groups[Object.keys(groups)[mode.teamSize-1]]++

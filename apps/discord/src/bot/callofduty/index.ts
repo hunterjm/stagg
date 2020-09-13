@@ -1,4 +1,4 @@
-import * as API from '@stagg/api'
+import { Normalize } from '@stagg/callofduty'
 import * as Mongo from '@stagg/mdb'
 import * as mail from '@stagg/mail'
 import * as Discord from 'discord.js'
@@ -29,7 +29,7 @@ export const search = async (m:Discord.Message, ...args:string[]) => {
     if (platform) {
         queries.push({ [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
     } else {
-        for(const p in API.Map.CallOfDuty.Platforms) {
+        for(const p in Normalize.Platforms) {
             queries.push({ [`profiles.${p}`]: { $regex: username, $options: 'i' } })
         }
     }

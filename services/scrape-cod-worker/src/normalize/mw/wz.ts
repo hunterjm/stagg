@@ -1,8 +1,8 @@
-import * as API from '@stagg/api'
+import { Schema, Normalize } from '@stagg/callofduty'
 import * as MDB from '@stagg/mdb'
 import { Stat, Loadout } from '..'
 
-export const Match = (match: API.Schema.CallOfDuty.MW.WZ.Match):MDB.Schema.CallOfDuty.MW.WZ.Match => ({
+export const Match = (match: Schema.API.MW.WZ.Match):MDB.Schema.CallOfDuty.MW.WZ.Match => ({
     matchId: match.matchID,
     modeId: match.mode,
     mapId: match.map,
@@ -11,18 +11,18 @@ export const Match = (match: API.Schema.CallOfDuty.MW.WZ.Match):MDB.Schema.CallO
     teams: Teams(match)
 })
 
-export const Teams = (match: API.Schema.CallOfDuty.MW.WZ.Match) => !match.rankedTeams ? [] :
-    match.rankedTeams.map((team: API.Schema.CallOfDuty.MW.WZ.Match.Team) => ({
+export const Teams = (match: Schema.API.MW.WZ.Match) => !match.rankedTeams ? [] :
+    match.rankedTeams.map((team: Schema.API.MW.WZ.Match.Team) => ({
         name: team.name,
         placement: team.placement,
         time: team.time,
-        players: team.players.map((player: API.Schema.CallOfDuty.MW.WZ.Match.Team.Player) => ({
+        players: team.players.map((player: Schema.API.MW.WZ.Match.Team.Player) => ({
             uno: player.uno,
             username: player.username.replace(/^(\[[^\]]+\])?(.*)$/, '$2'),
             clantag: player.username.replace(/^(\[[^\]]+\])?(.*)$/, '$1') || null,
             platform: player.platform,
             rank: player.rank,
-            loadouts: player.loadouts?.map((loadout: API.Schema.CallOfDuty.Loadout) => Loadout(loadout)) || [],
+            loadouts: player.loadouts?.map((loadout: Schema.API.MW.Loadout) => Loadout(loadout)) || [],
             stats: {
                 rank: Stat(player.playerStats, 'rank'),
                 score: Stat(player.playerStats, 'score'),
@@ -43,7 +43,7 @@ export const Teams = (match: API.Schema.CallOfDuty.MW.WZ.Match) => !match.ranked
         })),
     }))
     
-export const Performance = (match: API.Schema.CallOfDuty.MW.WZ.Match, player: Partial<MDB.Schema.CallOfDuty.Account>): MDB.Schema.CallOfDuty.MW.WZ.Performance => {
+export const Performance = (match: Schema.API.MW.WZ.Match, player: Partial<MDB.Schema.CallOfDuty.Account>): MDB.Schema.CallOfDuty.MW.WZ.Performance => {
     // Count downs
     let downs = []
     const downKeys = Object.keys(match.playerStats).filter(key => key.includes('objectiveBrDownEnemyCircle'))

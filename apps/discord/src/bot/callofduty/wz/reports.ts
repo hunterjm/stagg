@@ -1,5 +1,5 @@
 import * as Mongo from '@stagg/mdb'
-import * as API from '@stagg/api'
+import { Normalize } from '@stagg/callofduty'
 import { commaNum, percentage } from '@stagg/util'
 import { Warzone as WarzoneReports } from '../data'
 
@@ -25,9 +25,9 @@ export const isolated = async (teamSize:number, player:Mongo.Schema.CallOfDuty.A
     const teamSizeLables = ['Solos', 'Duos', 'Trios', 'Quads']
     // get all modeIds for this teamSize
     const modeIds = []
-    for(const modeId in API.Map.CallOfDuty.MW.Modes) {
-        const modeDetails = API.Map.CallOfDuty.MW.Modes[modeId]
-        if (modeDetails.type === type && modeDetails.teamSize === teamSize) {
+    for(const modeId in Normalize.MW.Modes) {
+        const modeDetails = Normalize.MW.Modes[modeId]
+        if (modeDetails.category === type && modeDetails.teamSize === teamSize) {
             modeIds.push(modeId)
         }
     }
@@ -50,8 +50,8 @@ export const all = async (player:Mongo.Schema.CallOfDuty.Account, platform:strin
     // Combine groups from different modeIds of the same teamSize
     const groupedByTeamSizeLabel = {}
     for(const modeData of data) {
-        const modeDetails = API.Map.CallOfDuty.MW.Modes[modeData._id]
-        if (!modeDetails || modeDetails.type !== type) {
+        const modeDetails = Normalize.MW.Modes[modeData._id]
+        if (!modeDetails || modeDetails.category !== type) {
             continue
         }
         const dataGroup = groupedByTeamSizeLabel[teamSizeLables[modeDetails.teamSize]]

@@ -1,5 +1,5 @@
-import { Map } from '@stagg/api'
 import * as Mongo from '@stagg/mdb'
+import { Normalize } from '@stagg/callofduty'
 
 export interface PlayerIdentifiers {
     uno?: string
@@ -44,7 +44,7 @@ export const hydratePlayerIdentifiers = async (authorId: string, pids: string[])
     for (const i in pids) {
         const pid = pids[i].toLowerCase()
         const index = Number(i)
-        if (Object.keys(Map.CallOfDuty.Platforms).includes(pid)) {
+        if (Object.keys(Normalize.Platforms).includes(pid)) {
             if (!pids[index - 1]) {
                 // its a platform identifier with no preceding username, dump it
                 delete pids[index]

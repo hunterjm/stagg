@@ -1,10 +1,7 @@
 import * as mdb from '@stagg/mdb'
-import * as API from '@stagg/api'
-import * as JWT from 'jsonwebtoken'
 import { Connection } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { JWT_SECRET } from '../../config'
+import { Injectable } from '@nestjs/common'
 
 
 @Injectable()

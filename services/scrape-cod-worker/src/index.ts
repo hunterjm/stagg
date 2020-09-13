@@ -1,5 +1,5 @@
 import * as mdb from '@stagg/mdb'
-import * as API from '@stagg/api'
+import { API, Schema } from '@stagg/callofduty'
 import * as Scraper from './scraper'
 import cfg from './config'
 
@@ -7,7 +7,7 @@ mdb.config(cfg.mongo)
 
 const cooldown = 60 * 60 * 24  * 7 // once a week
 
-const modes = ['mp', 'wz'] as API.Schema.CallOfDuty.Mode[]
+const modes = ['mp', 'wz'] as Schema.API.GameType[]
 const timestamp = () => Math.round(new Date().getTime()/1000)
 const playerLabel = (player:mdb.Schema.CallOfDuty.Account) => player.email || player.profiles.uno || 'artificial player'
 
@@ -111,13 +111,13 @@ async function updateIdentity(player:mdb.Schema.CallOfDuty.Account) {
     const db = await mdb.client('callofduty')
     const games:string[] = []
     const profiles:{[key:string]:string} = {}
-    const CallOfDutyAPI = new API.CallOfDuty(player.auth)
+    const CallOfDutyAPI = new API(player.auth)
     const identity = await CallOfDutyAPI.Identity()
     for(const identifier of identity.titleIdentities) {
         games.push(identifier.title)
         profiles[identifier.platform] = identifier.username
     }
-    const platforms = await CallOfDutyAPI.Platforms(Object.values(profiles)[0], Object.keys(profiles)[0] as API.Schema.CallOfDuty.Platform)
+    const platforms = await CallOfDutyAPI.Platforms(Object.values(profiles)[0], Object.keys(profiles)[0] as Schema.API.Platform)
     for(const platform in platforms) {
         profiles[platform] = platforms[platform].username
     }

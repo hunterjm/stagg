@@ -1,13 +1,13 @@
 import { Db } from 'mongodb'
-import * as API from '@stagg/api'
+import { API, Schema } from '@stagg/callofduty'
 import * as Mongo from '@stagg/mdb'
 import { delay } from '@stagg/util'
 import * as Normalize from './normalize'
 
 export namespace Options {
     export interface Matches {
-        game: API.Schema.CallOfDuty.Game
-        mode: API.Schema.CallOfDuty.Mode
+        game: Schema.API.Game
+        mode: Schema.API.GameType
         retry: number // number of retry attempts
         start: number // starting timestamp
         offset: number // next "start" timestamp offset
@@ -25,7 +25,7 @@ export namespace Runners {
     export class Matches {
         private db: Db
         private complete: boolean
-        private API: API.CallOfDuty
+        private API: API
         private minEndTime:number
         public player: Mongo.Schema.CallOfDuty.Account
         private options:Options.Matches = {
@@ -48,7 +48,7 @@ export namespace Runners {
                 this.options = {...this.options, ...options}
             }
             this.SetupScraperRecord()
-            this.API = new API.CallOfDuty(this.player.auth)
+            this.API = new API(this.player.auth)
             this.player.scrape[this.options.game][this.options.mode].timestamp = this.options.start
         }
         public async ETL(cfg:Mongo.Config) {
@@ -91,7 +91,7 @@ export namespace Runners {
             }
             // Set player "uno" id if not already in db (only in MW responses)
             if (!this.player.profiles.id && this.options.game === 'mw') {
-                const [firstMatch] = res.matches.filter((m: API.Schema.CallOfDuty.MW.WZ.Match) => m.player.uno)
+                const [firstMatch] = res.matches.filter((m: Schema.API.MW.Match) => m.player.uno)
                 this.player.profiles.id = firstMatch.player.uno
                 await this.db.collection('accounts').updateOne({ _id: this.player._id }, { $set: { 'profiles.id': this.player.profiles.id } })
             }
@@ -112,7 +112,7 @@ export namespace Runners {
             }
             return this
         }
-        private async RecordMatch(m:API.Schema.CallOfDuty.Match):Promise<boolean> {
+        private async RecordMatch(m:Schema.API.MW.Match):Promise<boolean> {
             let newVersionAvailable = false // not implemented yet...
             const rawMatchFound = await this.db.collection(this.Collection.Raw).findOne({ matchID: m.matchID, 'player._id': this.player._id })
             if (!this.minEndTime || this.minEndTime > m.utcEndSeconds) {
@@ -201,7 +201,7 @@ export namespace Runners {
             const { username, platform } = this.PreferredProfile
             return `${game} > ${mode} > ${platform} > ${username} @ ${this.player.scrape[game][mode].timestamp}`
         }
-        private get PreferredProfile():{username:string, platform:API.Schema.CallOfDuty.Platform} {
+        private get PreferredProfile():{username:string, platform:Schema.API.Platform} {
             // prefer battle, bo4 seemingly won't work with uno
             if (this.player.profiles.battle) return { platform: 'battle', username: this.player.profiles.battle }
             if (this.player.profiles.uno)    return { platform: 'uno', username: this.player.profiles.uno }

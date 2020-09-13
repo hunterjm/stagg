@@ -1,11 +1,11 @@
 import * as Mongo from 'mongodb'
-import * as API from '@stagg/api'
+import { Schema } from '@stagg/callofduty'
 import * as MW from './mw'
 
 export { MW }
 export interface Account extends Account.Scaffold {
     _id: Mongo.ObjectID
-    games: API.Schema.CallOfDuty.Game[]
+    games: Schema.API.Game[]
     profiles: Account.Profiles
     scrape: {
         updated?: number

@@ -1,8 +1,8 @@
-import * as API from '@stagg/api'
+import { Schema, Normalize } from '@stagg/callofduty'
 import * as MDB from '@stagg/mdb'
 import { Stat, Loadout } from '..'
 
-export const Performance = (match:API.Schema.CallOfDuty.MW.MP.Match, player:Partial<MDB.Schema.CallOfDuty.Account>):MDB.Schema.CallOfDuty.MW.MP.Performance => {
+export const Performance = (match:Schema.API.MW.MP.Match, player:Partial<MDB.Schema.CallOfDuty.Account>):MDB.Schema.CallOfDuty.MW.MP.Performance => {
     return {
         mapId: match.map,
         modeId: match.mode,
@@ -72,18 +72,19 @@ export const Performance = (match:API.Schema.CallOfDuty.MW.MP.Match, player:Part
         loadouts: match.player.loadout.map(loadout => Loadout(loadout)),
     }
 }
-export const Killstreaks = (player:API.Schema.CallOfDuty.MW.MP.Match.Player, playerStats:API.Schema.CallOfDuty.MW.MP.Match.PlayerStats):{[key:string]:MDB.Schema.CallOfDuty.MW.MP.Performance.Stats.Killstreak} => {
+export const Killstreaks = (player:Schema.API.MW.MP.Match.Player, playerStats:Schema.API.MW.MP.Match.PlayerStats):{[key:string]:MDB.Schema.CallOfDuty.MW.MP.Performance.Stats.Killstreak} => {
     const killstreaks = {}
-    for(const killstreakId in API.Map.CallOfDuty.MW.Killstreaks) {
+    for(const killstreakId in Normalize.MW.Killstreaks) {
+        const { props } = Normalize.MW.Killstreak(killstreakId as Schema.API.MW.Killstreak.Name)
         killstreaks[killstreakId] = {
             uses: player.killstreakUsage[killstreakId] || 0,
-            kills: playerStats[API.Map.CallOfDuty.MW.KillstreakKillsProp(killstreakId)] || 0,
-            takedowns: playerStats[API.Map.CallOfDuty.MW.KillstreakTakedownsProp(killstreakId)] || 0,
+            kills: playerStats[props.kills] || 0,
+            takedowns: playerStats[props.takedowns] || 0,
         }
     }
     return killstreaks
 }
-export const Weapons = (match:API.Schema.CallOfDuty.MW.MP.Match):{[key:string]:MDB.Schema.CallOfDuty.MW.MP.Performance.Stats.Weapon} => {
+export const Weapons = (match:Schema.API.MW.MP.Match):{[key:string]:MDB.Schema.CallOfDuty.MW.MP.Performance.Stats.Weapon} => {
     const weapons = {}
     for (const weaponId in match.weaponStats) {
         weapons[weaponId] = {

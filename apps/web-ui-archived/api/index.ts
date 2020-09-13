@@ -1,6 +1,6 @@
 import JWT from 'jsonwebtoken'
 import JSONStream from 'JSONStream'
-import { CallOfDuty } from '@stagg/api'
+import { API } from '@stagg/callofduty'
 import * as Mongo from '@stagg/mdb'
 import * as Discord from './discord'
 import cfg from '../config/api'
@@ -79,14 +79,14 @@ export const login = async (req,res) => {
     const mongo = await Mongo.client('callofduty')
     const staggMongo = await Mongo.client('stagg')
     try {
-        const API = new CallOfDuty()
+        const CallOfDutyAPI = new API()
         const { email, password } = JSON.parse(req.body)
         if (!email || !password || !email.match(/^[^@]+@[^\.]+\..+$/)) {
             return res.status(400).send({ error: 'invalid email/password' })
         }
         let auth:any
         try {
-            auth = await API.Login(email, password)
+            auth = await CallOfDutyAPI.Login(email, password)
         } catch(error) {
             return res.status(503).send({ error })
         }
@@ -99,7 +99,7 @@ export const login = async (req,res) => {
             const jwt = JWT.sign({ email, discord, profiles, uno }, cfg.jwt)
             return res.status(200).send({ jwt })
         }
-        const { titleIdentities } = await API.Tokens(auth).Identity()
+        const { titleIdentities } = await CallOfDutyAPI.Tokens(auth).Identity()
         for(const title of titleIdentities) {
             const existing = await mongo.collection('accounts').findOne({ [`profiles.${title.platform}`]: title.username })
             if (existing) {

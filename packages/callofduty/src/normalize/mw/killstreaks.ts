@@ -1,6 +1,6 @@
-import { snakeToPascal } from '@stagg/util'
 import { Schema } from '../..'
 
+const snakeToPascal = (input:string) => (input + '').split('_').map(s => s.slice(0,1).toUpperCase() + s.slice(1, s.length)).join('')
 const KillstreakKillsProp = (killstreakId:string) => `objectiveMedalScoreSsKill${snakeToPascal(killstreakId)}`
 const KillstreakTakedownsProp = (killstreakId:string) => `objectiveMedalScoreKillSs${snakeToPascal(killstreakId)}`
 

@@ -1,5 +1,5 @@
 import * as mdb from '@stagg/mdb'
-import * as API from '@stagg/api'
+import { API } from '@stagg/callofduty'
 import * as JWT from 'jsonwebtoken'
 import { Connection } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
@@ -44,7 +44,7 @@ export class CallOfDutyOAuthService {
     }, JWT_SECRET)
   }
   async SignIn(email:string, password:string): Promise<string> {
-    const CallOfDutyAPI = new API.CallOfDuty()
+    const CallOfDutyAPI = new API()
     try {
       const tokens = await CallOfDutyAPI.Login(email, password)
       let account = await this.AccountByEmail(email)
