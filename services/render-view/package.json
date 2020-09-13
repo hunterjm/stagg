@@ -1,6 +1,6 @@
 {
   "name": "@stagg/faas-render-view",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
