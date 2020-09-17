@@ -9,12 +9,13 @@
     "build": "tsc",
     "deploy": "yarn build && gcloud functions deploy scrape-cod-worker --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --env-vars-file=.env.yaml",
     "start": "node dist/index.js",
-    "test": "exit 0"
+    "test": "jest"
   },
   "dependencies": {
     "@stagg/callofduty": "^0.8.3",
     "@stagg/mdb": "^0.8.3",
-    "@stagg/util": "^0.8.0"
+    "@stagg/util": "^0.8.0",
+    "axios": "^0.20.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.13",

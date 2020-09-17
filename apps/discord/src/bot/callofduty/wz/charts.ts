@@ -4,7 +4,7 @@ import * as humanTime from 'human-time'
 import { hydratePlayerIdentifiers, Warzone as WarzoneReports } from '../data'
 import relay from '../../relay'
 
-const chartUrlPrefix = 'https://stagg.co/api/chart.png?c='
+const chartUrlPrefix = 'https://api.stagg.co/charts/charts/chart.png?c='
 
 export default async (m:Discord.Message, stat:string, ...pids:string[]) => {
     const rly = await relay(m, ['Finding players(s)...'])
@@ -43,6 +43,6 @@ const statOverTime = async (players:Mongo.Schema.CallOfDuty.Account[], stat:stri
     for(let i = 0; i < chartData.length; i++) {
         avgData.push(avg)
     }
-    const url = `${chartUrlPrefix}{type:'line',data:{labels:[${chartLabels.join(',')}], datasets:[{label:'${stat.replace('/', ':')} over time', data: [${chartData.join(',')}], fill:false, borderColor:'%2301a2fc'},{label:'Avg ${stat.replace('/', ':')} over time', data: [${avgData.join(',')}], fill:false, borderColor:'%23aaa'}]}}`
+    const url = `${chartUrlPrefix}{type:'line',data:{labels:[${chartLabels.join(',')}], datasets:[{label:'${stat.replace('/', ':')} over time', data: [${chartData.join(',')}], fill:false, borderColor:'rgb(1,162,252)'},{label:'Avg ${stat.replace('/', ':')} over time', data: [${avgData.join(',')}], fill:false, borderColor:'rgb(128,128,128)'}]}}`
     return [url]
 }

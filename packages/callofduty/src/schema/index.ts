@@ -15,7 +15,7 @@ export interface Map {
     type: 'wz' | 'mp'
     category?: 'groundwar' | 'cage'
     images: {
-        minimap: string
+        minimap?: string // only available for MP maps
         thumbnail: string
     }
 }

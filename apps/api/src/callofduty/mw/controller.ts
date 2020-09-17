@@ -2,17 +2,8 @@ import { Schema, Normalize } from '@stagg/callofduty'
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common'
 
 @Controller('callofduty/mw')
-export class CallOfDutyController {
+export class ModernWarfareController {
     constructor() {}
-
-    @Get('killstreaks/:killstreakId')
-    async KillstreakDetails(@Param() { killstreakId }:{killstreakId:Schema.API.MW.Killstreak.Name}):Promise<Schema.Killstreak> {
-        const killstreak = Normalize.MW.Killstreak(killstreakId)
-        if (!killstreak) {
-            throw new NotFoundException('killstreak not found')
-        }
-        return killstreak
-    }
 
     @Get('maps/:mapId')
     async MapDetails(@Param() { mapId }:{mapId:Schema.API.MW.Map}):Promise<Schema.Map> {
@@ -39,5 +30,14 @@ export class CallOfDutyController {
             throw new NotFoundException('weapon not found')
         }
         return weapon
+    }
+
+    @Get('killstreaks/:killstreakId')
+    async KillstreakDetails(@Param() { killstreakId }:{killstreakId:Schema.API.MW.Killstreak.Name}):Promise<Schema.Killstreak> {
+        const killstreak = Normalize.MW.Killstreak(killstreakId)
+        if (!killstreak) {
+            throw new NotFoundException('killstreak not found')
+        }
+        return killstreak
     }
 }

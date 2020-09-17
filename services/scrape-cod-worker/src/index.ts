@@ -125,8 +125,12 @@ async function updateIdentity(player:mdb.Schema.CallOfDuty.Account) {
     return { games, profiles }
 }
 
-export default async (req, res) => {
+async function runner() {
     await mdb.client('callofduty')
     await Promise.all([ initializeNewPlayers(), updateExistingPlayers(), initializeArtificialProfiles(), /*recheckExistingPlayers()*/ ])
+}
+
+export default async (req, res) => {
+    runner()
     res.status(200).send({ success: true })
 }

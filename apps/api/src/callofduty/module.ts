@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common'
-import { CallOfDutyController } from './controller'
+import { CallOfDutyOAuthModule } from './oauth/module'
+import { ModernWarfareModule } from './mw/module'
 
 @Module({
-  imports: [],
+  imports: [
+    ModernWarfareModule,
+    CallOfDutyOAuthModule,
+  ],
+  exports: [
+    ModernWarfareModule,
+    CallOfDutyOAuthModule,
+  ],
   providers: [],
-  controllers: [CallOfDutyController],
+  controllers: [],
 })
 export class CallOfDutyModule {}

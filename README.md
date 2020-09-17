@@ -40,38 +40,35 @@ To publish new packages, you will need access to [Stagg NPM](https://www.npmjs.c
 npm login --registry=https://registry.npmjs.org/ --scope=stagg
 ```
 
-### To do
+### Ideas, fixes, features, etc
 
-PRs are always welcome so please feel free to fork or request contributor access.
+**What will be free**
+- Pull your own profile
+- Discord text reports
 
-#### Misc
+**What will be premium**
+- Pull other profiles
+- Compare profiles
+- Discord charts
+- Discord rich views
 
-- Free Features
-    - Can pull your own profile
+**Fixes/Updates**
+- Scraper should pull with uno id if possible
+- Revert back to IDB store for downloaded match data
+- Call of Duty API
+    - WZ/MP Profiles
+    - Match summaries
+    - Multiplayer API/types
+    - Some teamPlacement props are 0
+    - Scrape isolated summary for each match with `start=(startTime-1)*1000, end=(endTime-1)*1000`
+    - Alert/Logs to notify when the API returns a field we current don't include or ignore
     
+**Correlations**
+- kills/avgLifeTime
+- damageDone/timePlayed
+- damageDone/damageTaken
 
-#### Web UI
-
-- [Docs page](https://docusaurus.io/)
-- [MDX Storybook](https://storybook.js.org/docs/formats/mdx-syntax/) for components
-- Default charts below pies/polars
-    - Show avg line of KGP in background
-- Cache data in IDB again
-- Add tooltips to each chart to explain correlations
-- Customizable dashboard with custom-built charts
-- Correlation creation tool
-- Bugs
-    - After expanding chart, labels do not go back to hidden
-    - Large expandable charts dont fit mobile screen
-    - Discord landing page off-center in mobile
-
-#### Discord Bot
-
-- Group by time of day (eg: compare 8pm-9pm vs 12am-1am)
-- Correlations
-    - kills/avgLifeTime
-    - damageDone/timePlayed
-    - damageDone/damageTaken
+**Ideas**
 - Summarize with `wz barracks` and `mp barracks`
     - Time played
     - Games played
@@ -93,12 +90,3 @@ PRs are always welcome so please feel free to fork or request contributor access
     - Kills
     - Damage
     - Any win
-
-#### Call of Duty API
-
-- WZ/MP Profiles
-- Match summaries
-- Multiplayer API/types
-- Some teamPlacement props are 0
-- Scrape isolated summary for each match with `start=(startTime-1)*1000, end=(endTime-1)*1000`
-- Alert/Logs to notify when the API returns a field we current don't include or ignore

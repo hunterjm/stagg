@@ -18,11 +18,12 @@ export interface Match extends Schema.Match.Common {
 export namespace Match {
     export type Mode = 
         // warzone plunder
-        'br_dmz_38' | 'br_dmz_76' | 'br_dmz_85' | 'br_dmz_104' |
+        'br_dmz_38' | 'br_dmz_76' | 'br_dmz_85' | 'br_dmz_104' | 'br_dmz_plndtrios' | 'br_dmz_plunquad' |
         // warzone br
         'br_25' | 'br_71' | 'br_74' | 'br_77' | 'br_86' | 'br_87' | 'br_88' | 'br_89' | 
         'br_brsolo' | 'br_brduos' | 'br_brtrios' | 'br_brquads' | 'br_br_real' | 'br_brthquad' |
-        'brtdm_rmbl' | 'br_mini_miniroyale' | 'br_jugg_brtriojugr' | 'br_brtriostim_name2'
+        'brtdm_rmbl' | 'br_mini_miniroyale' | 'br_jugg_brtriojugr' | 'br_jugg_brquadjugr' | 'br_brbbsolo' |
+        'br_brtriostim_name2' | 'br_brduostim_name2'
     export interface Team {
         name: string
         placement: number

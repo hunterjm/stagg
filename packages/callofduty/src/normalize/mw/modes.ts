@@ -16,6 +16,8 @@ Modes.br_87 = {
 }
 Modes.br_71 = { ...Modes.br_87, id: 'br_71' }
 Modes.br_brsolo = { ...Modes.br_87, id: 'br_brsolo' }
+// Buyback solos
+Modes.br_brbbsolo = { ...Modes.br_87, id: 'br_brbbsolo', name: 'BR Buyback Solos' } // auto respawn if >$4500
 // BR Duos
 Modes.br_88 = {
     id: 'br_88',
@@ -29,6 +31,8 @@ Modes.br_88 = {
     buybacks: true,
 }
 Modes.br_brduos = { ...Modes.br_88, id: 'br_brduos' }
+// Stimulus Duos
+Modes.br_brduostim_name2 = { ...Modes.br_88, id: 'br_brduostim_name2', name: 'BR Stimulus Duos' }
 // BR Trios
 Modes.br_74 = {
     id: 'br_74',
@@ -45,8 +49,8 @@ Modes.br_77 = { ...Modes.br_74, id: 'br_77' }
 Modes.br_25 = { ...Modes.br_74, id: 'br_25' }
 Modes.br_brtrios = { ...Modes.br_74, id: 'br_brtrios' }
 // Custom trios modes
-Modes.br_jugg_brtriojugr = { ...Modes.br_74, id: 'br_jugg_brtriojugr' } // juggernaut drops in trios
-Modes.br_brtriostim_name2 = { ...Modes.br_74, id: 'br_brtriostim_name2' } // auto respawn if >$4500
+Modes.br_jugg_brtriojugr = { ...Modes.br_74, id: 'br_jugg_brtriojugr', name: 'BR Juggernaut Trios' } // juggernaut drops in trios
+Modes.br_brtriostim_name2 = { ...Modes.br_74, id: 'br_brtriostim_name2', name: 'BR Stimulus Trios' } // auto respawn if >$4500
 // BR Quads
 Modes.br_89 = {
     id: 'br_89',
@@ -65,6 +69,8 @@ Modes.br_brthquad = { ...Modes.br_89, id: 'br_brthquad', lobbySize: 200, name: '
 // Realism quads
 Modes.br_86 = { ...Modes.br_89, id: 'br_86', realism: true, buybacks: false, name: 'BR Realism Quads' }
 Modes.br_br_real = { ...Modes.br_86, id: 'br_br_real' }
+// Juggernaut quads
+Modes.br_jugg_brquadjugr = { ...Modes.br_89, id: 'br_jugg_brquadjugr', name: 'BR Juggernaut Quads' } // juggernaut drops in quads
 // Plunder + Misc
 Modes.brtdm_rmbl = { ...Modes.br_89, lobbySize: 150, teamSize: 6, respawns: true, name: 'Warzone Rumble' }
 Modes.br_mini_miniroyale = { ...Modes.br_74, lobbySize: 75, respawns: true, name: 'Mini Royale' }
@@ -81,6 +87,8 @@ Modes.br_dmz_76 = {
 Modes.br_dmz_85 = { ...Modes.br_dmz_76, id: 'br_dmz_85' }
 Modes.br_dmz_104 = { ...Modes.br_dmz_76, id: 'br_dmz_104' }
 Modes.br_dmz_38 = { ...Modes.br_dmz_76, id: 'br_dmz_38', lobbySize: 150, teamSize: 3, name: 'Plunder Trios' }
+Modes.br_dmz_plndtrios = { ...Modes.br_dmz_38, id: 'br_dmz_plndtrios' }
+Modes.br_dmz_plunquad = { ...Modes.br_dmz_76, id: 'br_dmz_plunquad', lobbySize: 152, teamSize: 4, name: 'Plunder Quads' }
 // Multiplayer
 Modes.war = {
     id: 'war',

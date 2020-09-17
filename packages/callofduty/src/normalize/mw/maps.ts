@@ -375,24 +375,27 @@ Maps.mp_donetsk = {
     name: 'Verdansk',
     type: 'wz',
     images: {
-        minimap: minimap('mp_donetsk'),
+        // minimap: minimap('mp_donetsk'),
         thumbnail: thumbnail('mp_donetsk'),
     }
 }
-Maps.mp_donetsk = { // donetsk2, don3
-    id: 'mp_donetsk',
-    games: ['mw'],
-    name: 'Verdansk',
-    type: 'wz',
+Maps.mp_donetsk2 = {
+    ...Maps.mp_donetsk,
+    id: 'mp_donetsk2',
     images: {
-        minimap: minimap('mp_donetsk'),
-        thumbnail: thumbnail('mp_donetsk'),
+        // minimap: minimap('mp_donetsk2'),
+        thumbnail: thumbnail('mp_donetsk2'),
+    }
+}
+Maps.mp_don3 = {
+    ...Maps.mp_donetsk,
+    id: 'mp_don3',
+    images: {
+        // minimap: minimap('mp_don3'),
+        thumbnail: thumbnail('mp_don3'),
     }
 }
 Maps.mp_hideout = {
-    // "maps:mw-mp_hideout:1": "Khandor Hideout",
-    // "maps:mw-loading_mp_hideout:1": "Khandor Hideout",
-    // "maps:mw_mp_hideout:1": "Khandor Hideout",
     id: 'mp_hideout',
     games: ['mw'],
     name: 'Khandor Hideout',

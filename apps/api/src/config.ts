@@ -4,6 +4,10 @@ require('dotenv').config()
 export const PORT = process.env.PORT || 8080
 export const JWT_SECRET = process.env.JWT_SECRET
 
+export const DISCORD_TOKEN = process.env.DISCORD_TOKEN
+export const DISCORD_SERVER_ID = '729780289727102976'
+export const DISCORD_INVITE_URL = 'https://discord.gg/WhWrbY8'
+
 export namespace Mongo {
     export const HOST = process.env.MONGO_HOST
     export const USER = process.env.MONGO_USER

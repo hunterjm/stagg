@@ -1,8 +1,9 @@
+import axios from 'axios'
 import { Db } from 'mongodb'
-import { API, Schema } from '@stagg/callofduty'
+import { API, Schema, Normalize } from '@stagg/callofduty'
 import * as Mongo from '@stagg/mdb'
 import { delay } from '@stagg/util'
-import * as Normalize from './normalize'
+import * as LocalNormalization from './normalize'
 
 export namespace Options {
     export interface Matches {
@@ -23,7 +24,8 @@ export namespace Options {
 
 export namespace Runners {
     export class Matches {
-        private db: Db
+        private db_cod: Db
+        private db_stg: Db
         private complete: boolean
         private API: API
         private minEndTime:number
@@ -53,7 +55,8 @@ export namespace Runners {
         }
         public async ETL(cfg:Mongo.Config) {
             Mongo.config(cfg)
-            this.db = await Mongo.client('callofduty')
+            this.db_stg = await Mongo.client('stagg')
+            this.db_cod = await Mongo.client('callofduty')
             this.options.logger(`[>] COD: Scraping ${this.Description}`)
             while (!this.complete) {
                 try {
@@ -80,7 +83,7 @@ export namespace Runners {
             }
             this.player.scrape.updated = Math.round(new Date().getTime() / 1000)
             this.player.scrape[this.options.game][this.options.mode].updated = this.player.scrape.updated
-            await this.db.collection('accounts').updateOne({ _id: this.player._id }, { $set: { scrape: this.player.scrape } })
+            await this.db_cod.collection('accounts').updateOne({ _id: this.player._id }, { $set: { scrape: this.player.scrape } })
         }
         private async DownloadBatch() {
             const { game, mode } = this.options
@@ -93,7 +96,7 @@ export namespace Runners {
             if (!this.player.profiles.id && this.options.game === 'mw') {
                 const [firstMatch] = res.matches.filter((m: Schema.API.MW.Match) => m.player.uno)
                 this.player.profiles.id = firstMatch.player.uno
-                await this.db.collection('accounts').updateOne({ _id: this.player._id }, { $set: { 'profiles.id': this.player.profiles.id } })
+                await this.db_cod.collection('accounts').updateOne({ _id: this.player._id }, { $set: { 'profiles.id': this.player.profiles.id } })
             }
             if (!this.Normalizer) {
                 // No normalizer setup yet, skip
@@ -114,7 +117,7 @@ export namespace Runners {
         }
         private async RecordMatch(m:Schema.API.MW.Match):Promise<boolean> {
             let newVersionAvailable = false // not implemented yet...
-            const rawMatchFound = await this.db.collection(this.Collection.Raw).findOne({ matchID: m.matchID, 'player._id': this.player._id })
+            const rawMatchFound = await this.db_cod.collection(this.Collection.Raw).findOne({ matchID: m.matchID, 'player._id': this.player._id })
             if (!this.minEndTime || this.minEndTime > m.utcEndSeconds) {
                 this.minEndTime = m.utcEndSeconds
             }
@@ -124,33 +127,61 @@ export namespace Runners {
                     ...mAsAny,
                     player: mAsAny.player ? { ...mAsAny.player, _id: this.player._id } : { _id: this.player._id }
                 }
-                await this.db.collection(this.Collection.Raw).insertOne(rawMatchDoc)
+                await this.db_cod.collection(this.Collection.Raw).insertOne(rawMatchDoc)
             } else {
                 // check if we now have team data prop and didn't before
                 if (!rawMatchFound[this.TeamDataProp] && m[this.TeamDataProp]) {
                     newVersionAvailable = true
-                    await this.db.collection(this.Collection.Raw).updateOne({ matchId: m.matchID }, { $set: { [this.TeamDataProp]: m[this.TeamDataProp] } })
+                    await this.db_cod.collection(this.Collection.Raw).updateOne({ matchId: m.matchID }, { $set: { [this.TeamDataProp]: m[this.TeamDataProp] } })
                 }
                 return false
             }
             if (!this.Normalizer) {
                 // No normalizer setup yet, skip
+                this.options.logger(`    Normalizer not found for ${this.options.game}.${this.options.mode}`)
                 return
             }
-            const matchFound = await this.db.collection(this.Collection.Matches).findOne({ matchId: m.matchID })
+            const matchFound = await this.db_cod.collection(this.Collection.Matches).findOne({ matchId: m.matchID })
             if (!matchFound && m[this.TeamDataProp]) {
                 this.options.logger(`    Saving generic record for match ${m.matchID}`)
                 const normalizedMatch = this.Normalizer.Match && this.Normalizer.Match(m)
                 if (normalizedMatch) {
-                    await this.db.collection(this.Collection.Matches).insertOne(normalizedMatch)
+                    await this.db_cod.collection(this.Collection.Matches).insertOne(normalizedMatch)
                 }
             }
-            const performanceFound = await this.db.collection(this.Collection.Performances).findOne({ 'player._id': this.player._id, matchId: m.matchID })
+            const performanceFound = await this.db_cod.collection(this.Collection.Performances).findOne({ 'player._id': this.player._id, matchId: m.matchID })
             if (!performanceFound) {
                 this.options.logger(`    Saving performance for match ${m.matchID}`)
                 const normalizedPerformance = this.Normalizer.Performance && this.Normalizer.Performance(m, this.player)
                 if (normalizedPerformance) {
-                    await this.db.collection(this.Collection.Performances).insertOne(normalizedPerformance)
+                    await this.db_cod.collection(this.Collection.Performances).insertOne(normalizedPerformance)
+                    // push notification to discord if applicable
+                    const map = Normalize.MW.Map(m.map)
+                    const mode = Normalize.MW.Mode(m.mode)
+                    if (map && mode) {
+                        axios.post(`https://api.stagg.co/notify/callofduty/${this.player._id}`, {
+                            channels: ['discord'],
+                            title: 'New match available',
+                            payload: {
+                                discord: `Your latest match of ${mode.name} on ${map.name} is now available`
+                            }
+                        })
+                    } else {
+                        // send notification to myself to fix this
+                        axios.post(`https://api.stagg.co/notify/5f162e2abb766c451fe0f583`, {
+                            channels: ['discord'],
+                            title: 'Map and/or mode missing from package',
+                            payload: {
+                                discord: [
+                                    'Details below:',
+                                    '```',
+                                    `mapId: ${m.map}`,
+                                    `modeId: ${m.mode}`,
+                                    '```',
+                                ]
+                            }
+                        })
+                    }
                 }
             }
             return true
@@ -187,7 +218,7 @@ export namespace Runners {
         private get Normalizer() {
             const cGame = this.options.game.toUpperCase()
             const cMode = this.options.mode.toUpperCase()
-            return Normalize[cGame] && Normalize[cGame][cMode]
+            return LocalNormalization[cGame] && LocalNormalization[cGame][cMode]
         }
         private get NextTimestamp() {
             if (!this.minEndTime) {
