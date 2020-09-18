@@ -17,16 +17,15 @@ export class DiscordBotService {
       url: 'https://stagg.co'
     }))
     this.client.on('message', async (m:Discord.Message) => {
-      return // block in production for now
       if (!this.trigger(m)) {
           return
       }
       // Message has a valid trigger, attempt to respond...
       try {
         // Attempt to partition the response, if we get past this we're the first to receive the request...
-        await this.partition(m)
+        const log = await this.partition(m)
         // Partition successful, we're the first instance in the pool to receive the request, now we must process it...
-        await this.reply(m, ['One moment...'])
+        await this.reply(m, ['One moment...'], null, log)
         // Loading message sent, now dispatch the request and respond as necessary...
         await this.dispatch(m)
       } catch(e) {
@@ -45,28 +44,32 @@ export class DiscordBotService {
     return true
   }
   private async partition(m:Discord.Message) {
-    await this.db_discord.collection('log').insertOne({
-        _id: m.id,
-        createdAt: new Date().getUTCMilliseconds(),
-        channel: {
-          id: m.channel.id,
-          type: m.channel.type,
+    const logRecord = {
+      _id: m.id,
+      createdAt: new Date().getUTCMilliseconds(),
+      channel: {
+        id: m.channel.id,
+        type: m.channel.type,
+      },
+      request: {
+        author: {
+          id: m.author.id,
+          avatar: m.author.avatar,
+          tag: `${m.author.username}#${m.author.discriminator}`,
         },
-        request: {
-          author: {
-            id: m.author.id,
-            avatar: m.author.avatar,
-            tag: `${m.author.username}#${m.author.discriminator}`,
-          },
-          message: {
-            id: m.id,
-            content: m.content,
-          }
+        message: {
+          id: m.id,
+          content: m.content,
         }
-      })
+      }
+    }
+    await this.db_discord.collection('log').insertOne(logRecord)
+    return logRecord
   }
-  private async reply(m:Discord.Message, output:Output, files?:string[]) {
-    const log = await this.db_discord.collection('log').findOne({ _id: m.id })
+  private async reply(m:Discord.Message, output:Output, files?:string[], log?:any) {
+    if (!log) {
+      log = await this.db_discord.collection('log').findOne({ _id: m.id })
+    }
     if (!log.response) {
         log.response = {
             createdAt: new Date().getUTCMilliseconds(),

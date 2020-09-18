@@ -5,7 +5,9 @@
   "description": "Stagg Monorepo Builder",
   "main": "index.js",
   "scripts": {
-    "build": "node ."
+    "build": "node .",
+    "build:dev": "NODE_ENV=development node .",
+    "build:dev:win": "set NODE_ENV=development && node ."
   },
   "hydration": {
     "apps": {

@@ -1,8 +1,8 @@
 import { Schema } from '../..'
 
-// Game modes
 const Mode = (modeId:Schema.API.MW.Match.Mode) => Modes[modeId]
 const Modes = {} as { [key:string]: Schema.Mode }
+
 // BR Solos
 Modes.br_87 = {
     id: 'br_87',
@@ -16,8 +16,8 @@ Modes.br_87 = {
 }
 Modes.br_71 = { ...Modes.br_87, id: 'br_71' }
 Modes.br_brsolo = { ...Modes.br_87, id: 'br_brsolo' }
-// Buyback solos
 Modes.br_brbbsolo = { ...Modes.br_87, id: 'br_brbbsolo', name: 'BR Buyback Solos' } // auto respawn if >$4500
+
 // BR Duos
 Modes.br_88 = {
     id: 'br_88',
@@ -31,8 +31,8 @@ Modes.br_88 = {
     buybacks: true,
 }
 Modes.br_brduos = { ...Modes.br_88, id: 'br_brduos' }
-// Stimulus Duos
-Modes.br_brduostim_name2 = { ...Modes.br_88, id: 'br_brduostim_name2', name: 'BR Stimulus Duos' }
+Modes.br_brduostim_name2 = { ...Modes.br_88, id: 'br_brduostim_name2', name: 'BR Stimulus Duos' }  // auto respawn if >$4500
+
 // BR Trios
 Modes.br_74 = {
     id: 'br_74',
@@ -48,9 +48,9 @@ Modes.br_74 = {
 Modes.br_77 = { ...Modes.br_74, id: 'br_77' }
 Modes.br_25 = { ...Modes.br_74, id: 'br_25' }
 Modes.br_brtrios = { ...Modes.br_74, id: 'br_brtrios' }
-// Custom trios modes
 Modes.br_jugg_brtriojugr = { ...Modes.br_74, id: 'br_jugg_brtriojugr', name: 'BR Juggernaut Trios' } // juggernaut drops in trios
 Modes.br_brtriostim_name2 = { ...Modes.br_74, id: 'br_brtriostim_name2', name: 'BR Stimulus Trios' } // auto respawn if >$4500
+
 // BR Quads
 Modes.br_89 = {
     id: 'br_89',
@@ -64,16 +64,18 @@ Modes.br_89 = {
     buybacks: true,
 }
 Modes.br_brquads = { ...Modes.br_89, id: 'br_brquads' }
-// 200 person quads
-Modes.br_brthquad = { ...Modes.br_89, id: 'br_brthquad', lobbySize: 200, name: 'BR Quads 200' }
-// Realism quads
-Modes.br_86 = { ...Modes.br_89, id: 'br_86', realism: true, buybacks: false, name: 'BR Realism Quads' }
+Modes.br_brthquad = { ...Modes.br_89, id: 'br_brthquad', lobbySize: 200, name: 'BR Quads 200' } // 200 person quads
+Modes.br_86 = { ...Modes.br_89, id: 'br_86', realism: true, buybacks: false, name: 'BR Realism Quads' } // Realism quads
 Modes.br_br_real = { ...Modes.br_86, id: 'br_br_real' }
-// Juggernaut quads
 Modes.br_jugg_brquadjugr = { ...Modes.br_89, id: 'br_jugg_brquadjugr', name: 'BR Juggernaut Quads' } // juggernaut drops in quads
-// Plunder + Misc
+
+// BR Mini
+Modes.br_mini_miniroyale = { ...Modes.br_74, lobbySize: 75, respawns: true, name: 'Mini Royale' } // mini trios
+
+// BR TDM
 Modes.brtdm_rmbl = { ...Modes.br_89, lobbySize: 150, teamSize: 6, respawns: true, name: 'Warzone Rumble' }
-Modes.br_mini_miniroyale = { ...Modes.br_74, lobbySize: 75, respawns: true, name: 'Mini Royale' }
+
+// Plunder
 Modes.br_dmz_76 = {
     id: 'br_dmz_38',
     games: ['mw'],
@@ -89,7 +91,35 @@ Modes.br_dmz_104 = { ...Modes.br_dmz_76, id: 'br_dmz_104' }
 Modes.br_dmz_38 = { ...Modes.br_dmz_76, id: 'br_dmz_38', lobbySize: 150, teamSize: 3, name: 'Plunder Trios' }
 Modes.br_dmz_plndtrios = { ...Modes.br_dmz_38, id: 'br_dmz_plndtrios' }
 Modes.br_dmz_plunquad = { ...Modes.br_dmz_76, id: 'br_dmz_plunquad', lobbySize: 152, teamSize: 4, name: 'Plunder Quads' }
+
 // Multiplayer
+Modes.grind = {
+    id: 'grind',
+    games: ['mw'],
+    name: 'Grind',
+    type: 'mp',
+    lobbySize: 12,
+    teamSize: 1,
+    respawns: true,
+}
+Modes.dm = {
+    id: 'dm',
+    games: ['mw'],
+    name: 'Free-for-all',
+    type: 'mp',
+    lobbySize: 8,
+    teamSize: 1,
+    respawns: true,
+}
+Modes.tdef = {
+    id: 'tdef',
+    games: ['mw'],
+    name: 'Team Defender',
+    type: 'mp',
+    lobbySize: 12,
+    teamSize: 6,
+    respawns: true,
+}
 Modes.war = {
     id: 'war',
     games: ['mw'],
@@ -189,6 +219,8 @@ Modes.arena = {
     teamSize: 2,
     respawns: false,
 }
+Modes.hc_dm = { ...Modes.dm, id: 'hc_dm', hardcore: true, name: 'Hardcore Free-for-all' }
+Modes.dm_hc = { ...Modes.hc_dm, id: 'dm_hc' }
 Modes.hc_dd = { ...Modes.dd, id: 'hc_dd', hardcore: true, name: 'Hardcore Demolition' }
 Modes.dd_hc = { ...Modes.hc_dd, id: 'dd_hc' }
 Modes.hc_hq = { ...Modes.hq, id: 'hc_hq', hardcore: true, name: 'Hardcore Headquarters' }
