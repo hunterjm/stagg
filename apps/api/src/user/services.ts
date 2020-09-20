@@ -10,6 +10,9 @@ export class UserService {
   public async fetchById(_id:string): Promise<any> {
     return this.db_stg.collection('users').findOne({ _id: Types.ObjectId(_id) })
   }
+  public async fetchByDiscordId(discordId:string): Promise<any> {
+    return this.db_stg.collection('users').findOne({ 'discord.id': discordId })
+  }
   public async fetchByGameAccountId(game:'callofduty', _id:string): Promise<any> {
     return this.db_stg.collection('users').findOne({ [`accounts.${game}`]: Types.ObjectId(_id) })
   }

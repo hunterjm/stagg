@@ -5,6 +5,8 @@ import * as Mongo from '@stagg/mdb'
 import { delay } from '@stagg/util'
 import * as LocalNormalization from './normalize'
 
+const bugAlerts = {}
+
 export namespace Options {
     export interface Matches {
         game: Schema.API.Game
@@ -88,7 +90,12 @@ export namespace Runners {
         private async DownloadBatch() {
             const { game, mode } = this.options
             const { username, platform } = this.PreferredProfile
-            const res:any = await this.API.Matches(username, platform, mode, game, this.player.scrape[game][mode].timestamp)
+            let res:Schema.API.MW.Routes.Matches
+            try {
+                res = await this.API.Matches(username, platform, mode, game, this.player.scrape[game][mode].timestamp)
+            } catch(e) {
+                throw `API Failure: ${e}`
+            }
             if (!res.matches) {
                 throw `No matches returned for ${this.Description}`
             }
@@ -165,22 +172,26 @@ export namespace Runners {
                             payload: {
                                 discord: `Your latest match of ${mode.name} on ${map.name} is now available`
                             }
-                        })
+                        }).catch(() => this.options.logger('[!] Failed to send user Discord notification for match', m.matchID))
                     } else {
-                        // send notification to myself to fix this
-                        axios.post(`https://api.stagg.co/notify/5f162e2abb766c451fe0f583`, {
-                            channels: ['discord'],
-                            title: 'Map and/or mode missing from package',
-                            payload: {
-                                discord: [
-                                    'Details below:',
-                                    '```',
-                                    `mapId: ${m.map}`,
-                                    `modeId: ${m.mode}`,
-                                    '```',
-                                ]
-                            }
-                        })
+                        if (!bugAlerts[`${m.map}-${m.mode}`]) {
+                            // send notification to myself to fix this
+                            axios.post(`https://api.stagg.co/notify/5f162e2abb766c451fe0f583`, {
+                                channels: ['discord'],
+                                title: 'Map and/or mode missing from package',
+                                payload: {
+                                    discord: [
+                                        'Details below:',
+                                        '```',
+                                        `mapId: ${m.map}`,
+                                        `modeId: ${m.mode}`,
+                                        '```',
+                                    ]
+                                }
+                            })
+                            .then(() => bugAlerts[`${m.map}-${m.mode}`] = true)
+                            .catch(() => this.options.logger('[!] Failed to send user Discord notification for match', m.matchID))
+                        }
                     }
                 }
             }

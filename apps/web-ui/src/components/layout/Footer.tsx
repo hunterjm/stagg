@@ -39,10 +39,7 @@ export const Footer = ({
           <div className="footer-bottom space-between text-xxs invert-order-desktop">
             <FooterNav />
             <div className="footer-copyright">
-              <a href="https://github.com/mdlindsey" target="_blank">
-                mdlindsey
-              </a>{' '}
-              / {new Date().getFullYear()}
+              &copy; {new Date().getFullYear()}
             </div>
           </div>
         </div>

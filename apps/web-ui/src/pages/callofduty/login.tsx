@@ -1,10 +1,15 @@
-import { TextField, Button } from '@material-ui/core';
-import { Layout } from 'src/components/layout';
-import { Center } from 'src/components/sections/partials/Center';
-import styled from 'styled-components';
+import { useState } from 'react'
+import { TextField, Button } from '@material-ui/core'
+import { Layout } from 'src/components/layout'
+import { Center } from 'src/components/sections/partials/Center'
+import styled from 'styled-components'
+import cfg from 'config/ui'
+import { API } from 'src/api-services'
 
 const Wrapper = styled.div`
-  height: 80vh;
+  position: relative;
+  z-index: 1;
+  height: 100vh;
   text-align: center;
   margin-bottom: -30rem;
   .centered-container {
@@ -12,7 +17,7 @@ const Wrapper = styled.div`
     flex-wrap: no-wrap !important;
     margin: auto !important;
   }
-`;
+`
 
 const FormWrapper = styled.div`
   border-radius: 0.5rem;
@@ -50,7 +55,7 @@ const FormWrapper = styled.div`
     margin-top: -16px;
     margin-bottom: 16px;
   }
-`;
+`
 
 const InputWrapper = styled.div`
   * {
@@ -73,7 +78,6 @@ const InputWrapper = styled.div`
 
   .response {
     text-align: center;
-    color: red !important;
     height: 0;
     line-height: 0;
     padding: 0;
@@ -82,22 +86,52 @@ const InputWrapper = styled.div`
     bottom: -1.5rem;
   }
 
-  .response a {
+  .response error {
     color: red !important;
   }
   .response.success,
   .response.success * {
     color: green !important;
   }
-`;
+`
 
 const Spacer = styled.div`
   height: 0.5rem;
-`;
+`
+
 const CallOfDutyLogin = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [btnDisabled, setBtnDisabled] = useState(false)
+  const [formResponse, setFormResponse] = useState(null)
+  const submitLogin = async ():Promise<void> => {
+    setFormResponse({})
+    setBtnDisabled(true)
+    const loginRes = await API.CallOfDuty.login(email, password)
+    setFormResponse(loginRes)
+    if (loginRes?.errors?.length) {
+      setBtnDisabled(false)
+    }
+    if (loginRes?.forward) {
+      console.log('Forwarding to', loginRes.forward)
+      setTimeout(() => window.location.href = loginRes.forward, cfg.delay.forward)
+    }
+  }
+  const ErrorMessage = () => {
+    if (!formResponse?.errors?.length) {
+      return <></>
+    }
+    return <p className="response error">{formResponse.errors[0]}</p>
+  }
+  const SuccessMessage = () => {
+    if (!formResponse?.response?.jwt) {
+      return <></>
+    }
+    return <p className="response success">login successful, one moment...</p>
+  }
   return (
     <Layout title="Best-in-class stats, coaching, matchmaking, and more | Stagg.co">
-      <Wrapper className="reveal-from-right">
+      <Wrapper>
         <Center>
           <FormWrapper>
             <h2>JOIN THE WORLD OF</h2>
@@ -108,7 +142,8 @@ const CallOfDutyLogin = () => {
                 autoComplete="false"
                 label="Email"
                 variant="outlined"
-                onChange={(e) => e.target.value}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Spacer />
               <TextField
@@ -116,20 +151,20 @@ const CallOfDutyLogin = () => {
                 label="Password"
                 type="password"
                 variant="outlined"
-                onChange={(e) => e.target.value}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Spacer />
               <Button
-                disabled={false}
-                onClick={() => {}}
+                disabled={btnDisabled}
+                onClick={submitLogin}
                 variant="contained"
                 color="primary"
               >
-                {false ? 'Loading...' : 'Sign In'}
+                {btnDisabled ? 'Loading...' : 'Sign In'}
               </Button>
-              <p className={['response', false ? 'success' : ''].join(' ')}>
-                {}
-              </p>
+              <ErrorMessage />
+              <SuccessMessage />
             </InputWrapper>
           </FormWrapper>
           <p>
@@ -144,6 +179,6 @@ const CallOfDutyLogin = () => {
       </Wrapper>
     </Layout>
   );
-};
+}
 
-export default CallOfDutyLogin;
+export default CallOfDutyLogin

@@ -23,7 +23,7 @@ export namespace Match {
         'br_25' | 'br_71' | 'br_74' | 'br_77' | 'br_86' | 'br_87' | 'br_88' | 'br_89' | 
         'br_brsolo' | 'br_brduos' | 'br_brtrios' | 'br_brquads' | 'br_br_real' | 'br_brthquad' |
         'brtdm_rmbl' | 'br_mini_miniroyale' | 'br_jugg_brtriojugr' | 'br_jugg_brquadjugr' | 'br_brbbsolo' |
-        'br_brtriostim_name2' | 'br_brduostim_name2'
+        'br_brtriostim_name2' | 'br_brduostim_name2' | 'br_brbbquad'
     export interface Team {
         name: string
         placement: number
@@ -95,7 +95,7 @@ export namespace Match {
     }
 }
 // Warzone Profile
-export interface Profile {
-    level: number
+export interface Profile extends Schema.Routes.Profile {
+
 }
 

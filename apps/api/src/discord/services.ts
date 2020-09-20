@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js'
 import { Injectable } from '@nestjs/common'
 import { DISCORD_TOKEN } from 'src/config'
-import { formatOutput, Output } from './util'
+import { formatOutput, Output } from 'src/discord/bot/util'
 
 @Injectable()
 export class DiscordService {

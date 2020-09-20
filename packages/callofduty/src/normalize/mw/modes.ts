@@ -68,6 +68,7 @@ Modes.br_brthquad = { ...Modes.br_89, id: 'br_brthquad', lobbySize: 200, name: '
 Modes.br_86 = { ...Modes.br_89, id: 'br_86', realism: true, buybacks: false, name: 'BR Realism Quads' } // Realism quads
 Modes.br_br_real = { ...Modes.br_86, id: 'br_br_real' }
 Modes.br_jugg_brquadjugr = { ...Modes.br_89, id: 'br_jugg_brquadjugr', name: 'BR Juggernaut Quads' } // juggernaut drops in quads
+Modes.br_brbbquad = { ...Modes.br_89, id: 'br_brbbquad', name: 'BR Buyback Quads' } // auto respawn if >$4500
 
 // BR Mini
 Modes.br_mini_miniroyale = { ...Modes.br_74, lobbySize: 75, respawns: true, name: 'Mini Royale' } // mini trios

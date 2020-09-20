@@ -14,12 +14,7 @@ export const FooterNav = ({ className, ...props }: FooterNavProps) => {
       <ul className="list-reset">
         <li>
           <Link href="/">
-            <a href="/">Developers</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/">
-            <a href="/">Terms</a>
+             <a href="/">Terms of service</a>
           </Link>
         </li>
       </ul>

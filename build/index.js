@@ -34,6 +34,13 @@ function hydrateApp(dir, hydratedSecrets) {
     appYaml.runtime = runtime
     appYaml.instance_class = instance
     appYaml.env_variables = { PORT: port }
+    appYaml.handlers = [
+        {
+            url: '/.*',
+            secure: 'always',
+            script: 'auto',
+        }
+    ]
     for(const secret of secrets) {
         if (!hydratedSecrets[secret]) {
             throw `${APPS_DIR}/${dir} missing secret ${secret}`
@@ -72,12 +79,13 @@ function hydrateService(dir, hydratedSecrets) {
 // Download individual secret from GCP
 async function downloadSecretFromGCP(secret, destroyDownloadedSecret=true) {
     let secretValue
-    console.log(`[>] gcloud secrets versions access latest --secret=${GCP_SECRET_PREFIXES[secretSauce]}${secret} > .env.${secret}`)
-    const child = exec(`gcloud secrets versions access latest --secret=${GCP_SECRET_PREFIXES[secretSauce]}${secret} > .env.${secret}`, (error, stdout, stderr) => {
+    const cmd = `gcloud secrets versions access latest --secret=${GCP_SECRET_PREFIXES[secretSauce]}${secret} > .env.${secret}`
+    console.log(`[>] ${cmd}`)
+    const child = exec(cmd, (error, stdout, stderr) => {
         if (error || stderr) throw error || stderr
         secretValue = fs.readFileSync(`${__dirname}/.env.${secret}`, 'utf8').trim()
         if (destroyDownloadedSecret) {
-            fs.unlinkSync(`${__dirname}/.env.${secret}`)
+            setTimeout(() => fs.unlinkSync(`${__dirname}/.env.${secret}`), 1000)
         }
         console.log(`[>] Hydrated secret "${secret}" with "${secretValue}"`)
     })
@@ -114,9 +122,9 @@ async function hydrate() {
         console.log('[?] Downloading:', missingSecretKeys.join(', '))
         for(const secret of missingSecretKeys) {
             hydratedSecrets[secret] = await downloadSecretFromGCP(secret)
+            await delay(1000)
         }
     }
-    await delay(requiredSecrets.length * 100)
     for(const appKey in apps) {
         hydrateApp(appKey, hydratedSecrets)        
     }

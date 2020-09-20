@@ -1,0 +1,71 @@
+import { API, Schema } from '@stagg/callofduty'
+import { Connection, Types } from 'mongoose'
+import { InjectConnection } from '@nestjs/mongoose'
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { Account } from 'src/callofduty/account/schemas'
+
+@Injectable()
+export class CallOfDutyAccountService {
+  constructor(
+    @InjectConnection('stagg') private db_stg: Connection,
+    @InjectConnection('callofduty') private db_cod: Connection,
+  ) {}
+  public async getAccountById(accountId:string):Promise<Account> {
+    return this.db_cod.collection('accounts').findOne({ _id: Types.ObjectId(accountId) })
+  }
+  public async getAccountByEmail(email:string):Promise<Account> {
+    return this.db_cod.collection('accounts').findOne({ email })
+  }
+  public async getAccountByPlatformUsername(platform:Schema.API.Platform, username:string):Promise<Account> {
+    return this.db_cod.collection('accounts').findOne({ [`profiles.${platform}`]: username })
+  }
+  public async getAccountByUserId(userId:string):Promise<Account> {
+    const user = await this.db_stg.collection('users').findOne({ _id: Types.ObjectId(userId) })
+    return this.getAccountById(user?.accounts?.callofduty)
+  }
+  public async getRandomAuthTokens():Promise<{ atkn: string, sso: string, xsrf: string }> {
+    const tokens = await this.db_cod.collection('accounts').find({ 'auth.atkn': { $exists: true } }, { auth: 1 } as any).toArray()
+    console.log(tokens)
+    return null
+  }
+  public async getMatchRecordCountsForAccount(account:Partial<Account>):Promise<{ [key:string]: { mp: number, wz: number } }> {
+    const counts = {}
+    for(const game of account.games) {
+      try {
+        counts[game] = {
+          mp: await this.db_cod.collection(`_raw.${game}.mp.matches`).estimatedDocumentCount({ 'player._id': account._id }),
+          wz: await this.db_cod.collection(`_raw.${game}.wz.matches`).estimatedDocumentCount({ 'player._id': account._id }),
+        }
+      } catch(e) {}
+    }
+    return counts
+  }
+  public async getProfileDiff(platform:Schema.API.Platform, username:string) {
+    const acct = await this.getAccountByPlatformUsername(platform, username)
+        let { auth } = acct
+        if (!acct) {
+            auth = await this.getRandomAuthTokens()
+        }
+        if (!auth) {
+            throw new InternalServerErrorException('something went wrong')
+        }
+        const matchCounts = await this.getMatchRecordCountsForAccount(acct)
+        const account = !acct ? {} : {
+            _id: acct?._id,
+            games: acct?.games,
+            profiles: acct?.profiles,
+            matches: matchCounts,
+        }
+        const api = new API(auth)
+        const apiMatchCounts = {}
+        const gameProfileData = {}
+        for(const game of account?.games) {
+            try { gameProfileData[game] = await api.Profile(username, platform, 'mp', game) } catch(e) {}
+            apiMatchCounts[game] = gameProfileData[game]?.lifetime?.all?.properties?.totalGamesPlayed || 0
+        }
+        return {
+            account,
+            profile: { matches: apiMatchCounts },
+        }
+  }
+}

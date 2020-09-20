@@ -45,7 +45,7 @@ export default class {
     async Platforms(username:string, platform:Schema.API.Platform='uno'):Promise<Schema.API.MW.Routes.Platforms> {
         return this.request({ url: `/crm/cod/v2/accounts/platform/${platform}/gamer/${encodeURIComponent(username)}` })
     }
-    async Profile(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw'):Promise<Schema.API.MW.WZ.Profile> {
+    async Profile(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.Profile> {
         return this.request({ url: `/stats/cod/v1/title/${game}/${this.PlayerURL(username, platform)}/profile/type/${mode}` })
     }
     async Matches(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw', next:number=0):Promise<Schema.API.MW.Routes.Matches> {

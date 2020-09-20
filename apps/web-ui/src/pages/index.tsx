@@ -7,28 +7,22 @@ import { Hero } from 'src/components/sections/Hero';
 import { SignUp } from 'src/components/sections/SignUp';
 import { Testimonial } from 'src/components/sections/Testimonial';
 
-const IndexContent = () => {
-  return (
-    <>
-      <Hero className="illustration-section-01" />
-      <FeaturesTiles />
-      <FeaturesSplit
-        invertMobile
-        topDivider
-        imageFill
-        className="illustration-section-02"
-      />
-      {/* <Testimonial topDivider />
-      <Cta split /> */}
-      <SignUp />
-    </>
-  );
-};
-
 const Index = () => {
   return (
     <Layout title="Best-in-class stats, coaching, matchmaking, and more | Stagg.co">
-      <IndexContent />
+      <>
+        <Hero className="illustration-section-01" />
+        <FeaturesTiles />
+        <FeaturesSplit
+          invertMobile
+          topDivider
+          imageFill
+          className="illustration-section-02"
+        />
+        {/* <Testimonial topDivider />
+        <Cta split /> */}
+        <SignUp />
+      </>
     </Layout>
   );
 };

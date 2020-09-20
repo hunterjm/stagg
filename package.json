@@ -11,7 +11,9 @@
     "gcp:build": "node build && lerna run build",
     "api": "cd apps/api && yarn dev",
     "discord": "cd apps/discord && yarn dev",
-    "web-ui": "cd apps/web-ui && yarn dev"
+    "web-ui": "cd apps/web-ui && yarn dev",
+    "secrets:dev": "NODE_ENV=development node build",
+    "secrets:dev:win": "set NODE_ENV=development && node build"
   },
   "workspaces": [
     "build",

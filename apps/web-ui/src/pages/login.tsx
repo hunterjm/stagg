@@ -1,6 +1,5 @@
 import { Layout } from 'src/components/layout';
-
-import { SignUp } from '../../components/sections/SignUp';
+import { SignUp } from 'src/components/sections/SignUp';
 
 const Login = () => {
   return (

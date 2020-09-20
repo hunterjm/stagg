@@ -12,6 +12,7 @@ async function bootstrap() {
       `----------------------------------------------------------${'\x1b[0m' /* reset */}`
   )
   const app = await NestFactory.create(RootModule)
+  app.enableCors()
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(PORT)
 }
