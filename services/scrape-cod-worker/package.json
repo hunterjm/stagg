@@ -1,6 +1,6 @@
 {
   "name": "@stagg/faas-scrape-worker-cod",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -12,8 +12,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stagg/callofduty": "^0.8.6",
-    "@stagg/mdb": "^0.8.6",
+    "@stagg/callofduty": "^0.8.7",
+    "@stagg/mdb": "^0.8.7",
     "@stagg/util": "^0.8.0",
     "axios": "^0.20.0"
   },

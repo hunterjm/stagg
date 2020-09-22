@@ -1,6 +1,6 @@
 {
   "name": "stagg-ui-web",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "Web UI for Stagg.co",
   "private": true,
   "author": "Dan Lindsey",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
-    "@stagg/callofduty": "^0.8.6",
+    "@stagg/callofduty": "^0.8.7",
     "classnames": "^2.2.6",
     "jsonwebtoken": "^8.5.1",
     "next": "^9.4.4",
