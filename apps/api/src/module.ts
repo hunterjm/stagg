@@ -4,6 +4,7 @@ import { ChartModule } from './charts/module'
 import { NotificationModule } from './notify/module'
 import { DiscordModule } from './discord/module'
 import { CallOfDutyModule } from './callofduty/module'
+import { RenderModule } from './render/module'
 import { MONGO } from './config'
 
 
@@ -20,6 +21,7 @@ export class RootController {
   controllers: [],
   imports: [
     ChartModule,
+    RenderModule,
     DiscordModule,
     CallOfDutyModule,
     NotificationModule,

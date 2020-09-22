@@ -7,9 +7,15 @@ import cfg from 'config/ui'
 import { API } from 'src/api-services'
 
 const Wrapper = styled.div`
+  * {
+    font-size: 0.8rem;
+  }
+  p {
+    margin-top: 16px;
+  }
   position: relative;
   z-index: 1;
-  height: 100vh;
+  padding-top: 128px;
   text-align: center;
   margin-bottom: -30rem;
   .centered-container {

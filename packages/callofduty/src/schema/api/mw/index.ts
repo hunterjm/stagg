@@ -31,22 +31,22 @@ export namespace Loadout {
         }
         export type Name = 
             // pistols
-            'pi_cpapa' | 'pi_decho' | 'pi_mike1911' | 'pi_papa320' | 'pi_mike9' | 'pi_golf21' |
+            'iw8_pi_cpapa' | 'iw8_pi_decho' | 'iw8_pi_mike1911' | 'iw8_pi_papa320' | 'iw8_pi_mike9' | 'iw8_pi_golf21' |
             // shotguns
-            'sh_charlie725' | 'sh_romeo870' | 'sh_oscar12' | 'sh_dpapa12' | 'sh_mike26' |
+            'iw8_sh_charlie725' | 'iw8_sh_romeo870' | 'iw8_sh_oscar12' | 'iw8_sh_dpapa12' | 'iw8_sh_mike26' |
             // submachine guns
-            'sm_augolf' | 'sm_victor' | 'sm_mpapa5' | 'sm_mpapa7' | 'sm_papa90' | 'sm_beta' | 'sm_smgolf45' | 'sm_uzulu' |
+            'iw8_sm_augolf' | 'iw8_sm_victor' | 'iw8_sm_mpapa5' | 'iw8_sm_mpapa7' | 'iw8_sm_papa90' | 'iw8_sm_beta' | 'iw8_sm_smgolf45' | 'iw8_sm_uzulu' |
             // assault rifles
-            'ar_akilo47' | 'ar_galima' | 'ar_falima' | 'ar_scharlie' | 'ar_falpha' | 'ar_sierra552' | 'ar_kilo433' | 'ar_mcharlie' |
-            'ar_mike4' | 'ar_asierra12' | 'ar_tango21' |
+            'iw8_ar_akilo47' | 'iw8_ar_galima' | 'iw8_ar_falima' | 'iw8_ar_scharlie' | 'iw8_ar_falpha' | 'iw8_ar_sierra552' | 'iw8_ar_kilo433' | 'iw8_ar_mcharlie' |
+            'iw8_ar_mike4' | 'iw8_ar_asierra12' | 'iw8_ar_tango21' |
             // light machineguns
-            'lm_mkilo3' | 'lm_mgolf36' | 'lm_kilo121' | 'lm_mgolf34' | 'lm_pkilo' | 'lm_lima86' |
+            'iw8_lm_mkilo3' | 'iw8_lm_mgolf36' | 'iw8_lm_kilo121' | 'iw8_lm_mgolf34' | 'iw8_lm_pkilo' | 'iw8_lm_lima86' |
             // sniper/marksman rifles
-            'sn_alpha50' | 'sn_crossbow' | 'sn_delta' | 'sn_mike14' | 'sn_hdromeo' | 'sn_kilo98' | 'sn_sbeta' | 'sn_xmike109' | 'sn_sksierra' |
+            'iw8_sn_alpha50' | 'iw8_sn_crossbow' | 'iw8_sn_delta' | 'iw8_sn_mike14' | 'iw8_sn_hdromeo' | 'iw8_sn_kilo98' | 'iw8_sn_sbeta' | 'iw8_sn_xmike109' | 'iw8_sn_sksierra' |
             // launchers
-            'la_juliet' | 'la_gromeo' | 'la_rpapa7' | 'la_kgolf' |
+            'iw8_la_juliet' | 'iw8_la_gromeo' | 'iw8_la_rpapa7' | 'iw8_la_kgolf' |
             // melee/misc
-            'me_soscar' | 'me_akimboblades' | 'me_akimboblunt' | 'me_riotshield'
+            'iw8_me_soscar' | 'iw8_me_akimboblades' | 'iw8_me_akimboblunt' | 'iw8_me_riotshield'
     }
 }
 

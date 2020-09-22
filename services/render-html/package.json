@@ -1,13 +1,14 @@
 {
-  "name": "@stagg/faas-render-view",
+  "name": "@stagg/faas-render-html",
   "version": "0.8.0",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "dev": "ts-node-dev src/index.ts NODE_ENV=development",
-    "build": "tsc",
-    "deploy": "yarn build && gcloud functions deploy render-view --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=512MB",
+    "dev": "ts-node-dev src/express.ts",
+    "prod": "tsc && node dist/express.js",
+    "build": "tsc && copyfiles -u 1 src/html/*.html dist/",
+    "deploy": "yarn build && gcloud functions deploy render-html --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=512MB",
     "start": "node dist/index.js",
     "test": "ts-jest"
   },
@@ -17,6 +18,9 @@
   "devDependencies": {
     "@types/jest": "^26.0.13",
     "@types/node": "^14.0.13",
+    "body-parser": "^1.19.0",
+    "copyfiles": "^2.3.0",
+    "express": "^4.17.1",
     "jest": "^26.4.2",
     "ts-jest": "^26.3.0",
     "ts-node": "^8.10.2",

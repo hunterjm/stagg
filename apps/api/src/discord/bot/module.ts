@@ -1,12 +1,20 @@
 import { Module } from '@nestjs/common'
 import { UserModule } from 'src/user/module'
-import { DiscordBotRelayService } from 'src/discord/bot/services'
-import { DiscordBotRelayDispatchService } from 'src/discord/bot/services.dispatch'
+import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
+import { DiscordBotService } from 'src/discord/bot/services'
+import { DiscordBotDispatchService } from 'src/discord/bot/services.dispatch'
+import { DiscordBotHandlerService } from 'src/discord/bot/services.handlers'
+import { DiscordBotCallOfDutyHandlerService } from 'src/discord/bot/services.h.callofduty'
 
 @Module({
-  imports: [UserModule],
-  exports: [],
-  providers: [DiscordBotRelayService, DiscordBotRelayDispatchService],
+  imports: [UserModule, CallOfDutyAccountModule],
+  exports: [DiscordBotDispatchService],
+  providers: [
+    DiscordBotService,
+    DiscordBotHandlerService,
+    DiscordBotDispatchService,
+    DiscordBotCallOfDutyHandlerService,
+  ],
   controllers: [],
 })
 

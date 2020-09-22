@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js'
-import { Controller, Get, Param, Res } from '@nestjs/common'
+import { Controller, Get, Param, Res, BadRequestException } from '@nestjs/common'
 import { UserService } from 'src/user/services'
 import { DiscordService } from 'src/discord/services'
+import { Dispatch } from 'src/discord/bot/services.dispatch'
 import { DISCORD_INVITE_URL } from 'src/config'
 
 @Controller('/discord')
@@ -37,5 +38,17 @@ export class DiscordController {
     @Get('/guilds/:guildId/members')
     async GuildMembersById(@Param() { guildId }):Promise<Discord.GuildMember[]> {
         return this.discordService.client.guilds.cache.get(guildId).members.cache.array()
+    }
+    @Get('/cmd/:userId/*')
+    async SimulateBotCommand(@Param() params):Promise<Dispatch.Output> {
+        const { userId } = params
+        delete params.userId
+        const user = await this.userService.fetchById(userId)
+        if (!user) {
+            throw new BadRequestException('user does not exist')
+        }
+        const [chainSlashed] = Object.values(params) as string[]
+        const chain = chainSlashed.split('/')
+        return this.discordService.triggerBotCommand(user, ...chain)
     }
 }

@@ -135,3 +135,8 @@ const allMwModeIds = Object.keys(Normalize.MW.Modes)
 const allMwWeaponIds = Object.keys(Normalize.MW.Weapons)
 const allKillstreakIds = Object.keys(Normalize.MW.Killstreaks)
 ```
+
+## Discovery + Findings
+
+**`timePlayed`** - The amount of time you spend in the game after the pre-game lobby including the final cut-scene
+**`teamSurvivalTime`** - The amount of time your team was alive including gulag down the last player on the team

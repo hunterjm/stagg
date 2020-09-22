@@ -1,17 +1,14 @@
 import { Module } from '@nestjs/common'
 import { NotificationController } from './controller'
-import { DiscordService } from 'src/discord/services'
-import { UserService } from 'src/user/services'
+import { DiscordModule } from 'src/discord/module'
+import { UserModule } from 'src/user/module'
 
 @Module({
-  providers: [
-    UserService,
-    DiscordService
-  ],
+  providers: [],
   controllers: [
     NotificationController
   ],
-  imports: [],
+  imports: [DiscordModule, UserModule],
 })
 
 export class NotificationModule {}

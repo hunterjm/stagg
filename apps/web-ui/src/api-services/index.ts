@@ -1,4 +1,5 @@
 import cfg from 'config/ui'
+import * as Discord from './discord'
 import * as CallOfDuty from './callofduty'
 
 export interface NestError {
@@ -13,6 +14,7 @@ export interface Response<T> {
     message?: string | string[] // only present with error, eg: "invalid credentials"
 }
 export const API = {
+    Discord,
     CallOfDuty,
     url(url:string):string {
         return url.replace(/\/+/g, '/').replace(/http(s?):/, 'http$1://')

@@ -16,6 +16,9 @@ export default {
         url: {
             join: 'https://discord.gg/WhWrbY8',
             bot: 'https://discord.com/oauth2/authorize?client_id=723179755548967027&scope=bot&permissions=67584',
+        },
+        sim: {
+            userId: process.env.NODE_ENV === 'development' ? '5f66c6a7aa7cd12e9c06e0d1' : '5f162e2abb766c451fe0f583'
         }
     },
     games: [

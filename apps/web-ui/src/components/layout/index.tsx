@@ -16,7 +16,7 @@ export const Layout = ({ title, children }: LayoutProps) => {
         <title>{title}</title>
       </Head>
       <Header navPosition="right" />
-      <main className="site-content">{children}</main>
+      <main className="site-content" style={{minHeight: 'calc(100vh - 100px)'}}>{children}</main>
       <Footer />
     </>
   );

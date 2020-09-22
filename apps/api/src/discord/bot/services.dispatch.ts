@@ -1,10 +1,11 @@
-import * as Discord from 'discord.js'
 import { Connection } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Normalize } from '@stagg/callofduty'
 import { UserService } from 'src/user/services'
 import { User } from 'src/user/schemas'
+import { DiscordBotHandlerService } from 'src/discord/bot/services.handlers'
+import { DiscordBotCallOfDutyHandlerService } from 'src/discord/bot/services.h.callofduty'
 
 export namespace Dispatch {
   export type Handler = Handler.Sync | Handler.Async
@@ -14,7 +15,10 @@ export namespace Dispatch {
   }
   export type Output = Output.Chunk[]
   export namespace Output {
-    export type Chunk = string | { files: string[] }
+    export type Files = { files:string[] }
+    export type Reactions = { reactions:string[] }
+    export type CombinedAttachments = Files & Reactions
+    export type Chunk = string | Files | Reactions | CombinedAttachments
   }
   export interface Map {
     _default?: Dispatch.Handler
@@ -25,20 +29,77 @@ export namespace Dispatch {
 type InputUserMap = { [key:string]: User }
 
 @Injectable()
-export class DiscordBotRelayDispatchService {
+export class DiscordBotDispatchService {
   constructor(
     private readonly userService: UserService,
+    private readonly handlerService: DiscordBotHandlerService,
+    private readonly codHandler: DiscordBotCallOfDutyHandlerService,
     @InjectConnection('callofduty') private db_cod: Connection,
   ) {}
-  public async dispatch(m:Discord.Message, ...chain:string[]):Promise<Dispatch.Output> {
-      const user = await this.userService.fetchByDiscordId(m.author.id)
+  private get dispatchTree() {
+    // Root tree defines all functionality
+    const root = {
+      help: this.handlerService.help.bind(this.handlerService),
+      shortcut: this.handlerService.shortcut.bind(this.handlerService),
+      barracks: this.codHandler.wzBarracks.bind(this.codHandler),
+      report: {
+        cod: {
+          mw: {
+            wz: {
+              all: this.codHandler.statsReport.bind(this.codHandler),
+              barracks: this.codHandler.wzBarracks.bind(this.codHandler),
+            }
+          }
+        }
+      }
+    }
+    // Alias tree defines shortcuts and aliases to use with the root tree for better UX
+    const alias = {
+      helpme: root.help,
+    }
+    return { ...alias, ...root }
+  }
+  private dispatchTreeKeys(search:string|Function) { // was going to use this for keyword prevention in shortcuts...
+    const handlerFunction = typeof search === typeof 'str' ? this.dispatchTree[search as string] : search
+  }
+  public async dispatch(user:User, ...chain:string[]):Promise<Dispatch.Output> {
       try {
-        const users = await this.inputReduceUsers(user, 'callofduty', ...chain)
-        console.log('[>] Dispatcher got users', users)
-        return ['tired yo']
+        this.handlerService.shortcut({ user, users: {}, params: ['delete', 'hh']})
+        const { output, input } = this.inputReduceCmds(user?.discord?.shortcuts, ...chain)
+        const users = chain[0] === 'shortcut' ? {} : await this.inputReduceUsers(user, 'callofduty', ...input)
+        const remainingParams = input.filter(chunk => !Object.keys(users).includes(chunk))
+        const o = await output({ user, users, params: remainingParams })
+        return o
       } catch(e) {
         return [`ERROR: ${e}`]
       }
+  }
+  private inputReduceCmds(shortcuts:any, ...chain:string[]):{ output: Function, input: string[]} {
+    let dispatcher:any = this.dispatchTree
+    let lastDispatcherIndex = 0
+    let hydratedChain = [...chain]
+    if (shortcuts && chain[0] !== 'shortcut') { // if they're currently modifying shortcuts dont hydrate
+      hydratedChain = [...chain.map(chunk => shortcuts[chunk] || chunk)]
+      hydratedChain = hydratedChain.join(' ').replace(/\s+/g, ' ').split(' ').filter(str => str)
+    }
+    for(const i in hydratedChain) {
+        const child = hydratedChain[i].toLowerCase()
+        if (dispatcher[child]) {
+            dispatcher = dispatcher[child]
+            lastDispatcherIndex = Number(i)
+            continue
+        }
+        const strippedChild = child.replace(/s$/i, '')
+        if (dispatcher[strippedChild] || dispatcher['_default']) {
+            lastDispatcherIndex = Number(i) - 1
+            dispatcher = dispatcher[strippedChild] ? dispatcher[strippedChild] : dispatcher['_default']
+        }
+    }
+    if (!dispatcher || typeof dispatcher !== 'function') {
+        console.log('Cannot find dispatcher', lastDispatcherIndex)
+        return null
+    }
+    return { output: dispatcher, input: [...hydratedChain.slice(lastDispatcherIndex+1)] }
   }
   private async inputReduceUsers(user:User, game:'callofduty', ...pids:string[]):Promise<InputUserMap> {
     const userMap:InputUserMap = {}
@@ -47,31 +108,11 @@ export class DiscordBotRelayDispatchService {
     }
     const discordUsersMap = await this.inputReduceUsersFromDiscordTags(...pids)
     const gameAcctUsersMap = await this.inputReduceUsersFromGameIds(game, ...pids)
-    const firstRoundUsers = { ...discordUsersMap, ...gameAcctUsersMap }
-    // now remove all the pids that were found in the two methods above
-    for(const pid in firstRoundUsers) {
-        if (firstRoundUsers[pid]) {
-            delete pids[pids.indexOf(pid)]
-        }
-    }
-    // now reduce shortcuts if applicable, if not return current users
-    if (!user?.discord?.shortcuts) {
-        return { ...userMap, ...firstRoundUsers }
-    }
-    for(const i in pids) {
-        if (user.discord.shortcuts[pids[i]]) {
-            pids[i] = user.discord.shortcuts[pids[i]]
-        }
-    }
-    // now do discord tags and game ids again
-    const discordUsersMap2 = await this.inputReduceUsersFromDiscordTags(...pids)
-    const gameAcctUsersMap2 = await this.inputReduceUsersFromGameIds(game, ...pids)
-    const secondRoundUsers = { ...discordUsersMap2, ...gameAcctUsersMap2 }
-    return { ...userMap, ...firstRoundUsers, ...secondRoundUsers }
+    return { ...userMap, ...discordUsersMap, ...gameAcctUsersMap }
   }
   private async inputReduceUsersFromDiscordTags(...pids:string[]):Promise<InputUserMap> {
     const userMap:InputUserMap = {}
-    for (const i in pids) {
+    for (const i in pids.filter(pid => pid)) {
         const pid = pids[i]
         if (pid.match(/<@!([0-9]+)>/)) {
             const discordId = pid.replace(/<@!([0-9]+)>/, '$1')
@@ -94,7 +135,6 @@ export class DiscordBotRelayDispatchService {
   }
   private async inputReduceUsersFromCallOfDutyIds(...pids:string[]):Promise<InputUserMap> {
     const playerMap:any = {}
-    const queries = []
     for (const i in pids) {
         const pid = pids[i].toLowerCase()
         const index = Number(i)

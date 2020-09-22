@@ -26,6 +26,7 @@ export namespace Options {
 
 export namespace Runners {
     export class Matches {
+        private user: any
         private db_cod: Db
         private db_stg: Db
         private complete: boolean
@@ -59,6 +60,7 @@ export namespace Runners {
             Mongo.config(cfg)
             this.db_stg = await Mongo.client('stagg')
             this.db_cod = await Mongo.client('callofduty')
+            this.user = await this.db_stg.collection('users').findOne({ 'accounts.callofduty': this.player._id })
             this.options.logger(`[>] COD: Scraping ${this.Description}`)
             while (!this.complete) {
                 try {
@@ -166,13 +168,15 @@ export namespace Runners {
                     const map = Normalize.MW.Map(m.map)
                     const mode = Normalize.MW.Mode(m.mode)
                     if (map && mode) {
-                        axios.post(`https://api.stagg.co/notify/callofduty/${this.player._id}`, {
-                            channels: ['discord'],
-                            title: 'New match available',
-                            payload: {
-                                discord: `Your latest match of ${mode.name} on ${map.name} is now available`
-                            }
-                        }).catch(() => this.options.logger('[!] Failed to send user Discord notification for match', m.matchID))
+                        if (this.user?.notifications?.discord) {
+                            axios.post(`https://api.stagg.co/notify/callofduty/${this.player._id}`, {
+                                channels: ['discord'],
+                                title: 'New match available',
+                                payload: {
+                                    discord: `Your latest match of ${mode.name} on ${map.name} is now available`
+                                }
+                            }).catch(() => this.options.logger('[!] Failed to send user Discord notification for match', m.matchID))
+                        }
                     } else {
                         if (!bugAlerts[`${m.map}-${m.mode}`]) {
                             // send notification to myself to fix this
@@ -245,6 +249,7 @@ export namespace Runners {
         }
         private get PreferredProfile():{username:string, platform:Schema.API.Platform} {
             // prefer battle, bo4 seemingly won't work with uno
+            if (this.player.profiles.id)     return { platform: 'uno', username: this.player.profiles.id }
             if (this.player.profiles.battle) return { platform: 'battle', username: this.player.profiles.battle }
             if (this.player.profiles.uno)    return { platform: 'uno', username: this.player.profiles.uno }
             if (this.player.profiles.xbl)    return { platform: 'xbl', username: this.player.profiles.xbl }

@@ -131,6 +131,6 @@ async function runner() {
 }
 
 export default async (req, res) => {
-    runner()
+    await runner()
     res.status(200).send({ success: true })
 }

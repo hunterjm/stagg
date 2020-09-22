@@ -61,6 +61,9 @@ function hydrateService(dir, hydratedSecrets) {
     const rawEnvLines = []
     const secretsYaml = {}
     const { secrets } = services[dir]
+    if (process.env.NODE_ENV === 'development') {
+        rawEnvLines.push('NODE_ENV=development')
+    }
     for(const secret of secrets) {
         if (!hydratedSecrets[secret]) {
             throw `${SERVICES_DIR}/${dir} missing secret ${secret}`

@@ -3,16 +3,18 @@ import { Connection } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Injectable } from '@nestjs/common'
 import { DISCORD_TOKEN } from 'src/config'
-import { DiscordBotRelayDispatchService } from 'src/discord/bot/services.dispatch'
+import { UserService } from 'src/user/services'
+import { DiscordBotDispatchService } from 'src/discord/bot/services.dispatch'
 import { formatOutput, Output } from 'src/discord/bot/util'
 
 // User Settings > Text & Images > Show emoji reactions on messages
 
 @Injectable()
-export class DiscordBotRelayService {
+export class DiscordBotService {
   private readonly client = new Discord.Client()
   constructor(
-    private readonly botDispatchService: DiscordBotRelayDispatchService,
+    private readonly userService: UserService,
+    private readonly botDispatchService: DiscordBotDispatchService,
     @InjectConnection('discord') private db_discord: Connection,
   ) {
     this.client.login(DISCORD_TOKEN)
@@ -23,7 +25,7 @@ export class DiscordBotRelayService {
           `| Discord bot online: ${this.client.user.tag}\n`+
           `----------------------------------------------------------${'\x1b[0m' /* reset */}`
       )
-      this.client.user.setActivity('for % messages...', {
+      this.client.user.setActivity(`for % in ${this.client.guilds.cache.array().length} servers`, {
         type: 'WATCHING',
         url: 'https://stagg.co'
       })
@@ -120,8 +122,8 @@ export class DiscordBotRelayService {
         return responseMessage.edit(formatOutput(output))
     }
     // we do have file(s), delete the previous message before posting the file(s)
+    await m.channel.send(formatOutput(output), { files })
     responseMessage.delete()
-    return m.channel.send(formatOutput(output), { files })
   }
   private async dispatch(m:Discord.Message, log?:any) {
     const chain = m.content
@@ -132,7 +134,8 @@ export class DiscordBotRelayService {
         .split(' ') // split into array of words
     const text = []
     const files = []
-    const dispatchRes = await this.botDispatchService.dispatch(m, ...chain)
+    const user = await this.userService.fetchByDiscordId(m.author.id)
+    const dispatchRes = await this.botDispatchService.dispatch(user, ...chain)
     for(const line of dispatchRes as any) {
       if (typeof line === typeof 'str' ) {
         text.push(line)
@@ -144,24 +147,3 @@ export class DiscordBotRelayService {
     return this.reply(m, text, files, log)
   }
 }
-
-// let dispatcher:any = this.commands
-//     let lastDispatcherIndex = 0
-//     for(const i in chain) {
-//         const child = chain[i].toLowerCase()
-//         if (dispatcher[child]) {
-//             dispatcher = dispatcher[child]
-//             lastDispatcherIndex = Number(i)
-//             continue
-//         }
-//         const strippedChild = child.replace(/s$/i, '')
-//         if (dispatcher[strippedChild] || dispatcher['_default']) {
-//             lastDispatcherIndex = Number(i) - 1
-//             dispatcher = dispatcher[strippedChild] ? dispatcher[strippedChild] : dispatcher['_default']
-//         }
-//     }
-//     if (!dispatcher || typeof dispatcher !== 'function') {
-//         // invalid cmd - check shortcuts here?
-//         return this.reply(m, ['Invalid command, try `help`'], log)
-//     }
-//     const dispatchRes = await dispatcher(user, ...chain.slice(lastDispatcherIndex+1))
