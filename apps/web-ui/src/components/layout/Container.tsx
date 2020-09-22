@@ -10,7 +10,7 @@ export const ContentContainer = ({
   children,
 }: ContentContainerProps) => {
   return (
-    <section>
+    <section className="container">
       <div
         style={{
           padding: '2rem 0',
