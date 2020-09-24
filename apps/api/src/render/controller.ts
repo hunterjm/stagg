@@ -30,12 +30,13 @@ export class RenderController {
         }
         const weaponStats:any = {}
         const weaponAggr = MP.WeaponStats(player._id, [])
-        // const normToRawStatMap = { ''} // start back here
         const [weaponData] = await this.db_cod.collection('mw.mp.performances').aggregate(weaponAggr).toArray()
-        const rawProfile:Schema.API.MW.Routes.Profile = await this.db_cod.collection('_raw.mw.profiles').findOne({ _player: player._id })
         for(const key in weaponData) {
             const [statKey, weaponId] = key.split('__')
             const [parentKey, childKey] = statKey.split('_')
+            if (!weaponId) {
+                continue
+            }
             if (!weaponStats[weaponId]) {
                 weaponStats[weaponId] = {}
             }
@@ -48,14 +49,12 @@ export class RenderController {
                 weaponStats[weaponId][parentKey][childKey] = weaponData[key]
             }
         }
-        for(const key in weaponStats) {
-
-        }
 
         const mostKillsWithAnyWeapon = Math.max(...Object.values(weaponStats).map((stats:any) => stats.kills).filter(n => n))
         const weaponOfChoice = Object.keys(weaponStats).find(key => weaponStats[key].kills === mostKillsWithAnyWeapon)
 
-        const aggr = WZ.Barracks(player._id, [])
+        const actualBrModes:any = Object.keys(Normalize.MW.Modes).filter(mid => !mid.includes('dmz') && !mid.includes('tmd') && !mid.includes('mini'))
+        const aggr = WZ.Barracks(player._id, actualBrModes)
         const [data] = await this.db_cod.collection('mw.wz.performances').aggregate(aggr).toArray()
 
         deprecatedRequest({

@@ -43,21 +43,23 @@ export class DiscordBotDispatchService {
       register: this.handlerService.register.bind(this.handlerService),
       help: this.handlerService.help.bind(this.handlerService),
       shortcut: this.handlerService.shortcut.bind(this.handlerService),
-      barracks: this.codHandler.wzBarracks.bind(this.codHandler),
-      report: {
-        cod: {
-          mw: {
-            wz: {
-              all: this.codHandler.statsReport.bind(this.codHandler),
-              barracks: this.codHandler.wzBarracks.bind(this.codHandler),
-            }
+      callofduty: {
+        _default: this.codHandler.wzBarracks.bind(this.codHandler),
+        mw: {
+          _default: this.codHandler.wzBarracks.bind(this.codHandler),
+          wz: {
+            _default: this.codHandler.wzBarracks.bind(this.codHandler),
+            barracks: this.codHandler.wzBarracks.bind(this.codHandler),
           }
         }
-      }
+      },
     }
     // Alias tree defines shortcuts and aliases to use with the root tree for better UX
     const alias = {
-      helpme: root.help,
+      cod: root.callofduty,
+      mw: root.callofduty.mw,
+      wz: root.callofduty.mw.wz,
+      barracks: root.callofduty.mw.wz.barracks,
     }
     return { ...alias, ...root }
   }
@@ -91,13 +93,19 @@ export class DiscordBotDispatchService {
             continue
         }
         const strippedChild = child.replace(/s$/i, '')
+        console.log('Default exists:', dispatcher['_default'])
+        console.log('Requested key:', strippedChild)
         if (dispatcher[strippedChild] || dispatcher['_default']) {
             lastDispatcherIndex = Number(i) - 1
             dispatcher = dispatcher[strippedChild] ? dispatcher[strippedChild] : dispatcher['_default']
         }
     }
     if (!dispatcher || typeof dispatcher !== 'function') {
-        throw 'unknown dispatcher'
+        if (!dispatcher['_default']) {
+          throw 'unknown dispatcher'
+        } else {
+          dispatcher = dispatcher['_default']
+        }
     }
     return { output: dispatcher, input: [...hydratedChain.slice(lastDispatcherIndex+1)] }
   }
