@@ -6,6 +6,8 @@ const isDev = process.env.NODE_ENV === 'development'
 export const PORT = process.env.PORT || 8080
 export const JWT_SECRET = process.env.JWT_SECRET
 
+export const SELF_HOST = isDev ? `http://localhost:${PORT}` : 'https://api.stagg.co'
+
 export const GMAIL_ADDRESS = process.env.GMAIL_ADDRESS
 export const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
 

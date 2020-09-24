@@ -187,7 +187,7 @@ export namespace Routes {
         export interface Weekly {
             map: {}
             mode: Modes
-            all: Profile.Properties.All
+            all: Properties<Profile.Properties.All>
         }
         export interface Lifetime extends Weekly {
             itemData: Profile.ItemData

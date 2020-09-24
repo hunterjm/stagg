@@ -25,8 +25,7 @@ export class CallOfDutyAccountService {
   }
   public async getRandomAuthTokens():Promise<{ atkn: string, sso: string, xsrf: string }> {
     const tokens = await this.db_cod.collection('accounts').find({ 'auth.atkn': { $exists: true } }, { auth: 1 } as any).toArray()
-    console.log(tokens)
-    return null
+    return tokens[Math.floor(Math.random() * Math.floor(tokens.length))].auth
   }
   public async getMatchRecordCountsForAccount(account:Partial<Account>):Promise<{ [key:string]: { mp: number, wz: number } }> {
     const counts = {}

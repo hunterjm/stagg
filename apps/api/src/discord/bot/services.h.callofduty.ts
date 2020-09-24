@@ -5,6 +5,7 @@ import { User } from 'src/user/schemas'
 import { CallOfDutyAccountService } from 'src/callofduty/account/services'
 import { Dispatch } from 'src/discord/bot/services.dispatch'
 import { MP, WZ } from 'src/discord/bot/queries.h.callofduty'
+import { SELF_HOST } from 'src/config'
 
 // User Settings > Text & Images > Show emoji reactions on messages
 type HandlerParams = { user: User, users: {[key:string]: User}, params: string[] }
@@ -19,8 +20,8 @@ export class DiscordBotCallOfDutyHandlerService {
   public async wzBarracks({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
     const usersArr = Object.values(users)
     const files = !usersArr?.length
-      ? [`https://api.stagg.co/render/callofduty/mw/wz/barracks/user/${user._id}.png`]
-      : [...usersArr.map(u => `https://api.stagg.co/render/callofduty/mw/wz/barracks/user/${u._id}.png`)]
+      ? [`${SELF_HOST}/render/callofduty/mw/wz/barracks/user/${user._id}.png`]
+      : [...usersArr.map(u => `${SELF_HOST}/render/callofduty/mw/wz/barracks/user/${u._id}.png`)]
     return [{ files }]
   }
   public async statsReport({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {

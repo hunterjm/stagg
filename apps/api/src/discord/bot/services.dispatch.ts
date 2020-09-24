@@ -97,8 +97,7 @@ export class DiscordBotDispatchService {
         }
     }
     if (!dispatcher || typeof dispatcher !== 'function') {
-        console.log('Cannot find dispatcher', lastDispatcherIndex)
-        return null
+        throw 'unknown dispatcher'
     }
     return { output: dispatcher, input: [...hydratedChain.slice(lastDispatcherIndex+1)] }
   }

@@ -86,18 +86,6 @@ npm login --registry=https://registry.npmjs.org/ --scope=stagg
 - damageDone/damageTaken
 
 **Ideas**
-- Summarize with `wz barracks` and `mp barracks`
-    - Time played
-    - Games played
-    - Win/Loss Ratio
-    - Kill/Death Ratio
-    - Score Per Minute
-    - Best game
-        - Kills
-        - Score
-        - Team Wipes
-        - Damage Done
-        - Damage Taken
 - Custom Discord roles
     - KD
     - SPM

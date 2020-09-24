@@ -23,7 +23,7 @@ export default class {
             }, ...config,
         })
         if (status !== 200 || res.status !== 'success') {
-            console.log('[!] API Error:', res.data.message.replace('Not permitted: ', ''))
+            this.logger('[!] API Error:', res.data.message.replace('Not permitted: ', ''))
             throw res.data.message.replace('Not permitted: ', '')
         }
         return res.data

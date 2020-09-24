@@ -1,7 +1,7 @@
 import { Schema } from '../..'
 
 export namespace Mode {
-    export const MP = (m:Schema.API.MW.Routes.Profile.Mode.MP) => ({
+    export const MP = (m:Schema.API.MW.Routes.Profile.Mode.MP) => (!m ? null : {
         timePlayed: m.timePlayed,
         score: m.score,
         kills: m.kills,
@@ -9,7 +9,7 @@ export namespace Mode {
         stabs: m.stabs,
         setBacks: m.setBacks,
     })
-    export const WZ = (m:Schema.API.MW.Routes.Profile.Mode.WZ) => ({
+    export const WZ = (m:Schema.API.MW.Routes.Profile.Mode.WZ) => (!m ? null : {
         gamesPlayed: m.gamesPlayed,
         timePlayed: m.timePlayed,
         wins: m.wins,
@@ -22,7 +22,7 @@ export namespace Mode {
         cash: m.cash,
     })
 }
-export const Weapon = (w:Schema.API.MW.Routes.Profile.Properties.Weapon) => ({
+export const Weapon = (w:Schema.API.MW.Routes.Profile.Properties.Weapon) => (!w ? null : {
     kills: w.kills,
     deaths: w.deaths,
     headshots: w.headShots,
@@ -31,23 +31,23 @@ export const Weapon = (w:Schema.API.MW.Routes.Profile.Properties.Weapon) => ({
         miss: w.shots - w.hits,
     }
 })
-export const Equipment = (w:Schema.API.MW.Routes.Profile.Properties.Weapon) => ({
-    kills: w.kills,
-    deaths: w.deaths,
-    headshots: w.headShots,
+export const Equipment = (e:Schema.API.MW.Routes.Profile.Properties.Weapon) => (!e ? null : {
+    kills: e.kills,
+    deaths: e.deaths,
+    headshots: e.headShots,
     shots: {
-        hit: w.hits,
-        miss: w.shots - w.hits,
+        hit: e.hits,
+        miss: e.shots - e.hits,
     }
 })
 
 export namespace Killstreak {
-    export const Lethal = (k:Schema.API.MW.Routes.Profile.ScorestreakData.Scorestreak) => ({
+    export const Lethal = (k:Schema.API.MW.Routes.Profile.ScorestreakData.Scorestreak) => (!k ? null : {
         uses: k.uses,
         kills: k.extraStat1,
         awarded: k.awardedCount,
     })
-    export const Support = (k:Schema.API.MW.Routes.Profile.ScorestreakData.Scorestreak) => ({
+    export const Support = (k:Schema.API.MW.Routes.Profile.ScorestreakData.Scorestreak) => (!k ? null : {
         uses: k.uses,
         assists: k.extraStat1,
         awarded: k.awardedCount,
@@ -72,16 +72,16 @@ export const Profile = (p:Schema.API.MW.Routes.Profile):Schema.DB.MW.Profile => 
     ]
     for(const weaponGroup of weaponGroups) {
         for(const weaponId in p.lifetime.itemData[weaponGroup]) {
-            weapons[weaponId] = Weapon(p.lifetime.itemData[weaponGroup][weaponId])
+            weapons[weaponId] = Weapon(p.lifetime.itemData[weaponGroup][weaponId].properties)
         }
     }
     for(const lethalId in p.lifetime.itemData.lethals) {
-        lethals[lethalId] = Equipment(p.lifetime.itemData.lethals[lethalId])
+        lethals[lethalId] = Equipment(p.lifetime.itemData.lethals[lethalId].properties)
     }
     for(const tacticalId in p.lifetime.itemData.tacticals) {
-        tacticals[tacticalId] = Equipment(p.lifetime.itemData.lethals[tacticalId])
+        tacticals[tacticalId] = Equipment(p.lifetime.itemData.tacticals[tacticalId].properties)
     }
-    const killstreaks = {
+    const killstreaks:any = {
         lethal: {},
         support: {},
     }
@@ -93,54 +93,54 @@ export const Profile = (p:Schema.API.MW.Routes.Profile):Schema.DB.MW.Profile => 
     }
     return {
         total: {
-            kills: p.lifetime.all.kills,
-            deaths: p.lifetime.all.deaths,
-            suicides: p.lifetime.all.suicides,
-            headshots: p.lifetime.all.headshots,
-            assists: p.lifetime.all.assists,
-            games: p.lifetime.all.gamesPlayed,
-            wins: p.lifetime.all.wins,
-            ties: p.lifetime.all.ties,
-            losses: p.lifetime.all.losses,
-            score: p.lifetime.all.score,
-            timePlayed: p.lifetime.all.timePlayedTotal,
+            kills: p.lifetime.all.properties.kills,
+            deaths: p.lifetime.all.properties.deaths,
+            suicides: p.lifetime.all.properties.suicides,
+            headshots: p.lifetime.all.properties.headshots,
+            assists: p.lifetime.all.properties.assists,
+            games: p.lifetime.all.properties.gamesPlayed,
+            wins: p.lifetime.all.properties.wins,
+            ties: p.lifetime.all.properties.ties,
+            losses: p.lifetime.all.properties.losses,
+            score: p.lifetime.all.properties.score,
+            timePlayed: p.lifetime.all.properties.timePlayedTotal,
             shots: {
-                hit: p.lifetime.all.hits,
-                miss: p.lifetime.all.misses,
+                hit: p.lifetime.all.properties.hits,
+                miss: p.lifetime.all.properties.misses,
             },
         },
         best: {
-            kdr: p.lifetime.all.bestKD,
-            spm: p.lifetime.all.bestSPM,
-            score: p.lifetime.all.bestScore,
-            kills: p.lifetime.all.bestKills,
-            deaths: p.lifetime.all.bestDeaths,
-            assists: p.lifetime.all.bestAssists,
-            stabs: p.lifetime.all.bestStabs,
-            damage: p.lifetime.all.bestDamage,
-            winstreak: p.lifetime.all.recordLongestWinStreak,
-            killstreak: p.lifetime.all.bestKillStreak,
-            killchains: p.lifetime.all.bestKillChains,
-            infectedKills: p.lifetime.all.bestKillsAsInfected,
-            survivorKills: p.lifetime.all.bestKillsAsSurvivor,
-            confirmed: p.lifetime.all.bestConfirmed,
-            denied: p.lifetime.all.bestDenied,
-            captures: p.lifetime.all.bestCaptures,
-            defends: p.lifetime.all.bestDefends,
-            plants: p.lifetime.all.bestPlants,
-            defuses: p.lifetime.all.bestDefuses,
-            destructions: p.lifetime.all.bestDestructions,
-            setbacks: p.lifetime.all.bestSetbacks,
-            rescues: p.lifetime.all.bestRescues,
-            returns: p.lifetime.all.bestReturns,
-            touchdowns: p.lifetime.all.bestTouchdowns,
-            fieldGoals: p.lifetime.all.bestFieldgoals,
+            kdr: p.lifetime.all.properties.bestKD,
+            spm: p.lifetime.all.properties.bestSPM,
+            score: p.lifetime.all.properties.bestScore,
+            kills: p.lifetime.all.properties.bestKills,
+            deaths: p.lifetime.all.properties.bestDeaths,
+            assists: p.lifetime.all.properties.bestAssists,
+            stabs: p.lifetime.all.properties.bestStabs,
+            damage: p.lifetime.all.properties.bestDamage,
+            winstreak: p.lifetime.all.properties.recordLongestWinStreak,
+            killstreak: p.lifetime.all.properties.bestKillStreak,
+            killchains: p.lifetime.all.properties.bestKillChains,
+            infectedKills: p.lifetime.all.properties.bestKillsAsInfected,
+            survivorKills: p.lifetime.all.properties.bestKillsAsSurvivor,
+            confirmed: p.lifetime.all.properties.bestConfirmed,
+            denied: p.lifetime.all.properties.bestDenied,
+            captures: p.lifetime.all.properties.bestCaptures,
+            defends: p.lifetime.all.properties.bestDefends,
+            plants: p.lifetime.all.properties.bestPlants,
+            defuses: p.lifetime.all.properties.bestDefuses,
+            destructions: p.lifetime.all.properties.bestDestructions,
+            setbacks: p.lifetime.all.properties.bestSetbacks,
+            rescues: p.lifetime.all.properties.bestRescues,
+            returns: p.lifetime.all.properties.bestReturns,
+            touchdowns: p.lifetime.all.properties.bestTouchdowns,
+            fieldGoals: p.lifetime.all.properties.bestFieldgoals,
             xp: {
-                total: p.lifetime.all.recordXpInAMatch,
-                match: p.lifetime.all.bestMatchXp,
-                score: p.lifetime.all.bestScoreXp,
-                medal: p.lifetime.all.bestMedalXp,
-                bonus: p.lifetime.all.bestMatchBonusXp,
+                total: p.lifetime.all.properties.recordXpInAMatch,
+                match: p.lifetime.all.properties.bestMatchXp,
+                score: p.lifetime.all.properties.bestScoreXp,
+                medal: p.lifetime.all.properties.bestMedalXp,
+                bonus: p.lifetime.all.properties.bestMatchBonusXp,
             },
         },
         modes: {
