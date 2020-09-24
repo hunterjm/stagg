@@ -1,6 +1,6 @@
 {
   "name": "@stagg/mdb",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -18,7 +18,7 @@
   },
   "gitHead": "653f86b1f553040da9549a2fbd9b70ed45d198ea",
   "dependencies": {
-    "@stagg/callofduty": "^0.8.8",
+    "@stagg/callofduty": "^0.8.9",
     "mongodb": "^3.5.9"
   },
   "devDependencies": {
