@@ -93,8 +93,6 @@ export class DiscordBotDispatchService {
             continue
         }
         const strippedChild = child.replace(/s$/i, '')
-        console.log('Default exists:', dispatcher['_default'])
-        console.log('Requested key:', strippedChild)
         if (dispatcher[strippedChild] || dispatcher['_default']) {
             lastDispatcherIndex = Number(i) - 1
             dispatcher = dispatcher[strippedChild] ? dispatcher[strippedChild] : dispatcher['_default']
