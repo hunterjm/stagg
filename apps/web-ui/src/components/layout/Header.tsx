@@ -117,15 +117,15 @@ export const Header = ({
                     )}
                   >
                     <li>
-                      <Link href="/login">
-                        <a onClick={closeMenu}>Try for Free</a>
+                      <Link href="/help">
+                        <a onClick={closeMenu}>Need help?</a>
                       </Link>
                     </li>
                   </ul>
                   {!hideSignin && (
                     <ul className="list-reset header-nav-right">
                       <li>
-                        <Link href="/login">
+                        <Link href="/callofduty/login">
                           <a
                             onClick={closeMenu}
                             className="button button-primary button-wide-mobile button-sm"

@@ -4,10 +4,9 @@ import { SignUp } from 'src/components/sections/SignUp';
 const Login = () => {
   return (
     <Layout title="Best-in-class stats, coaching, matchmaking, and more | Stagg.co">
-      {/* <div>
+      <div>
         <SignUp />
-      </div> */}
-      Foo
+      </div>
     </Layout>
   );
 };
