@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 
-import { Button } from '../elements/Button';
 import { Logo } from './partials/Logo';
 
 interface HeaderProps {
@@ -127,13 +126,11 @@ export const Header = ({
                     <ul className="list-reset header-nav-right">
                       <li>
                         <Link href="/login">
-                          <a>
-                            <Button
-                              className="button button-primary button-wide-mobile button-sm"
-                              onClick={closeMenu}
-                            >
-                              Sign In
-                            </Button>
+                          <a
+                            onClick={closeMenu}
+                            className="button button-primary button-wide-mobile button-sm"
+                          >
+                            Sign In
                           </a>
                         </Link>
                       </li>
