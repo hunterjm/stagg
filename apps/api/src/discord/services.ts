@@ -23,6 +23,6 @@ export class DiscordService {
     return channel.send(formatOutput(text), { files })
   }
   public async triggerBotCommand(user:User, ...chain:string[]):Promise<Dispatch.Output> {
-    return this.dispatchService.dispatch(user, ...chain)
+    return this.dispatchService.dispatch('', user, ...chain)
   }
 }

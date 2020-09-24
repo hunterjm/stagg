@@ -21,7 +21,9 @@
           "MONGO_HOST",
           "MONGO_USER",
           "MONGO_PASS",
-          "DISCORD_TOKEN"
+          "DISCORD_TOKEN",
+          "GMAIL_ADDRESS",
+          "GMAIL_PASSWORD"
         ]
       },
       "web-ui": {

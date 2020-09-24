@@ -13,7 +13,7 @@ import {
 import { WZ, MP } from 'src/discord/bot/queries.h.callofduty'
 import { CallOfDutyAccountService } from 'src/callofduty/account/services'
 import { FAAS_URL } from 'src/config'
-import { Normalize } from '@stagg/callofduty'
+import { Schema, Normalize } from '@stagg/callofduty'
 
 @Controller('/render')
 export class RenderController {
@@ -28,9 +28,11 @@ export class RenderController {
         if (!player) {
             throw new BadRequestException('no game account for this user')
         }
-        const weaponAggr = MP.WeaponStats(player._id, [])
-        const [weaponData] = await this.db_cod.collection('mw.mp.performances').aggregate(weaponAggr).toArray()
         const weaponStats:any = {}
+        const weaponAggr = MP.WeaponStats(player._id, [])
+        // const normToRawStatMap = { ''} // start back here
+        const [weaponData] = await this.db_cod.collection('mw.mp.performances').aggregate(weaponAggr).toArray()
+        const rawProfile:Schema.API.MW.Routes.Profile = await this.db_cod.collection('_raw.mw.profiles').findOne({ _player: player._id })
         for(const key in weaponData) {
             const [statKey, weaponId] = key.split('__')
             const [parentKey, childKey] = statKey.split('_')
@@ -45,6 +47,9 @@ export class RenderController {
                 }
                 weaponStats[weaponId][parentKey][childKey] = weaponData[key]
             }
+        }
+        for(const key in weaponStats) {
+
         }
 
         const mostKillsWithAnyWeapon = Math.max(...Object.values(weaponStats).map((stats:any) => stats.kills).filter(n => n))

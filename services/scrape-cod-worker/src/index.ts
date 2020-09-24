@@ -1,5 +1,5 @@
 import * as mdb from '@stagg/mdb'
-import { API, Schema } from '@stagg/callofduty'
+import { API, Schema, Normalize } from '@stagg/callofduty'
 import * as Scraper from './scraper'
 import cfg from './config'
 
@@ -20,6 +20,11 @@ async function updateExistingPlayers() {
         return // no players to update
     }
     console.log(`[+] Updating ${playerLabel(player)}`)
+    try {
+        await updateProfiles(player)
+    } catch(e) {
+        console.log('[!] Updating profile failure:', e)
+    }
     for(const game of player.games) {
         for(const mode of modes) {
             const instance = new Scraper.Runners.Matches(player, { game, mode, start: 0, redundancy: false })
@@ -103,6 +108,24 @@ async function initializeAny(player:mdb.Schema.CallOfDuty.Account) {
                 ? player.scrape[game][mode].timestamp : 0
             const instance = new Scraper.Runners.Matches(player, { game, mode, start, redundancy: false })
             await instance.ETL(cfg.mongo)
+        }
+    }
+}
+
+async function updateProfiles(player:mdb.Schema.CallOfDuty.Account) {
+    const db = await mdb.client('callofduty')
+    const CallOfDutyAPI = new API(player.auth)
+    const gamesWithProfiles = ['mw']
+    // No profiles for BO4 it will break
+    for(const game of player.games.filter(g => gamesWithProfiles.includes(g))) {
+        const gameProfile = await CallOfDutyAPI.Profile(player.profiles.id || player.profiles.uno, 'uno', 'mp', game)
+        const existing = await db.collection(`${game}.profiles`).findOne({ _player: player._id })
+        if (!existing) {
+            console.log('[+] Saving new profile for UnoID', player.profiles.id)
+            await db.collection(`${game}.profiles`).insertOne({ _player: player._id, updated: new Date(), ...Normalize.MW.Profile(gameProfile) })
+        } else {
+            console.log('[>] Updating profile for UnoID', player.profiles.id)
+            await db.collection(`${game}.profiles`).updateOne({ _player: player._id }, { $set: { _player: player._id, updated: new Date(), ...Normalize.MW.Profile(gameProfile) } })
         }
     }
 }

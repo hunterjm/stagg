@@ -329,6 +329,16 @@ Maps.mp_m_overwinter = {
         thumbnail: thumbnail('mp_m_overwinter'),
     }
 }
+Maps.mp_m_stadium = {
+    id: 'mp_m_stadium',
+    games: ['mw'],
+    name: 'Verdansk Stadium',
+    type: 'mp',
+    images: {
+        minimap: minimap('mp_m_stadium'),
+        thumbnail: thumbnail('mp_m_stadium'),
+    }
+}
 Maps.mp_emporium = {
     id: 'mp_emporium',
     games: ['mw'],

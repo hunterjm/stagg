@@ -1,3 +1,4 @@
+import { Profile } from './profile'
 import { Map, Maps } from './maps'
 import { Mode, Modes } from './modes'
 import { Weapon, Weapons } from './weapons'
@@ -36,6 +37,7 @@ namespace WZ {
 
 export {
     WZ,
+    Profile,
     Map, Maps,
     Mode, Modes,
     Weapon, Weapons,

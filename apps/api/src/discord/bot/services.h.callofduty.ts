@@ -17,7 +17,11 @@ export class DiscordBotCallOfDutyHandlerService {
     @InjectConnection('callofduty') private db_cod: Connection,
   ) {}
   public async wzBarracks({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
-    return [{ files: [`https://api.stagg.co/render/callofduty/mw/wz/barracks/user/${user._id}.png`] }]
+    const usersArr = Object.values(users)
+    const files = !usersArr?.length
+      ? [`https://api.stagg.co/render/callofduty/mw/wz/barracks/user/${user._id}.png`]
+      : [...usersArr.map(u => `https://api.stagg.co/render/callofduty/mw/wz/barracks/user/${u._id}.png`)]
+    return [{ files }]
   }
   public async statsReport({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
     const player = await this.codService.getAccountByUserId(String(user._id))

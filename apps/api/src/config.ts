@@ -6,6 +6,9 @@ const isDev = process.env.NODE_ENV === 'development'
 export const PORT = process.env.PORT || 8080
 export const JWT_SECRET = process.env.JWT_SECRET
 
+export const GMAIL_ADDRESS = process.env.GMAIL_ADDRESS
+export const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
+
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN
 export const DISCORD_SERVER_ID = '729780289727102976'
 export const DISCORD_INVITE_URL = 'https://discord.gg/WhWrbY8'

@@ -39,6 +39,8 @@ export class DiscordBotDispatchService {
   private get dispatchTree() {
     // Root tree defines all functionality
     const root = {
+      confirm: this.handlerService.confirm.bind(this.handlerService),
+      register: this.handlerService.register.bind(this.handlerService),
       help: this.handlerService.help.bind(this.handlerService),
       shortcut: this.handlerService.shortcut.bind(this.handlerService),
       barracks: this.codHandler.wzBarracks.bind(this.codHandler),
@@ -62,13 +64,12 @@ export class DiscordBotDispatchService {
   private dispatchTreeKeys(search:string|Function) { // was going to use this for keyword prevention in shortcuts...
     const handlerFunction = typeof search === typeof 'str' ? this.dispatchTree[search as string] : search
   }
-  public async dispatch(user:User, ...chain:string[]):Promise<Dispatch.Output> {
+  public async dispatch(authorId:string, user:User, ...chain:string[]):Promise<Dispatch.Output> {
       try {
-        this.handlerService.shortcut({ user, users: {}, params: ['delete', 'hh']})
         const { output, input } = this.inputReduceCmds(user?.discord?.shortcuts, ...chain)
         const users = chain[0] === 'shortcut' ? {} : await this.inputReduceUsers(user, 'callofduty', ...input)
         const remainingParams = input.filter(chunk => !Object.keys(users).includes(chunk))
-        const o = await output({ user, users, params: remainingParams })
+        const o = await output({ authorId, user, users, params: remainingParams })
         return o
       } catch(e) {
         return [`ERROR: ${e}`]

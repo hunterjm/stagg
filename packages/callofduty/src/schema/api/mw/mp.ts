@@ -24,12 +24,12 @@ export namespace Match {
     export type Result = 'win' | 'loss' | 'draw'
     export type Mode = 
         // multiplayer
-        'dm' | 'tdef' | 'war' | 'dom' | 'conf' | 'koth' | 'hq' | 'dd' | 'sd' | 'cyber' | 'grind' |
+        'dm' | 'tdef' | 'war' | 'dom' | 'conf' | 'koth' | 'hq' | 'dd' | 'sd' | 'cyber' | 'grind' | 'grnd' |
         // hc_* appears in profile endpoint and *_hc appears in matches so mapping both
         'hc_dm' | 'dm_hc' | 'hc_dd' | 'dd_hc' | 'hc_hq' | 'hq_hc' | 'hc_sd' | 'sd_hc' | 'hc_dom' | 'dom_hc' |
         'hc_war' | 'war_hc' | 'hc_conf' | 'conf_hc' | 'hc_koth' | 'koth_hc' | 'hc_cyber' | 'cyber_hc' |
         // special modes
-        'arm' | 'gun' | 'arena'
+        'arm' | 'gun' | 'arena' | 'infect'
     export interface Player extends Schema.Player {
         nemesis: string
         mostKilled: string

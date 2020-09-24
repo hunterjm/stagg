@@ -186,11 +186,13 @@ export namespace Routes {
         export type Properties<T> = { properties: T }
         export interface Weekly {
             map: {}
-            mode: any // mapped inside mp/wz extensions
+            mode: Modes
             all: Profile.Properties.All
         }
         export interface Lifetime extends Weekly {
             itemData: Profile.ItemData
+            accoladeData: Properties<AccoladeData>
+            scorestreakData: ScorestreakData
         }
         export namespace Properties {
             export interface All {
@@ -266,6 +268,245 @@ export namespace Routes {
                 kdRatio: number
                 accuracy: number
             }
+        }
+        export interface Modes {
+            br: Properties<Mode.WZ>
+            br_dmz: Properties<Mode.WZ>
+            br_all: Properties<Mode.WZ>
+            gun: Properties<Mode.MP>
+            dom: Properties<Mode.MP>
+            war: Properties<Mode.MP>
+            hq: Properties<Mode.MP>
+            koth: Properties<Mode.MP>
+            conf: Properties<Mode.MP>
+            arena: Properties<Mode.MP>
+            sd: Properties<Mode.MP>
+            cyber: Properties<Mode.MP>
+            grnd: Properties<Mode.MP>
+            arm: Properties<Mode.MP>
+            infect: Properties<Mode.MP>
+            hc_sd: Properties<Mode.MP>
+            hc_hq: Properties<Mode.MP>
+            hc_war: Properties<Mode.MP>
+            hc_dom: Properties<Mode.MP>
+            hc_conf: Properties<Mode.MP>
+            hc_cyber: Properties<Mode.MP>
+        }
+        export namespace Mode {
+            export interface MP {
+                kills: number
+                score: number
+                timePlayed: number
+                kdRatio: number
+                setBacks: number
+                scorePerMinute: number
+                stabs: number
+                deaths: number
+            }
+            export interface WZ {
+                wins: number
+                kills: number
+                kdRatio: number
+                downs: number
+                topTwentyFive: number
+                topTen: number
+                contracts: number
+                revives: number
+                topFive: number
+                score: number
+                timePlayed: number
+                gamesPlayed: number
+                tokens: number
+                scorePerMinute: number
+                cash: number
+                deaths: number
+            }
+        }
+        export interface ScorestreakData {
+            lethalScorestreakData: {
+                precision_airstrike: Properties<ScorestreakData.Scorestreak>
+                cruise_predator: Properties<ScorestreakData.Scorestreak>
+                manual_turret: Properties<ScorestreakData.Scorestreak>
+                white_phosphorus: Properties<ScorestreakData.Scorestreak>
+                hover_jet: Properties<ScorestreakData.Scorestreak>
+                chopper_gunner: Properties<ScorestreakData.Scorestreak>
+                gunship: Properties<ScorestreakData.Scorestreak>
+                sentry_gun: Properties<ScorestreakData.Scorestreak>
+                toma_strike: Properties<ScorestreakData.Scorestreak>
+                pac_sentry: Properties<ScorestreakData.Scorestreak>
+                chopper_support: Properties<ScorestreakData.Scorestreak>
+                bradley: Properties<ScorestreakData.Scorestreak>
+                juggernaut: Properties<ScorestreakData.Scorestreak>
+                nuke: Properties<ScorestreakData.Scorestreak>
+            }
+            supportScorestreakData: {
+                uav: Properties<ScorestreakData.Scorestreak>
+                airdrop: Properties<ScorestreakData.Scorestreak>
+                radar_drone_overwatch: Properties<ScorestreakData.Scorestreak>
+                scrambler_drone_guard: Properties<ScorestreakData.Scorestreak>
+                airdrop_multiple: Properties<ScorestreakData.Scorestreak>
+                directional_uav: Properties<ScorestreakData.Scorestreak>
+            }
+        }
+        export namespace ScorestreakData {
+            export interface Scorestreak {
+                uses: number
+                awardedCount: number
+                extraStat1: number
+            }
+        }
+        export interface AccoladeData {
+            classChanges: number
+            highestAvgAltitude: number
+            killsFromBehind: number
+            lmgDeaths: number
+            riotShieldDamageAbsorbed: number
+            flashbangHits: number
+            meleeKills: number
+            tagsLargestBank: number
+            shotgunKills: number
+            sniperDeaths: number
+            timeProne: number
+            killstreakWhitePhosphorousKillsAssists: number
+            shortestLife: number
+            deathsFromBehind: number
+            higherRankedKills: number
+            mostAssists: number
+            leastKills: number
+            tagsDenied: number
+            killstreakWheelsonKills: number
+            sniperHeadshots: number
+            killstreakJuggernautKills: number
+            smokesUsed: number
+            avengerKills: number
+            decoyHits: number
+            killstreakCarePackageUsed: number
+            molotovKills: number
+            gasHits: number
+            comebackKills: number
+            lmgHeadshots: number
+            smgDeaths: number
+            carrierKills: number
+            deployableCoverUsed: number
+            thermiteKills: number
+            arKills: number
+            c4Kills: number
+            suicides: number
+            clutch: number
+            survivorKills: number
+            killstreakGunshipKills: number
+            timeSpentAsPassenger: number
+            returns: number
+            smgHeadshots: number
+            launcherDeaths: number
+            oneShotOneKills: number
+            ammoBoxUsed: number
+            spawnSelectSquad: number
+            weaponPickups: number
+            pointBlankKills: number
+            tagsCaptured: number
+            killstreakGroundKills: number
+            distanceTraveledInVehicle: number
+            longestLife: number
+            stunHits: number
+            spawnSelectFlag: number
+            shotgunHeadshots: number
+            bombDefused: number
+            snapshotHits: number
+            noKillsWithDeath: number
+            killstreakAUAVAssists: number
+            killstreakPersonalUAVKills: number
+            tacticalInsertionSpawns: number
+            launcherKills: number
+            spawnSelectVehicle: number
+            mostKillsLeastDeaths: number
+            mostKills: number
+            defends: number
+            timeSpentAsDriver: number
+            bombDetonated: number
+            arHeadshots: number
+            timeOnPoint: number
+            lmgKills: number
+            killstreakUAVAssists: number
+            carepackagesCaptured: number
+            mostKillsLongestStreak: number
+            killstreakCruiseMissileKills: number
+            longestStreak: number
+            destroyedKillstreaks: number
+            hipfireKills: number
+            stimDamageHealed: number
+            skippedKillcams: number
+            leastAssists: number
+            mostMultikills: number
+            highestRankedKills: number
+            killstreakAirstrikeKills: number
+            distanceTravelled: number
+            killstreakKills: number
+            semtexKills: number
+            penetrationKills: number
+            explosionsSurvived: number
+            highestMultikill: number
+            arDeaths: number
+            longshotKills: number
+            proximityMineKills: number
+            tagsMegaBanked: number
+            mostKillsMostHeadshots: number
+            firstInfected: number
+            killstreakCUAVAssists: number
+            throwingKnifeKills: number
+            executionKills: number
+            lastSurvivor: number
+            reconDroneMarks: number
+            deadSilenceKills: number
+            revengeKills: number
+            infectedKills: number
+            killEnemyTeam: number
+            sniperKills: number
+            killstreakCluserStrikeKills: number
+            meleeDeaths: number
+            timeWatchingKillcams: number
+            killstreakTankKills: number
+            noKillNoDeath: number
+            shotgunDeaths: number
+            killstreakChopperGunnerKills: number
+            shotsFired: number
+            stoppingPowerKills: number
+            pistolPeaths: number
+            killstreakShieldTurretKills: number
+            timeCrouched: number
+            noDeathsFromBehind: number
+            bombPlanted: number
+            setbacks: number
+            smgKills: number
+            claymoreKills: number
+            kills10NoDeaths: number
+            pistolHeadshots: number
+            killstreakVTOLJetKills: number
+            headshots: number
+            mostDeaths: number
+            adsKills: number
+            empDroneHits: number
+            defenderKills: number
+            launcherHeadshots: number
+            timesSelectedAsSquadLeader: number
+            killstreakAirKills: number
+            assaults: number
+            fragKills: number
+            killstreakEmergencyAirdropUsed: number
+            captures: number
+            killstreakChopperSupportKills: number
+            spawnSelectBase: number
+            noKill10Deaths: number
+            leastDeaths: number
+            killstreakSentryGunKills: number
+            longestTimeSpentOnWeapon: number
+            lowerRankedKills: number
+            trophySystemHits: number
+            clutchRevives: number
+            lowestAvgAltitude: number
+            pickups: number
+            pistolKills: number
+            reloads: number
         }
         export interface ItemData {
             lethals: {

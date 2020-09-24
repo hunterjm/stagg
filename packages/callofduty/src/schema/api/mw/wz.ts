@@ -19,6 +19,7 @@ export namespace Match {
     export type Mode = 
         // warzone plunder
         'br_dmz_38' | 'br_dmz_76' | 'br_dmz_85' | 'br_dmz_104' | 'br_dmz_plndtrios' | 'br_dmz_plunquad' |
+        'br_dmz_plnbld' | 
         // warzone br
         'br_25' | 'br_71' | 'br_74' | 'br_77' | 'br_86' | 'br_87' | 'br_88' | 'br_89' | 
         'br_brsolo' | 'br_brduos' | 'br_brtrios' | 'br_brquads' | 'br_br_real' | 'br_brthquad' |

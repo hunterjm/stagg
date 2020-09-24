@@ -29,3 +29,7 @@ export namespace Loadout {
         attachments: string[]
     }
 }
+
+export interface Profile {
+    
+}

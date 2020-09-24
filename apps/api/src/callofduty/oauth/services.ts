@@ -23,7 +23,7 @@ export class CallOfDutyOAuthService {
       auth,
     })
     const account = await this.db_cod.collection('accounts').findOne({ email })
-    await this.db_stg.collection('users').insertOne({ accounts: { callofduty: account._id } })
+    await this.db_stg.collection('users').insertOne({ emails: [email], accounts: { callofduty: account._id } })
     return account
   }
   public async updateAccount(account:mdb.Schema.CallOfDuty.Account, auth:mdb.Schema.CallOfDuty.Account.Auth): Promise<void> {

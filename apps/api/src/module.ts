@@ -5,6 +5,8 @@ import { NotificationModule } from './notify/module'
 import { DiscordModule } from './discord/module'
 import { CallOfDutyModule } from './callofduty/module'
 import { RenderModule } from './render/module'
+import { MailModule } from './mail/module'
+import { WebHooksModule } from './webhooks/module'
 import { MONGO } from './config'
 
 
@@ -20,9 +22,11 @@ export class RootController {
 @Module({
   controllers: [],
   imports: [
+    MailModule,
     ChartModule,
     RenderModule,
     DiscordModule,
+    WebHooksModule,
     CallOfDutyModule,
     NotificationModule,
     MongooseModule.forRoot(

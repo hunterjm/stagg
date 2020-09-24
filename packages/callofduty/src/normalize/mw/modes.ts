@@ -92,6 +92,7 @@ Modes.br_dmz_104 = { ...Modes.br_dmz_76, id: 'br_dmz_104' }
 Modes.br_dmz_38 = { ...Modes.br_dmz_76, id: 'br_dmz_38', lobbySize: 150, teamSize: 3, name: 'Plunder Trios' }
 Modes.br_dmz_plndtrios = { ...Modes.br_dmz_38, id: 'br_dmz_plndtrios' }
 Modes.br_dmz_plunquad = { ...Modes.br_dmz_76, id: 'br_dmz_plunquad', lobbySize: 152, teamSize: 4, name: 'Plunder Quads' }
+Modes.br_dmz_plnbld = { ...Modes.br_dmz_76, id: 'br_dmz_plnbld', lobbySize: 152, teamSize: 4, name: 'Plunder Blood Money' }
 
 // Multiplayer
 Modes.grind = {
@@ -103,6 +104,7 @@ Modes.grind = {
     teamSize: 1,
     respawns: true,
 }
+Modes.grnd = { ...Modes.grind, id: 'grnd' }
 Modes.dm = {
     id: 'dm',
     games: ['mw'],

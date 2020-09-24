@@ -135,7 +135,7 @@ export class DiscordBotService {
     const text = []
     const files = []
     const user = await this.userService.fetchByDiscordId(m.author.id)
-    const dispatchRes = await this.botDispatchService.dispatch(user, ...chain)
+    const dispatchRes = await this.botDispatchService.dispatch(m.author.id, user, ...chain)
     for(const line of dispatchRes as any) {
       if (typeof line === typeof 'str' ) {
         text.push(line)

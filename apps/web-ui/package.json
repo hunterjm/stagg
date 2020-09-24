@@ -47,6 +47,7 @@
     "next": "^9.4.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-notifications-component": "^2.4.1",
     "sass": "^1.26.10",
     "scrollreveal": "^4.0.7",
     "styled-components": "^5.1.1"
