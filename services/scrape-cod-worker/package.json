@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@stagg/callofduty": "^0.8.9",
-    "@stagg/mdb": "^0.8.9",
     "@stagg/util": "^0.8.0",
     "axios": "^0.20.0"
   },

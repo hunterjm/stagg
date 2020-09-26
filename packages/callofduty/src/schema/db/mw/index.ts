@@ -1,4 +1,8 @@
 import * as API from '../../api'
+import * as MP from './mp'
+import * as WZ from './wz'
+
+export { MP, WZ }
 
 export interface Match {
     matchId: string

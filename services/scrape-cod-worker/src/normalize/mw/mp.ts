@@ -1,8 +1,7 @@
 import { Schema, Normalize } from '@stagg/callofduty'
-import * as MDB from '@stagg/mdb'
 import { Stat, Loadout } from '..'
 
-export const Performance = (match:Schema.API.MW.MP.Match, player:Partial<MDB.Schema.CallOfDuty.Account>):MDB.Schema.CallOfDuty.MW.MP.Performance => {
+export const Performance = (match:Schema.API.MW.MP.Match, player:Partial<Schema.DB.Account>):Schema.DB.MW.MP.Performance => {
     return {
         mapId: match.map,
         modeId: match.mode,
@@ -72,7 +71,7 @@ export const Performance = (match:Schema.API.MW.MP.Match, player:Partial<MDB.Sch
         loadouts: match.player.loadout.map(loadout => Loadout(loadout)),
     }
 }
-export const Killstreaks = (player:Schema.API.MW.MP.Match.Player, playerStats:Schema.API.MW.MP.Match.PlayerStats):{[key:string]:MDB.Schema.CallOfDuty.MW.MP.Performance.Stats.Killstreak} => {
+export const Killstreaks = (player:Schema.API.MW.MP.Match.Player, playerStats:Schema.API.MW.MP.Match.PlayerStats):{[key:string]:Schema.DB.MW.MP.Performance.Stats.Killstreak} => {
     const killstreaks = {}
     for(const killstreakId in Normalize.MW.Killstreaks) {
         const { props } = Normalize.MW.Killstreak(killstreakId as Schema.API.MW.Killstreak.Name)
@@ -84,7 +83,7 @@ export const Killstreaks = (player:Schema.API.MW.MP.Match.Player, playerStats:Sc
     }
     return killstreaks
 }
-export const Weapons = (match:Schema.API.MW.MP.Match):{[key:string]:MDB.Schema.CallOfDuty.MW.MP.Performance.Stats.Weapon} => {
+export const Weapons = (match:Schema.API.MW.MP.Match):{[key:string]:Schema.DB.MW.MP.Performance.Stats.Weapon} => {
     const weapons = {}
     for (const weaponId in match.weaponStats) {
         weapons[weaponId] = {

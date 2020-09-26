@@ -1,18 +1,14 @@
-import * as mdb from '@stagg/mdb'
 import { API, Schema, Normalize } from '@stagg/callofduty'
 import * as Scraper from './scraper'
-import cfg from './config'
-
-mdb.config(cfg.mongo)
+import { useClient } from './db'
 
 const cooldown = 60 * 60 * 24  * 7 // once a week
-
 const modes = ['mp', 'wz'] as Schema.API.GameType[]
 const timestamp = () => Math.round(new Date().getTime()/1000)
-const playerLabel = (player:mdb.Schema.CallOfDuty.Account) => player.email || player.profiles.uno || 'artificial player'
+const playerLabel = (player:Schema.DB.Account) => player.email || player.profiles.uno || 'artificial player'
 
 async function updateExistingPlayers() {
-    const db = await mdb.client('callofduty')
+    const db = await useClient('callofduty')
     const [ player ] = await db.collection('accounts')
         .find({ 'scrape.updated': { $exists: true }, 'scrape.initialized': { $exists: true } })
         .sort({ 'scrape.updated': 1 }).toArray()
@@ -28,13 +24,13 @@ async function updateExistingPlayers() {
     for(const game of player.games) {
         for(const mode of modes) {
             const instance = new Scraper.Runners.Matches(player, { game, mode, start: 0, redundancy: false })
-            await instance.ETL(cfg.mongo)
+            await instance.ETL()
         }
     }
 }
 
 async function recheckExistingPlayers() {
-    const db = await mdb.client('callofduty')
+    const db = await useClient('callofduty')
     const neverRechecked = await db.collection('accounts').findOne({ 'scrape.initialized': { $exists: true }, 'scrape.rechecked': { $exists: false } })
     const [ player ] = neverRechecked ? [neverRechecked]
         : await db.collection('accounts')
@@ -54,7 +50,7 @@ async function recheckExistingPlayers() {
         for(const game of player.games) {
             for(const mode of modes) {
                 const instance = new Scraper.Runners.Matches(player, { game, mode, start: 0, redundancy: true })
-                await instance.ETL(cfg.mongo)
+                await instance.ETL()
             }
         }
     } catch(e) {
@@ -63,7 +59,7 @@ async function recheckExistingPlayers() {
 }
 
 async function initializeNewPlayers() {
-    const db = await mdb.client('callofduty')
+    const db = await useClient('callofduty')
     const player = await db.collection('accounts').findOne({ origin: 'self', 'scrape.initialized': { $exists: false }, initFailure: { $exists: false } })
     if (!player) {
         return // no new players to initialize
@@ -81,7 +77,7 @@ async function initializeNewPlayers() {
 }
 
 async function initializeArtificialProfiles() {
-    const db = await mdb.client('callofduty')
+    const db = await useClient('callofduty')
     const player = await db.collection('accounts').findOne({
         origin: { $nin: ['self'] },
         games: { $exists: true },
@@ -100,20 +96,20 @@ async function initializeArtificialProfiles() {
     }
 }
 
-async function initializeAny(player:mdb.Schema.CallOfDuty.Account) {
+async function initializeAny(player:Schema.DB.Account) {
     console.log(`[+] Initializing ${playerLabel(player)}`)
     for(const game of player.games) {
         for(const mode of modes) {
             const start = player.scrape && player.scrape[game] && player.scrape[game][mode] && player.scrape[game][mode].timestamp
                 ? player.scrape[game][mode].timestamp : 0
             const instance = new Scraper.Runners.Matches(player, { game, mode, start, redundancy: false })
-            await instance.ETL(cfg.mongo)
+            await instance.ETL()
         }
     }
 }
 
-async function updateProfiles(player:mdb.Schema.CallOfDuty.Account) {
-    const db = await mdb.client('callofduty')
+async function updateProfiles(player:Schema.DB.Account) {
+    const db = await useClient('callofduty')
     const CallOfDutyAPI = new API(player.auth)
     const gamesWithProfiles = ['mw']
     // No profiles for BO4 it will break
@@ -130,8 +126,8 @@ async function updateProfiles(player:mdb.Schema.CallOfDuty.Account) {
     }
 }
 
-async function updateIdentity(player:mdb.Schema.CallOfDuty.Account) {
-    const db = await mdb.client('callofduty')
+async function updateIdentity(player:Schema.DB.Account) {
+    const db = await useClient('callofduty')
     const games:string[] = []
     const profiles:{[key:string]:string} = {}
     const CallOfDutyAPI = new API(player.auth)
@@ -149,7 +145,7 @@ async function updateIdentity(player:mdb.Schema.CallOfDuty.Account) {
 }
 
 async function runner() {
-    await mdb.client('callofduty')
+    await useClient('callofduty')
     await Promise.all([ initializeNewPlayers(), updateExistingPlayers(), initializeArtificialProfiles(), recheckExistingPlayers() ])
 }
 

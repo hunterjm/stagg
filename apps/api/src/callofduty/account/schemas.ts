@@ -2,6 +2,12 @@ import { Document } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import * as CallOfDuty from '@stagg/callofduty'
 
+export interface Auth {
+  sso: string
+  xsrf: string
+  atkn: string
+}
+
 @Schema()
 export class Account extends Document {
   @Prop({ required: true })

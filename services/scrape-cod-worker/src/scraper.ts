@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { Db } from 'mongodb'
 import { API, Schema, Normalize } from '@stagg/callofduty'
-import * as Mongo from '@stagg/mdb'
 import { delay } from '@stagg/util'
 import * as LocalNormalization from './normalize'
+import { useClient } from './db'
 
 const bugAlerts = {}
 
@@ -26,13 +26,11 @@ export namespace Options {
 
 export namespace Runners {
     export class Matches {
-        private user: any
         private db_cod: Db
-        private db_stg: Db
         private complete: boolean
         private API: API
         private minEndTime:number
-        public player: Mongo.Schema.CallOfDuty.Account
+        public player: Schema.DB.Account
         private options:Options.Matches = {
             game: 'mw',
             mode: 'wz',
@@ -47,7 +45,7 @@ export namespace Runners {
                 failure: 500,
             }
         }
-        constructor(player:Mongo.Schema.CallOfDuty.Account, options?:Partial<Options.Matches>) {
+        constructor(player:Schema.DB.Account, options?:Partial<Options.Matches>) {
             this.player = player
             if (options) {
                 this.options = {...this.options, ...options}
@@ -56,11 +54,8 @@ export namespace Runners {
             this.API = new API(this.player.auth)
             this.player.scrape[this.options.game][this.options.mode].timestamp = this.options.start
         }
-        public async ETL(cfg:Mongo.Config) {
-            Mongo.config(cfg)
-            this.db_stg = await Mongo.client('stagg')
-            this.db_cod = await Mongo.client('callofduty')
-            this.user = await this.db_stg.collection('users').findOne({ 'accounts.callofduty': this.player._id })
+        public async ETL() {
+            this.db_cod = await useClient('callofduty')
             this.options.logger(`[>] COD: Scraping ${this.Description}`)
             while (!this.complete) {
                 try {
@@ -167,35 +162,23 @@ export namespace Runners {
                     // push notification to discord if applicable
                     const map = Normalize.MW.Map(m.map)
                     const mode = Normalize.MW.Mode(m.mode)
-                    if (map && mode) {
-                        if (this.user?.notifications?.discord) {
-                            axios.post(`https://api.stagg.co/notify/callofduty/${this.player._id}`, {
-                                channels: ['discord'],
-                                title: 'New match available',
-                                payload: {
-                                    discord: `Your latest match of ${mode.name} on ${map.name} is now available`
-                                }
-                            }).catch(() => this.options.logger('[!] Failed to send user Discord notification for match', m.matchID))
-                        }
-                    } else {
-                        if (!bugAlerts[`${m.map}-${m.mode}`]) {
-                            // send notification to myself to fix this
-                            axios.post(`https://api.stagg.co/notify/5f162e2abb766c451fe0f583`, {
-                                channels: ['discord'],
-                                title: 'Map and/or mode missing from package',
-                                payload: {
-                                    discord: [
-                                        'Details below:',
-                                        '```',
-                                        `mapId: ${m.map}`,
-                                        `modeId: ${m.mode}`,
-                                        '```',
-                                    ]
-                                }
-                            })
-                            .then(() => bugAlerts[`${m.map}-${m.mode}`] = true)
-                            .catch(() => this.options.logger('[!] Failed to send user Discord notification for match', m.matchID))
-                        }
+                    if ((!map || !mode) && !bugAlerts[`${m.map}-${m.mode}`]) {
+                        // send notification to myself to fix this
+                        axios.post(`https://api.stagg.co/notify/5f162e2abb766c451fe0f583`, {
+                            channels: ['discord'],
+                            title: 'Map and/or mode missing from package',
+                            payload: {
+                                discord: [
+                                    'Details below:',
+                                    '```',
+                                    `mapId: ${m.map}`,
+                                    `modeId: ${m.mode}`,
+                                    '```',
+                                ]
+                            }
+                        })
+                        .then(() => bugAlerts[`${m.map}-${m.mode}`] = true)
+                        .catch(() => this.options.logger('[!] Failed to send user Discord notification for match', m.matchID))
                     }
                 }
             }

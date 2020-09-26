@@ -28,6 +28,7 @@ export namespace MP {
 export namespace WZ {
     export function Barracks(playerId:string, modeIds:Schema.API.MW.Match.Mode[]) {
         const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
+        const finalCircle = Normalize.MW.WZ.CircleToTime(Normalize.MW.WZ.CircleTimes.length)
         return [
             { $match: { 'player._id': playerId, modeId: { [modeIdOp]: modeIds || [] } } },
             { $sort: { startTime: -1 } },
@@ -62,7 +63,7 @@ export namespace WZ {
                             $switch: {
                                 branches: [
                                     {
-                                        case: { $gt: ['$stats.teamSurvivalTime', 23.5 * 60] },
+                                        case: { $gt: ['$stats.teamSurvivalTime', finalCircle.circleStart] },
                                         then: 1
                                     }
                                 ],

@@ -1,8 +1,7 @@
-import { Schema, Normalize } from '@stagg/callofduty'
-import * as MDB from '@stagg/mdb'
+import { Schema } from '@stagg/callofduty'
 import { Stat, Loadout } from '..'
 
-export const Match = (match: Schema.API.MW.WZ.Match):MDB.Schema.CallOfDuty.MW.WZ.Match => ({
+export const Match = (match: Schema.API.MW.WZ.Match):Schema.DB.MW.WZ.Match => ({
     matchId: match.matchID,
     modeId: match.mode,
     mapId: match.map,
@@ -43,7 +42,7 @@ export const Teams = (match: Schema.API.MW.WZ.Match) => !match.rankedTeams ? [] 
         })),
     }))
     
-export const Performance = (match: Schema.API.MW.WZ.Match, player: Partial<MDB.Schema.CallOfDuty.Account>): MDB.Schema.CallOfDuty.MW.WZ.Performance => {
+export const Performance = (match: Schema.API.MW.WZ.Match, player: Partial<Schema.DB.Account>): Schema.DB.MW.WZ.Performance => {
     // Count downs
     let downs = []
     const downKeys = Object.keys(match.playerStats).filter(key => key.includes('objectiveBrDownEnemyCircle'))
