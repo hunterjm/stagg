@@ -1,6 +1,6 @@
 {
   "name": "@stagg/scrape-worker-cod",
-  "version": "0.8.11",
+  "version": "0.9.0",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -13,8 +13,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stagg/callofduty": "^0.8.11",
-    "@stagg/util": "^0.8.0",
+    "@stagg/callofduty": "^0.9.0",
+    "@stagg/util": "^0.9.0",
     "axios": "^0.20.0",
     "mongodb": "^3.6.2"
   },
