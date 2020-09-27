@@ -1,6 +1,6 @@
 {
   "name": "@stagg/faas-scrape-cod-worker",
-  "version": "0.8.9",
+  "version": "0.8.10",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stagg/callofduty": "^0.8.9",
+    "@stagg/callofduty": "^0.8.10",
     "@stagg/util": "^0.8.0",
     "axios": "^0.20.0",
     "mongodb": "^3.6.2"
