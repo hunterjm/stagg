@@ -1,23 +1,13 @@
-import * as API from '../../api'
 import * as MP from './mp'
 import * as WZ from './wz'
 
 export { MP, WZ }
 
-export interface Match {
-    matchId: string
-    mapId: API.MW.Map
-    modeId: API.MW.Match.Mode
-    startTime: number
-    endTime: number
+export namespace Match {
+    export type Details = WZ.Match.Details
+    export type Record = MP.Match.Record | WZ.Match.Record
 }
-export interface Performance {
-    matchId: string
-    mapId: API.MW.Map
-    modeId: API.MW.Match.Mode
-    startTime: number
-    endTime: number
-}
+
 export interface Loadout {
     primary: Loadout.Weapon
     secondary: Loadout.Weapon

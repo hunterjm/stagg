@@ -54,6 +54,14 @@ export default class {
     async MatchEvents(matchId:string, game:Schema.API.Game='mw') {
         return this.request({ url: `/ce/v1/title/${game}/platform/battle/match/${matchId}/matchMapEvents` })
     }
+    async MatchDetails(matchId:string, mode:Schema.API.GameType='wz', game:Schema.API.Game='mw') {
+        return this.request({ url: `/crm/cod/v2/title/${game}/platform/battle/fullMatch/${mode}/${matchId}/it` })
+    }
+    async MatchSummary(match:Schema.API.MW.Match, game:Schema.API.Game='mw') {
+        const platform = 'uno'
+        const username = match.player.uno
+        return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${match.gameType}/start/${(match.utcStartSeconds-1) * 1000}/end/${(match.utcEndSeconds-1) * 1000}/details` })
+    }
     async Login(email:string, password:string):Promise<{ xsrf: string, atkn: string, sso: string }> {
         const response = await axios.get('https://profile.callofduty.com/login')
         const xsrf = response?.headers['set-cookie'].find((cookie:string) => cookie.includes('XSRF-TOKEN='))?.replace(/^XSRF-TOKEN=([^;]+);.*$/, '$1')

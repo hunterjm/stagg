@@ -122,7 +122,7 @@ export interface PlayerStats {
 export namespace Routes {
     export interface Identity {
         titleIdentities: {
-            title: string // game name eg: bo4 / mw
+            title: Schema.Game // game name eg: bo4 / mw
             platform: Schema.Platform
             username: string
             activeDate: number

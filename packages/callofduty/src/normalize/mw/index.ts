@@ -1,3 +1,4 @@
+import * as Match from './match'
 import { Profile } from './profile'
 import { Map, Maps } from './maps'
 import { Mode, Modes } from './modes'
@@ -87,6 +88,7 @@ namespace WZ {
 
 export {
     WZ,
+    Match,
     Profile,
     Map, Maps,
     Mode, Modes,
