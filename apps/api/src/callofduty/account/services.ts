@@ -1,4 +1,4 @@
-import { API, Schema, Normalize } from '@stagg/callofduty'
+import { Schema, Normalize } from '@stagg/callofduty'
 import { Connection, Types } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
@@ -55,12 +55,11 @@ export class CallOfDutyAccountService {
             profiles: acct?.profiles,
             matches: matchCounts,
         }
-        const api = new API(auth)
         const apiMatchCounts = {}
         const gameProfileData = {}
         for(const game of account?.games) {
-            try { gameProfileData[game] = await api.Profile(username, platform, 'mp', game) } catch(e) {}
-            apiMatchCounts[game] = gameProfileData[game]?.lifetime?.all?.properties?.totalGamesPlayed || 0
+            try { gameProfileData[game] = await this.db_cod.collection(`${game}.mp.profiles`).findOne({ _account: acct._id }) } catch(e) {}
+            apiMatchCounts[game] = gameProfileData[game]?.total?.games || 0
         }
         return {
             account,
