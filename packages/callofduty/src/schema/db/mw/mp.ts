@@ -3,6 +3,7 @@ import * as MW from '.'
 
 export namespace Match {
     export interface Record {
+        _account?: Mongo.ObjectId
         mapId: string
         modeId: string
         matchId: string
@@ -14,7 +15,6 @@ export namespace Match {
         arena: boolean
         privateMatch: boolean
         player: {
-            _id: Mongo.ObjectId
             team: string
             username: string
             clantag: string

@@ -2,13 +2,13 @@ import { Schema } from '../..'
 import * as MP from './match.mp'
 import * as WZ from './match.wz'
 
-export const Record = (match:Schema.API.MW.Match, account:Partial<Schema.DB.Account>):Schema.DB.MW.Match.Record => {
+export const Record = (match:Schema.API.MW.Match):Schema.DB.MW.Match.Record => {
     switch(match.gameType) {
         case 'wz':
-            return WZ.Record(match, account)
+            return WZ.Record(match)
         case 'mp':
         default:
-            return MP.Record(match, account)
+            return MP.Record(match)
     }
 }
 

@@ -1,7 +1,7 @@
 import { Schema, Normalize } from '../..'
 import { Stat, Loadout } from './match'
 
-export const Record = (match:Schema.API.MW.MP.Match, player:Partial<Schema.DB.Account>):Schema.DB.MW.MP.Match.Record => {
+export const Record = (match:Schema.API.MW.MP.Match):Schema.DB.MW.MP.Match.Record => {
     return {
         mapId: match.map,
         modeId: match.mode,
@@ -14,7 +14,6 @@ export const Record = (match:Schema.API.MW.MP.Match, player:Partial<Schema.DB.Ac
         arena: match.arena,
         privateMatch: match.privateMatch,
         player: {
-            _id: player._id,
             team: match.player.team,
             username: match.player.username,
             clantag: match.player.clantag,

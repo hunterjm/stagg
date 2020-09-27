@@ -41,6 +41,13 @@ export class MwDiscordService {
       : [...usersArr.map(u => `${SELF_HOST}/render/callofduty/mw/wz/barracks/user/${u._id}.png`)]
     return [{ files }]
   }
+  public async mpBarracks({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
+    const usersArr = Object.values(users)
+    const files = !usersArr?.length
+      ? [`${SELF_HOST}/render/callofduty/mw/mp/barracks/user/${user._id}.png`]
+      : [...usersArr.map(u => `${SELF_HOST}/render/callofduty/mw/mp/barracks/user/${u._id}.png`)]
+    return [{ files }]
+  }
   public async statsReport({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
     const player = await this.codService.getAccountByUserId(String(user._id))
     const aggr = WZ.StatsReport(player._id, [])

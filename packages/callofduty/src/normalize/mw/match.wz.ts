@@ -1,4 +1,4 @@
-import { Schema, Normalize } from '../..'
+import { Schema } from '../..'
 import { Stat, Loadout } from './match'
 
 export const Details = (match: Schema.API.MW.WZ.Match):Schema.DB.MW.WZ.Match.Details => ({
@@ -42,7 +42,7 @@ export const Teams = (match: Schema.API.MW.WZ.Match) => !match.rankedTeams ? [] 
         })),
     }))
     
-export const Record = (match: Schema.API.MW.WZ.Match, player: Partial<Schema.DB.Account>): Schema.DB.MW.WZ.Match.Record => {
+export const Record = (match: Schema.API.MW.WZ.Match): Schema.DB.MW.WZ.Match.Record => {
     // Count downs
     let downs = []
     const downKeys = Object.keys(match.playerStats).filter(key => key.includes('objectiveBrDownEnemyCircle'))
@@ -57,7 +57,6 @@ export const Record = (match: Schema.API.MW.WZ.Match, player: Partial<Schema.DB.
         endTime: match.utcEndSeconds,
         startTime: match.utcStartSeconds,
         player: {
-            _id: player._id,
             team: match.player.team,
             username: match.player.username,
             clantag: match.player.clantag,

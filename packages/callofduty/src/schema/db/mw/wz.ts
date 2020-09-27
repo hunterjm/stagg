@@ -45,13 +45,13 @@ export namespace Match {
     }
     // Records are player specific
     export interface Record {
+        _account?: Mongo.ObjectId
         mapId: string
         modeId: string
         matchId: string
         endTime: number
         startTime: number
         player: {
-            _id: Mongo.ObjectId
             team: string
             username: string
             clantag: string

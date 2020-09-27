@@ -110,6 +110,13 @@ export class Instance {
         }
         return false
     }
+    private get Normalizer():{ [key:string]: any } {
+        switch(this.options.gameId) {
+            case 'mw':
+            default:
+                return Normalize.MW
+        }
+    }
     private get PreferredProfile():{ username: string, platform: Schema.API.Platform } {
         if (this.account.profiles.id) {
             return { username: this.account.profiles.id, platform: 'uno' }
@@ -145,6 +152,9 @@ export class Instance {
         while(!this.done) {
             await this.MatchETL()
         }
+    }
+    private Done() {
+        this.done = true
     }
     private async InitializeDB() {
         this.db = await useClient('callofduty')
@@ -186,7 +196,19 @@ export class Instance {
         await this.db.collection('accounts').updateOne({ _id: this.account._id }, { $set: { games, ...profileUpdates } })
     }
     private async ProfileETL() {
-
+        if (!this.Normalizer.Profile) {
+            throw `profile normalization missing for callofduty.${this.options.gameId}.${this.options.gameType}`
+        }
+        const { username, platform } = this.PreferredProfile
+        const profile = await this.API.Profile(username, platform, this.options.gameType, this.options.gameId)
+        const collection = `${this.options.gameId}.${this.options.gameType}.profiles`
+        const normalizedProfile = this.Normalizer.Profile(profile, this.account)
+        await this.db.collection(collection).deleteOne({ _account: this.account._id })
+        await this.db.collection(collection).insertOne({
+            _account: this.account._id,
+            updated: new Date(),
+            ...normalizedProfile,
+        })
     }
     private async MatchETL() {
         try {
@@ -233,6 +255,9 @@ export class Instance {
                 await this.MatchSummaryETL(matchMap[matchId])
             }
         }
+        if (foundRecords.length && !this.options.redundancy) {
+            this.Done()
+        }
     }
     private async MatchEventsETL(match:Schema.API.MW.Match) {
         // No normalization for these yet...
@@ -251,7 +276,9 @@ export class Instance {
         if (!this.account.profiles.id) {
             await this.RecordUnoID(match.player.uno)
         }
-        // const normalizedMatch = Normalize
+        const normalizedMatch = this.Normalizer.Match.Record(match)
+        const collection = `${this.options.gameId}.${this.options.gameType}.match.records`
+        await this.db.collection(collection).insertOne(normalizedMatch)
     }
     private async RecordUnoID(unoId:string) {
         this.account.profiles.id = unoId
