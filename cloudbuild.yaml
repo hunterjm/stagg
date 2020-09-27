@@ -41,6 +41,6 @@ steps:
     - name: gcr.io/cloud-builders/gcloud
       args: ['functions', 'deploy', 'scrape-scheduler', '--trigger-http', '--source=services/scrape-scheduler', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=128MB', '--env-vars-file=services/scrape-scheduler/.env.yaml']
     - name: gcr.io/cloud-builders/gcloud
-      args: ['functions', 'deploy', 'scrape-worker-cod', '--trigger-http', '--source=services/scrape-worker-cod', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=128MB', '--env-vars-file=services/scrape-worker-cod/.env.yaml']
+      args: ['functions', 'deploy', 'scrape-worker-cod', '--trigger-http', '--source=services/scrape-worker-cod', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--memory=128MB', '--timeout=540', '--env-vars-file=services/scrape-worker-cod/.env.yaml']
     - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'dispatch.yaml', '--version=production']
