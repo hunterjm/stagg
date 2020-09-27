@@ -51,7 +51,7 @@ export class MwDiscordService {
   public async statsReport({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
     const player = await this.codService.getAccountByUserId(String(user._id))
     const aggr = WZ.StatsReport(player._id, [])
-    const [data] = await this.db_cod.collection('mw.wz.performances').aggregate(aggr).toArray()
+    const [data] = await this.db_cod.collection('mw.wz.match.records').aggregate(aggr).toArray()
     return Object.keys(data).map(dataKey => `${dataKey}: ${data[dataKey]}`)
   }
 }

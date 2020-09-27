@@ -30,7 +30,7 @@ export class RenderController {
         }
         const weaponStats:any = {}
         const weaponAggr = MP.WeaponStats(player._id, [])
-        const [weaponData] = await this.db_cod.collection('mw.mp.performances').aggregate(weaponAggr).toArray()
+        const [weaponData] = await this.db_cod.collection('mw.mp.match.records').aggregate(weaponAggr).toArray()
         for(const key in weaponData) {
             const [statKey, weaponId] = key.split('__')
             const [parentKey, childKey] = statKey.split('_')
@@ -55,7 +55,7 @@ export class RenderController {
 
         const actualBrModes:any = Object.keys(Normalize.MW.Modes).filter(mid => !mid.includes('dmz') && !mid.includes('tmd') && !mid.includes('mini'))
         const aggr = WZ.Barracks(player._id, actualBrModes)
-        const [data] = await this.db_cod.collection('mw.wz.performances').aggregate(aggr).toArray()
+        const [data] = await this.db_cod.collection('mw.wz.match.records').aggregate(aggr).toArray()
 
         deprecatedRequest({
             json: true,
