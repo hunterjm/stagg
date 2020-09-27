@@ -59,6 +59,8 @@ npm login --registry=https://registry.npmjs.org/ --scope=stagg
 
 ### Ideas, fixes, features, etc
 
+Switch to RDB so individual match records/performances just relate back to a row from match details
+
 **What will be free**
 - Pull your own profile
 - Discord text reports

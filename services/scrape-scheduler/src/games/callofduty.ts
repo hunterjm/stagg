@@ -16,6 +16,9 @@ export const triggerAll = async () => {
 
 export const updateAccount = (acct:Schema.DB.Account, ledger?:any) => {
     const accountId = acct._id
+    if (!acct.games || !acct.games.length) {
+        return console.log('[^] Skipping', accountId, 'at', WORKER_COD_HOST, 'for lack of games')
+    }
     console.log('[^] Updating', accountId, 'at', WORKER_COD_HOST)
     for(const gameId of acct.games) {
         console.log('    Game:', gameId)
