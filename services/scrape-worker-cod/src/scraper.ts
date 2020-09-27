@@ -28,8 +28,8 @@ export namespace ETL {
         }
     }
     export interface Ledger {
-        _id?: ObjectId
-        _account: ObjectId
+        _id: ObjectId
+        unsaved?: boolean // only on new creations prior to insert
         selected: number
         bo4?: Ledger.Game
         mw?: Ledger.Game
@@ -199,10 +199,11 @@ export class Instance {
         }
     }
     private async InitializeLedger() {
-        this.ledger = await this.db.collection('_ETL.ledger').findOne({ _account: this.account._id })
+        this.ledger = await this.db.collection('_ETL.ledger').findOne({ _id: this.account._id })
         if (!this.ledger) {
             this.ledger = {
-                _account: this.account._id,
+                _id: this.account._id,
+                unsaved: true,
             } as ETL.Ledger
         }
         if (this.ledger.selected) {
@@ -222,10 +223,19 @@ export class Instance {
         await this.SyncLedger()
     }
     private async SyncLedger() {
-        if (!this.ledger._id) {
-            await this.db.collection('_ETL.ledger').insertOne(this.ledger)
-        } else {
+        // Try inserting if it already exists it will fail
+        try {
+            if (this.ledger.unsaved) {
+                delete this.ledger.unsaved
+                await this.db.collection('_ETL.ledger').insertOne(this.ledger)
+                this.options.logger('[+] Created new ledger...')
+            } else {
+                throw 'Ledger is already saved, proceeding...'
+            }
+        } catch(e) {
+            // Update instead if inserting failed
             await this.db.collection('_ETL.ledger').updateOne({ _id: this.ledger._id }, { $set: { ...this.ledger } })
+            this.options.logger('[^] Updated existing ledger...')
         }
     }
     private async InitializeAccount() {

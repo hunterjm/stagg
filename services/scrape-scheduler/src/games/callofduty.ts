@@ -16,9 +16,11 @@ export const triggerAll = async () => {
 
 export const updateAccount = (acct:Schema.DB.Account) => {
     const accountId = acct._id
-    console.log('Updating', accountId, 'at', WORKER_COD_HOST)
+    console.log('[^] Updating', accountId, 'at', WORKER_COD_HOST)
     for(const gameId of acct.games) {
+        console.log('    Game:', gameId)
         for(const gameType of ['wz', 'mp']) {
+            console.log('      Type:', gameType)
             axios.post(WORKER_COD_HOST, {
                 accountId,
                 gameId,
@@ -36,16 +38,18 @@ export const updateAccount = (acct:Schema.DB.Account) => {
                     details: true,
                     summary: true,
                 },
-            })
+            }).catch(e => console.log('[!] FaaS Failure'))
         }
     }
 }
 
 export const initializeAccount = (acct:Schema.DB.Account) => {
     const accountId = acct._id
-    console.log('Initializing', accountId, 'at', WORKER_COD_HOST)
+    console.log('[+] Initializing', accountId, 'at', WORKER_COD_HOST)
     for(const gameId of acct.games) {
+        console.log('    Game:', gameId)
         for(const gameType of ['wz', 'mp']) {
+            console.log('    Type:', gameType)
             axios.post(WORKER_COD_HOST, {
                 accountId,
                 gameId,
@@ -63,7 +67,7 @@ export const initializeAccount = (acct:Schema.DB.Account) => {
                     details: true,
                     summary: true,
                 },
-            })
+            }).catch(e => console.log('[!] FaaS Failure'))
         }
     }
 }
@@ -72,17 +76,17 @@ export const getInitializeAccountIds = async ():Promise<Schema.DB.Account[]> => 
     const db = await useClient('callofduty')
     const accounts = await db.collection('accounts').find({}, { _id: 1 } as any).toArray()
     const accountIds = accounts.map(a => a._id)
-    const accountLedgers = await db.collection('_ETL.ledger').find({ _account: { $in: accountIds } }, { _account: 1 } as any).toArray()
-    const ledgerAccountIds = accountLedgers.map(l => l._account)
-    const validAccountIds = accountIds.filter(aid => !ledgerAccountIds.includes(aid))
-    return accounts.filter(a => validAccountIds.includes(a._id))
+    const accountLedgers = await db.collection('_ETL.ledger').find({ _id: { $in: accountIds } }, { _id: 1 } as any).toArray()
+    const ledgerAccountIdStrs = accountLedgers.map(l => String(l._id))
+    return accounts.filter(a => !ledgerAccountIdStrs.includes(String(a._id)))
 }
 
 export const getUpdateAccountIds = async ():Promise<Schema.DB.Account[]> => {
     const db = await useClient('callofduty')
     const minSelectedTime = Date.now() - UPDATE_COOLDOWN
-    const accountLedgers = await db.collection('_ETL.ledger').find({ selected: { $lt: minSelectedTime } }, { _account: 1 } as any).toArray()
-    const validAccountIds = accountLedgers.sort((a,b) => a.selected - b.selected).map(l => l._account)
+    const accountLedgers = await db.collection('_ETL.ledger').find({ selected: { $lt: minSelectedTime } }, { _id: 1 } as any).toArray()
+    const validAccountIds = accountLedgers.sort((a,b) => a.selected - b.selected).map(l => l._id)
     const validAccounts = await db.collection('accounts').find({ _id: { $in: validAccountIds } }).toArray()
-    return validAccounts.sort((a,b) => validAccountIds.indexOf(a._id) - validAccountIds.indexOf(b._id))
+    const validAccountIdStrs = validAccountIds.map(_id => String(_id))
+    return validAccounts.sort((a,b) => validAccountIdStrs.indexOf(String(a._id)) - validAccountIdStrs.indexOf(String(b._id)))
 }
