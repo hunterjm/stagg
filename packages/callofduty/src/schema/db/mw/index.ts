@@ -4,8 +4,8 @@ import * as WZ from './wz'
 export { MP, WZ }
 
 export namespace Match {
-    export type Details = WZ.Match.Details
     export type Record = MP.Match.Record | WZ.Match.Record
+    export type Details = MP.Match.Details | WZ.Match.Details
 }
 
 export interface Loadout {

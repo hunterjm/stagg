@@ -5,6 +5,6 @@ import faas from '.'
 const app = express()
 app.use(bodyParser.json())
 app.use('/', faas)
-app.listen(8087, () => {
-    console.log('[>] FaaS running on http://localhost:8087')
+app.listen(8089, () => {
+    console.log('[>] FaaS running on http://localhost:8089')
 })

@@ -45,12 +45,16 @@
         "region": "us-east1",
         "secrets": []
       },
-      "scrape-cod-cron": {
+      "scrape-scheduler": {
         "memory": "128MB",
         "region": "us-east1",
-        "secrets": []
+        "secrets": [
+          "MONGO_HOST",
+          "MONGO_USER",
+          "MONGO_PASS"
+        ]
       },
-      "scrape-cod-worker": {
+      "scrape-worker-cod": {
         "memory": "128MB",
         "region": "us-east1",
         "secrets": [

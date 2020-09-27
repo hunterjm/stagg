@@ -2,6 +2,26 @@ import * as Mongo from 'mongodb'
 import * as MW from '.'
 
 export namespace Match {
+    // Details are generic game records
+    export interface Details {
+        mapId: string
+        modeId: string
+        matchId: string
+        endTime: number
+        startTime: number
+        players: Details.Player[]
+    }
+    export namespace Details {
+        export interface Player {
+            id: string
+            username: string
+            clantag: string
+            rank: number
+            stats: Record.Stats
+            loadouts: MW.Loadout[]
+        }
+    }
+    // Records are player specific
     export interface Record {
         _account?: Mongo.ObjectId
         mapId: string
@@ -15,6 +35,7 @@ export namespace Match {
         arena: boolean
         privateMatch: boolean
         player: {
+            id: string
             team: string
             username: string
             clantag: string
@@ -37,6 +58,7 @@ export namespace Match {
             headshots: number
             longestStreak: number
             timePlayed: number
+            avgLifeTime?: number // only exists if fetching isolated summary is enabled
             teamPlacement: number // 0 is tie
             avgSpeed: number
             shots: {

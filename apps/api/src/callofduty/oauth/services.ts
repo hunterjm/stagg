@@ -16,11 +16,13 @@ export class CallOfDutyOAuthService {
     const account = await this.db_cod.collection('accounts').findOne({ email })
     return account
   }
-  public async insertAccount(email:string, auth:Auth): Promise<Account> {
+  public async insertAccount(email:string, auth:Auth, games:string[], profiles:{[key:string]:string}): Promise<Account> {
     await this.db_cod.collection('accounts').insertOne({
       origin: 'self',
       email,
       auth,
+      games,
+      profiles,
     })
     const account = await this.db_cod.collection('accounts').findOne({ email })
     await this.db_stg.collection('users').insertOne({ emails: [email], accounts: { callofduty: account._id } })

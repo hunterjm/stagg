@@ -2,7 +2,37 @@ import * as Schema from '.'
 
 export type Map = 'mp_don3' | 'mp_donetsk' | 'mp_donetsk2'
 export interface Summary {
-
+    kills: number
+    objectiveTeamWiped: number
+    objectiveLastStandKill: number
+    wallBangs: number
+    avgLifeTime: number
+    score: number
+    headshots: number
+    assists: number
+    killsPerGame: number
+    scorePerMinute: number
+    distanceTraveled: number
+    deaths: number
+    objectiveDestroyedEquipment: number
+    objectiveMedalScoreSsKillPrecisionAirstrike: number
+    objectiveBrDownEnemyCircle3: number
+    objectiveBrDownEnemyCircle2: number
+    kdRatio: number
+    objectiveBrDownEnemyCircle1: number
+    objectiveBrMissionPickupTablet: number
+    objectiveReviver: number
+    objectiveBrKioskBuy: number
+    gulagDeaths: number
+    timePlayed: number
+    headshotPercentage: number
+    executions: number
+    matchesPlayed: number
+    gulagKills: number
+    nearmisses: number
+    objectiveBrCacheOpen: number
+    damageDone: number
+    damageTaken: number
 }
 export interface Match extends Schema.Match.Common {
     gameType: 'wz'

@@ -1,13 +1,76 @@
 import { Schema } from '../..'
 import { Stat, Loadout } from './match'
 
-export const Details = (match: Schema.API.MW.WZ.Match):Schema.DB.MW.WZ.Match.Details => ({
-    matchId: match.matchID,
-    modeId: match.mode,
-    mapId: match.map,
-    endTime: match.utcEndSeconds,
-    startTime: match.utcStartSeconds,
-    teams: Teams(match)
+export const Details = (match: Schema.API.MW.Routes.MatchDetails):Schema.DB.MW.WZ.Match.Details => {
+    const [first] = match.allPlayers
+    return {
+        matchId: first.matchID,
+        modeId: first.mode,
+        mapId: first.map,
+        endTime: first.utcEndSeconds,
+        startTime: first.utcStartSeconds,
+        players: Players(match)
+    }
+}
+
+export const Players = (match: Schema.API.MW.Routes.MatchDetails):Schema.DB.MW.WZ.Match.Details.Player[] => match.allPlayers.map((p:any) => {
+    // Count downs
+    let downs = []
+    const downKeys = Object.keys(p.playerStats).filter(key => key.includes('objectiveBrDownEnemyCircle'))
+    for (const key of downKeys) {
+        const circleIndex = Number(key.replace('objectiveBrDownEnemyCircle', ''))
+        downs[circleIndex] = Stat(p.playerStats, key)
+    }
+    return {
+        id: p.player.uno,
+        team: p.player.team,
+        username: p.player.username,
+        clantag: p.player.clantag,
+        stats: {
+            rank: Stat(p.playerStats, 'rank'),
+            score: Stat(p.playerStats, 'score'),
+            kills: Stat(p.playerStats, 'kills'),
+            deaths: Stat(p.playerStats, 'deaths'),
+            // downs,
+            gulagKills: Stat(p.playerStats, 'gulagKills'),
+            gulagDeaths: Stat(p.playerStats, 'gulagDeaths'),
+            eliminations: Stat(p.playerStats, 'objectiveLastStandKill'),
+            damageDone: Stat(p.playerStats, 'damageDone'),
+            damageTaken: Stat(p.playerStats, 'damageTaken'),
+            teamWipes: Stat(p.playerStats, 'objectiveTeamWiped'),
+            revives: Stat(p.playerStats, 'objectiveReviver'),
+            contracts: Stat(p.playerStats, 'objectiveBrMissionPickupTablet'),
+            lootCrates: Stat(p.playerStats, 'objectiveBrCacheOpen'),
+            buyStations: Stat(p.playerStats, 'objectiveBrKioskBuy'),
+            assists: Stat(p.playerStats, 'assists'),
+            executions: Stat(p.playerStats, 'executions'),
+            headshots: Stat(p.playerStats, 'headshots'),
+            wallBangs: Stat(p.playerStats, 'wallBangs'),
+            nearMisses: Stat(p.playerStats, 'nearmisses'),
+            clusterKills: Stat(p.playerStats, 'objectiveMedalScoreSsKillTomaStrike'),
+            airstrikeKills: Stat(p.playerStats, 'objectiveMedalScoreKillSsRadarDrone'),
+            longestStreak: Stat(p.playerStats, 'longestStreak'),
+            trophyDefense: Stat(p.playerStats, 'objectiveTrophyDefense'),
+            munitionShares: Stat(p.playerStats, 'objectiveMunitionsBoxTeammateUsed'),
+            missileRedirects: Stat(p.playerStats, 'objectiveManualFlareMissileRedirect'),
+            equipmentDestroyed: Stat(p.playerStats, 'objectiveDestroyedEquipment'),
+            percentTimeMoving: Stat(p.playerStats, 'percentTimeMoving'),
+            distanceTraveled: Stat(p.playerStats, 'distanceTraveled'),
+            teamSurvivalTime: Stat(p.playerStats, 'teamSurvivalTime'),
+            teamPlacement: Stat(p.playerStats, 'teamPlacement'),
+            timePlayed: Stat(p.playerStats, 'timePlayed'),
+            xp: {
+                score: Stat(p.playerStats, 'scoreXp'),
+                match: Stat(p.playerStats, 'matchXp'),
+                bonus: Stat(p.playerStats, 'bonusXp'),
+                medal: Stat(p.playerStats, 'medalXp'),
+                misc: Stat(p.playerStats, 'miscXp'),
+                challenge: Stat(p.playerStats, 'challengeXp'),
+                total: Stat(p.playerStats, 'totalXp'),
+            }
+        },
+        loadouts: p.player.loadout.map(loadout => Loadout(loadout)),
+    } as any
 })
 
 export const Teams = (match: Schema.API.MW.WZ.Match) => !match.rankedTeams ? [] :
@@ -19,7 +82,6 @@ export const Teams = (match: Schema.API.MW.WZ.Match) => !match.rankedTeams ? [] 
             uno: player.uno,
             username: player.username.replace(/^(\[[^\]]+\])?(.*)$/, '$2'),
             clantag: player.username.replace(/^(\[[^\]]+\])?(.*)$/, '$1') || null,
-            platform: player.platform,
             rank: player.rank,
             loadouts: player.loadouts?.map((loadout: Schema.API.MW.Loadout) => Loadout(loadout)) || [],
             stats: {
@@ -57,6 +119,7 @@ export const Record = (match: Schema.API.MW.WZ.Match): Schema.DB.MW.WZ.Match.Rec
         endTime: match.utcEndSeconds,
         startTime: match.utcStartSeconds,
         player: {
+            id: match.player.uno,
             team: match.player.team,
             username: match.player.username,
             clantag: match.player.clantag,

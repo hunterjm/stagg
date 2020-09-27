@@ -7,8 +7,24 @@ export const Record = (match:Schema.API.MW.Match):Schema.DB.MW.Match.Record => {
         case 'wz':
             return WZ.Record(match)
         case 'mp':
-        default:
             return MP.Record(match)
+        default:
+            return null
+    }
+}
+
+export const Details = (match:Schema.API.MW.Routes.MatchDetails):Schema.DB.MW.Match.Details => {
+    if (!match.allPlayers) {
+        return null
+    }
+    const [first] = match.allPlayers
+    switch(first.gameType) {
+        case 'wz':
+            return WZ.Details(match)
+        case 'mp':
+            return MP.Details(match)
+        default:
+            return null
     }
 }
 

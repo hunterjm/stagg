@@ -44,7 +44,6 @@ export class DiscordBotDispatchService {
       help: this.handlerService.help.bind(this.handlerService),
       shortcut: this.handlerService.shortcut.bind(this.handlerService),
       callofduty: {
-        _default: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
         search: this.codMwHandler.search.bind(this.codMwHandler),
         mw: {
           _default: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
@@ -76,7 +75,7 @@ export class DiscordBotDispatchService {
         const o = await output({ authorId, user, users, params: remainingParams })
         return o
       } catch(e) {
-        return [`ERROR: ${e}`]
+        return [`(!) ${e}`]
       }
   }
   private inputReduceCmds(shortcuts:any, ...chain:string[]):{ output: Function, input: string[]} {

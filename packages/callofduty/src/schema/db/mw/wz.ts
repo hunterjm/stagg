@@ -2,45 +2,23 @@ import * as Mongo from 'mongodb'
 import * as MW from '.'
 
 export namespace Match {
-    // Matches are generic game records
+    // Details are generic game records
     export interface Details {
         mapId: string
         modeId: string
         matchId: string
         endTime: number
         startTime: number
-        teams: {
-            name: string
-            time: number
-            placement: number
-            players: Details.Player[]
-        }[]
+        players: Details.Player[]
     }
     export namespace Details {
         export interface Player {
-            uno: string
+            id: string
             username: string
             clantag: string
-            platform: string
             rank: number
-            stats: Player.Stats
+            stats: Record.Stats
             loadouts: MW.Loadout[]
-        }
-        export namespace Player {
-            export interface Stats {
-                score: number
-                kills: number
-                deaths: number
-                assists: number
-                headshots: number
-                executions: number
-                damageDone: number
-                damageTaken: number
-                longestStreak: number
-                timePlayed: number
-                distanceTraveled: number
-                percentTimeMoving: number
-            }
         }
     }
     // Records are player specific
@@ -52,6 +30,7 @@ export namespace Match {
         endTime: number
         startTime: number
         player: {
+            id: string
             team: string
             username: string
             clantag: string

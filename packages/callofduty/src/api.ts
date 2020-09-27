@@ -33,6 +33,9 @@ export default class {
         return this
     }
     PlayerURL(username:string, platform:Schema.API.Platform='uno') {
+        if (!username) {
+            throw 'PlayerURL missing username parameter'
+        }
         const profileType = !username.match('[^0-9]') ? 'uno' : 'gamer'
         return `platform/${platform}/${profileType}/${encodeURIComponent(username)}`
     }
@@ -48,16 +51,16 @@ export default class {
     async Profile(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.Profile> {
         return this.request({ url: `/stats/cod/v1/title/${game}/${this.PlayerURL(username, platform)}/profile/type/${mode}` })
     }
-    async Matches(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw', next:number=0):Promise<Schema.API.MW.Routes.Matches> {
+    async MatchList(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw', next:number=0):Promise<Schema.API.MW.Routes.MatchList> {
         return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${mode}/start/0/end/${next}/details` })
     }
-    async MatchEvents(matchId:string, game:Schema.API.Game='mw') {
+    async MatchEvents(matchId:string, game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.MatchMapEvents> {
         return this.request({ url: `/ce/v1/title/${game}/platform/battle/match/${matchId}/matchMapEvents` })
     }
-    async MatchDetails(matchId:string, mode:Schema.API.GameType='wz', game:Schema.API.Game='mw') {
+    async MatchDetails(matchId:string, mode:Schema.API.GameType='wz', game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.MatchDetails> {
         return this.request({ url: `/crm/cod/v2/title/${game}/platform/battle/fullMatch/${mode}/${matchId}/it` })
     }
-    async MatchSummary(match:Schema.API.MW.Match, game:Schema.API.Game='mw') {
+    async MatchSummary(match:Schema.API.MW.Match, game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.MatchList> {
         const platform = 'uno'
         const username = match.player.uno
         return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${match.gameType}/start/${(match.utcStartSeconds-1) * 1000}/end/${(match.utcEndSeconds-1) * 1000}/details` })
