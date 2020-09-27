@@ -39,7 +39,7 @@ steps:
     - name: gcr.io/cloud-builders/gcloud
       args: ['functions', 'deploy', 'render-html',      '--source=services/render-html',        '--memory=512MB', '--timeout=60',  '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1']
     - name: gcr.io/cloud-builders/gcloud
-      args: ['functions', 'deploy', 'scrape-scheduler', '--source=services/scrape-scheduler',   '--memory=128MB', '--timeout=60',  '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--env-vars-file=services/scrape-scheduler/.env.yaml']
+      args: ['functions', 'deploy', 'scrape-scheduler', '--source=services/scrape-scheduler',   '--memory=128MB', '--timeout=540', '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--env-vars-file=services/scrape-scheduler/.env.yaml']
     - name: gcr.io/cloud-builders/gcloud
       args: ['functions', 'deploy', 'scrape-worker-cod', '--source=services/scrape-worker-cod', '--memory=128MB', '--timeout=540', '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--env-vars-file=services/scrape-worker-cod/.env.yaml']
     - name: gcr.io/cloud-builders/gcloud
