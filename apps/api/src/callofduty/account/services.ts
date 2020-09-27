@@ -1,4 +1,4 @@
-import { API, Schema } from '@stagg/callofduty'
+import { API, Schema, Normalize } from '@stagg/callofduty'
 import { Connection, Types } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
@@ -66,5 +66,34 @@ export class CallOfDutyAccountService {
             account,
             profile: { matches: apiMatchCounts },
         }
+  }
+  public async searchAccount(
+    platform:Schema.API.Platform,
+    username:string,
+    game?:Schema.API.Game
+  ):Promise<{ username: string, platform: Schema.API.Platform }[]> {
+    const queries = []
+    const gameQuery = game ? { games: game } : {}
+    if (platform) {
+        queries.push({ ...gameQuery, [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
+    } else {
+        for(const p in Normalize.Platforms) {
+            queries.push({ ...gameQuery, [`profiles.${p}`]: { $regex: username, $options: 'i' } })
+        }
+    }
+    const accounts = await this.db_cod.collection('accounts').find({ $or: queries }).toArray()
+    if (!accounts || !accounts.length) {
+        return []
+    }
+    const results = []
+    for(const acct of accounts) {
+        for(const platform in acct.profiles) {
+          const uname = acct.profiles[platform]
+          if (uname.toLowerCase().includes(username.toLowerCase())) {
+            results.push({ username: acct.profiles[platform], platform })
+          }
+        }
+    }
+    return results
   }
 }

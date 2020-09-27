@@ -4,8 +4,8 @@ import { InjectConnection } from '@nestjs/mongoose'
 import { Normalize } from '@stagg/callofduty'
 import { UserService } from 'src/user/services'
 import { User } from 'src/user/schemas'
+import { MwDiscordService } from 'src/callofduty/mw/discord/services'
 import { DiscordBotHandlerService } from 'src/discord/bot/services.handlers'
-import { DiscordBotCallOfDutyHandlerService } from 'src/discord/bot/services.h.callofduty'
 
 export namespace Dispatch {
   export type Handler = Handler.Sync | Handler.Async
@@ -33,7 +33,7 @@ export class DiscordBotDispatchService {
   constructor(
     private readonly userService: UserService,
     private readonly handlerService: DiscordBotHandlerService,
-    private readonly codHandler: DiscordBotCallOfDutyHandlerService,
+    private readonly codMwHandler: MwDiscordService,
     @InjectConnection('callofduty') private db_cod: Connection,
   ) {}
   private get dispatchTree() {
@@ -44,12 +44,14 @@ export class DiscordBotDispatchService {
       help: this.handlerService.help.bind(this.handlerService),
       shortcut: this.handlerService.shortcut.bind(this.handlerService),
       callofduty: {
-        _default: this.codHandler.wzBarracks.bind(this.codHandler),
+        _default: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
+        search: this.codMwHandler.search.bind(this.codMwHandler),
         mw: {
-          _default: this.codHandler.wzBarracks.bind(this.codHandler),
+          _default: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
+          search: this.codMwHandler.search.bind(this.codMwHandler),
           wz: {
-            _default: this.codHandler.wzBarracks.bind(this.codHandler),
-            barracks: this.codHandler.wzBarracks.bind(this.codHandler),
+            _default: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
+            barracks: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
           }
         }
       },

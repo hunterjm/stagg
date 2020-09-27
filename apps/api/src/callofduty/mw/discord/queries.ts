@@ -63,7 +63,7 @@ export namespace WZ {
                             $switch: {
                                 branches: [
                                     {
-                                        case: { $gt: ['$stats.teamSurvivalTime', finalCircle.circleStart * 1000] },
+                                        case: { $gt: ['$stats.teamSurvivalTime', finalCircle.circleStart] },
                                         then: 1
                                     }
                                 ],

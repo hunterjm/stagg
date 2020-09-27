@@ -10,10 +10,10 @@ import {
     Controller,
     BadRequestException
 } from '@nestjs/common'
-import { WZ, MP } from 'src/discord/bot/queries.h.callofduty'
+import { WZ, MP } from 'src/callofduty/mw/discord/queries'
 import { CallOfDutyAccountService } from 'src/callofduty/account/services'
-import { FAAS_URL } from 'src/config'
 import { Schema, Normalize } from '@stagg/callofduty'
+import { FAAS_URL } from 'src/config'
 
 @Controller('/render')
 export class RenderController {
