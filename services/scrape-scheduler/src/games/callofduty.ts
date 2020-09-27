@@ -72,6 +72,9 @@ export const updateAccount = (acct:Schema.DB.Account, ledger?:any) => {
 
 export const initializeAccount = (acct:Schema.DB.Account) => {
     const accountId = acct._id
+    if (!acct.games || !acct.games.length) {
+        return console.log('[^] Skipping', accountId, 'at', WORKER_COD_HOST, 'for lack of games')
+    }
     console.log('[+] Initializing', accountId, 'at', WORKER_COD_HOST)
     for(const gameId of acct.games) {
         console.log('    Game:', gameId)

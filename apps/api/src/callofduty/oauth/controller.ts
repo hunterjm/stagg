@@ -2,7 +2,6 @@ import { API } from '@stagg/callofduty'
 import { Controller, Res, Post, Body, UnauthorizedException } from '@nestjs/common'
 import { CallOfDutyOAuthCredentialsDTO } from './dto'
 import { CallOfDutyOAuthService } from './services'
-import { title } from 'process'
 
 @Controller('callofduty/oauth')
 export class CallOfDutyOAuthController {
