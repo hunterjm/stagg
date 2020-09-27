@@ -102,7 +102,7 @@ export class DiscordBotDispatchService {
     }
     if (!dispatcher || typeof dispatcher !== 'function') {
         if (!dispatcher['_default']) {
-          throw 'unknown dispatcher'
+          throw 'invalid command'
         } else {
           dispatcher = dispatcher['_default']
         }
