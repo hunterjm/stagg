@@ -82,7 +82,7 @@ export const getUpdateAccountIds = async ():Promise<Schema.DB.Account[]> => {
     const db = await useClient('callofduty')
     const minSelectedTime = Date.now() - UPDATE_COOLDOWN
     const accountLedgers = await db.collection('_ETL.ledger').find({ selected: { $lt: minSelectedTime } }, { _account: 1 } as any).toArray()
-    const validAccountIds = accountLedgers.map(l => l._account)
+    const validAccountIds = accountLedgers.sort((a,b) => a.selected - b.selected).map(l => l._account)
     const validAccounts = await db.collection('accounts').find({ _id: { $in: validAccountIds } }).toArray()
-    return validAccounts
+    return validAccounts.sort((a,b) => validAccountIds.indexOf(a._id) - validAccountIds.indexOf(b._id))
 }

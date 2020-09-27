@@ -205,6 +205,9 @@ export class Instance {
                 _account: this.account._id,
             } as ETL.Ledger
         }
+        if (this.ledger.selected) {
+            this.options.logger('[<] Ledger previously selected at', this.ledger.selected)
+        }
         this.ledger.selected = Date.now()
         if (!this.ledger[this.options.gameId]) {
             this.ledger[this.options.gameId] = {}
