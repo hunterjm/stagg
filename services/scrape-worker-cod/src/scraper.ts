@@ -4,49 +4,25 @@ import { delay } from '@stagg/util'
 import { API, Schema, Normalize } from '@stagg/callofduty'
 import { useClient } from './db'
 
-export namespace ETL {
-    export interface Log {
-        _id?: ObjectId
-        _account?: ObjectId
-        created: Date
-        options: Options
-        updates: {
-            matches: Log.Match[],
-            profile: boolean,
-        },
-        operations: Log.Operation[],
+export interface Ledger {
+    _id: ObjectId
+    unsaved?: boolean // only on new creations prior to insert
+    selected: number
+    bo4?: Ledger.Game
+    mw?: Ledger.Game
+}
+export namespace Ledger {
+    export interface Game {
+        mp: Game.Type
+        wz: Game.Type
     }
-    export namespace Log {
-        export interface Match {
-            matchId: string
-            report: boolean
-            details?: boolean
-            summary?: boolean
-        }
-        export interface Operation {
-            [key:string]: any
-        }
-    }
-    export interface Ledger {
-        _id: ObjectId
-        unsaved?: boolean // only on new creations prior to insert
-        selected: number
-        bo4?: Ledger.Game
-        mw?: Ledger.Game
-    }
-    export namespace Ledger {
-        export interface Game {
-            mp: Game.Type
-            wz: Game.Type
-        }
-        export namespace Game {
-            export interface Type {
-                next: number
-                newest: number
-                oldest: number
-                updated: number
-                failures: number
-            }
+    export namespace Game {
+        export interface Type {
+            next: number
+            newest: number
+            oldest: number
+            updated: number
+            failures: number
         }
     }
 }
@@ -73,9 +49,8 @@ export interface Options {
 export class Instance {
     private db: Db
     private API: API
-    private log: ETL.Log
     private done: boolean
-    private ledger: ETL.Ledger
+    private ledger: Ledger
     private account: Schema.DB.Account
     private options:Options = {
         gameId: 'mw',
@@ -107,7 +82,6 @@ export class Instance {
         this.API = new API()
         this.account = { _id: new ObjectId(accountId) } as any
         await this.InitializeDB()
-        await this.InitializeLog()
         await this.InitializeLedger()
         await this.InitializeAccount()
         if (!this.account.auth) {
@@ -118,22 +92,19 @@ export class Instance {
             try {
                 await this.IdentityETL()
             } catch(e) {
-                console.log('[!] Init failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                this.options.logger('[!] Init failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                 // await this.db.collection('accounts').updateOne({ _id: this.account._id }, { $set: { initFailure: true } })
             }
         }
         if (this.ProfileRouteAvailable) {
             await this.ProfileETL()
         }
-        await this.SyncLog()
-        await this.SyncLedger()
         if (!this.Normalizer) {
             throw `unrecognized '${this.options.gameId}.${this.options.gameType}' normalization request`
         }
         let iteration = 0
         while(!this.done) {
             await this.MatchETL(iteration++)
-            await this.SyncLog()
             await this.SyncLedger()
         }
     }
@@ -183,33 +154,13 @@ export class Instance {
     private async InitializeDB() {
         this.db = await useClient('callofduty')
     }
-    private async InitializeLog() {
-        this.log = {
-            _account: this.account._id,
-            created: new Date(),
-            options: this.options,
-            updates: {
-                matches: [],
-                profile: false,
-            },
-            operations: [],
-        }
-        await this.SyncLog()
-    }
-    private async SyncLog() {
-        if (!this.log._id) {
-            await this.db.collection('_ETL.log').insertOne(this.log)
-        } else {
-            await this.db.collection('_ETL.log').updateOne({ _id: this.log._id }, { $set: { ...this.log } })
-        }
-    }
     private async InitializeLedger() {
-        this.ledger = await this.db.collection('_ETL.ledger').findOne({ _id: this.account._id })
+        this.ledger = await this.db.collection('_Ledger').findOne({ _id: this.account._id })
         if (!this.ledger) {
             this.ledger = {
                 _id: this.account._id,
                 unsaved: true,
-            } as ETL.Ledger
+            } as Ledger
         }
         if (this.ledger.selected) {
             this.options.logger('[<] Ledger previously selected at', this.ledger.selected)
@@ -232,20 +183,19 @@ export class Instance {
         try {
             if (this.ledger.unsaved) {
                 delete this.ledger.unsaved
-                await this.db.collection('_ETL.ledger').insertOne(this.ledger)
+                await this.db.collection('_Ledger').insertOne(this.ledger)
                 this.options.logger('[+] Created new ledger...')
             } else {
                 throw 'Ledger is already saved, proceeding...'
             }
         } catch(e) {
             // Update instead if inserting failed
-            await this.db.collection('_ETL.ledger').updateOne({ _id: this.ledger._id }, { $set: { ...this.ledger } })
+            await this.db.collection('_Ledger').updateOne({ _id: this.ledger._id }, { $set: { ...this.ledger } })
             this.options.logger('[^] Updated existing ledger...')
         }
     }
     private async InitializeAccount() {
         this.account = await this.db.collection('accounts').findOne({ _id: this.account._id })
-        this.log.operations.push({ 'initialize-account': this.account._id })
     }
     private async ResolveAuth() {
         const [randomAcctWithAuth] = await this.db.collection('accounts').aggregate([
@@ -253,7 +203,6 @@ export class Instance {
             { $sample: { size: 1 } }
         ]).toArray()
         this.account.auth = randomAcctWithAuth.auth
-        this.log.operations.push({ 'resolve-auth': this.account.auth })
     }
     // IdentityETL will only be called if this account has their own auth
     private async IdentityETL() {
@@ -285,7 +234,6 @@ export class Instance {
         }
         // Save all profiles and games
         await this.db.collection('accounts').updateOne({ _id: this.account._id }, { $set: { games, profiles: this.account.profiles } })
-        this.log.operations.push({ 'sync-identity': { games, profiles } })
     }
     private async ProfileETL() {
         if (!this.Normalizer.Profile) {
@@ -301,7 +249,6 @@ export class Instance {
             updated: new Date(),
             ...normalizedProfile,
         })
-        this.log.operations.push({ 'sync-profile': { username, platform } })
     }
     private async MatchETL(iteration?:number) {
         try {
@@ -388,7 +335,6 @@ export class Instance {
         if (!this.ledger[gameId][gameType].oldest || this.ledger[gameId][gameType].oldest > oldest) {
             this.ledger[gameId][gameType].oldest = oldest
         }
-        this.log.operations.push({ 'sync-matches': { matchIds } })
     }
     private async RecordUnoID(unoId:string) {
         this.account.profiles.id = unoId
@@ -401,7 +347,7 @@ export class Instance {
         }
         const normalizedMatch = this.Normalizer.Match.Record(match)
         const collection = `${this.options.gameId}.${this.options.gameType}.match.records`
-        await this.db.collection(collection).insertOne({ _account: this.account._id, ...normalizedMatch })
+        await this.db.collection(collection).insertOne({ _id: `${match.matchID}.${String(this.account._id)}`, _account: this.account._id, ...normalizedMatch })
     }
     private async MatchEventsETL(match:Schema.API.MW.Match) {
         this.options.logger(`[>] Requesting match events for ${match.matchID}`)
@@ -420,7 +366,7 @@ export class Instance {
             await this.db.collection(collection).insertOne(normalizedDetails)
             this.options.logger('    Saved match details for', match.matchID)
         } else {
-            console.log(`    Details normalizer missing for ${this.options.gameId}.${this.options.gameType}`)
+            this.options.logger(`    Details normalizer missing for ${this.options.gameId}.${this.options.gameType}`)
         }
     }
     private async MatchSummaryETL(match:Schema.API.MW.Match) {
