@@ -155,7 +155,7 @@ export class Instance {
         this.db = await useClient('callofduty')
     }
     private async InitializeLedger() {
-        this.ledger = await this.db.collection('_ETL.Ledger').findOne({ _id: this.account._id })
+        this.ledger = await this.db.collection('_ETL.ledger').findOne({ _id: this.account._id })
         if (!this.ledger) {
             this.ledger = {
                 _id: this.account._id,
@@ -183,14 +183,14 @@ export class Instance {
         try {
             if (this.ledger.unsaved) {
                 delete this.ledger.unsaved
-                await this.db.collection('_ETL.Ledger').insertOne(this.ledger)
+                await this.db.collection('_ETL.ledger').insertOne(this.ledger)
                 this.options.logger('[+] Created new ledger...')
             } else {
                 throw 'Ledger is already saved, proceeding...'
             }
         } catch(e) {
             // Update instead if inserting failed
-            await this.db.collection('_ETL.Ledger').updateOne({ _id: this.ledger._id }, { $set: { ...this.ledger } })
+            await this.db.collection('_ETL.ledger').updateOne({ _id: this.ledger._id }, { $set: { ...this.ledger } })
             this.options.logger('[^] Updated existing ledger...')
         }
     }
