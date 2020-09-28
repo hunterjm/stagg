@@ -245,7 +245,7 @@ export class Instance {
         const normalizedProfile = this.Normalizer.Profile(profile, this.account)
         await this.db.collection(collection).deleteOne({ _account: this.account._id })
         await this.db.collection(collection).insertOne({
-            _account: this.account._id,
+            _id: this.account._id,
             updated: new Date(),
             ...normalizedProfile,
         })
@@ -356,7 +356,7 @@ export class Instance {
         // No normalization for these yet, not sure it's really necessary...
         const collection = `${this.options.gameId}.${this.options.gameType}.match.events`
         const events = await this.API.MatchEvents(match.matchID, this.options.gameId)
-        await this.db.collection(collection).insertOne(events)
+        await this.db.collection(collection).insertOne({ _id: match.matchID, ...events })
         this.options.logger('    Saved match events for', match.matchID)
     }
     private async MatchDetailsETL(match:Schema.API.MW.Match) {
@@ -365,7 +365,7 @@ export class Instance {
         const details = await this.API.MatchDetails(match.matchID, this.options.gameType, this.options.gameId)
         const normalizedDetails = this.Normalizer.Match.Details(details)
         if (normalizedDetails) {
-            await this.db.collection(collection).insertOne(normalizedDetails)
+            await this.db.collection(collection).insertOne({ _id: match.matchID, ...normalizedDetails })
             this.options.logger('    Saved match details for', match.matchID)
         } else {
             this.options.logger(`    Details normalizer missing for ${this.options.gameId}.${this.options.gameType}`)
@@ -375,9 +375,10 @@ export class Instance {
         this.options.logger(`[>] Requesting isolated match summary for ${match.matchID}`)
         const { summary } = await this.API.MatchSummary(match, this.options.gameId)
         if (summary) {
+            const recordId = `${match.matchID}.${String(this.account._id)}`
             const collection = `${this.options.gameId}.${this.options.gameType}.match.records`
-            await this.db.collection(collection).updateOne({}, { $set: { 'stats.avgLifeTime': summary.all.avgLifeTime } })
-            this.options.logger(`    Set avgLifeTime: ${summary.all.avgLifeTime}`)
+            await this.db.collection(collection).updateOne({ _id: recordId }, { $set: { 'stats.avgLifeTime': summary.all.avgLifeTime } })
+            this.options.logger(`    Set avgLifeTime ${summary.all.avgLifeTime} for ${recordId}`)
         }
     }
 }
