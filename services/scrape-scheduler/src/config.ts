@@ -2,7 +2,7 @@ if (process.env.NODE_ENV === 'development') {
     require('dotenv').config()
 }
 
-export const UPDATE_COOLDOWN = 1000 * 10 // once 10s
+export const UPDATE_COOLDOWN = 1000 * 30 // once every 30s
 export const RECHECK_COOLDOWN = 1000 * 60 * 60 * 24 * 7 // once a week
 
 export const MONGO_HOST = process.env.MONGO_HOST
