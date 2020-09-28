@@ -3,6 +3,7 @@ import { Db, ObjectId } from 'mongodb'
 import { delay } from '@stagg/util'
 import { API, Schema, Normalize } from '@stagg/callofduty'
 import { useClient } from './db'
+import { DELAY_SUCCESS, DELAY_FAILURE } from './config'
 
 export interface Ledger {
     _id: ObjectId
@@ -253,7 +254,9 @@ export class Instance {
     private async MatchETL(iteration?:number) {
         try {
             await this.MatchBatchETL(iteration)
+            await delay(DELAY_SUCCESS)
         } catch(e) {
+            await delay(DELAY_FAILURE)
             this.options.logger(`[!] Failure:`, e)
             this.ledger[this.options.gameId][this.options.gameType].failures++
             if (this.ledger[this.options.gameId][this.options.gameType].failures > this.options.retry) {
