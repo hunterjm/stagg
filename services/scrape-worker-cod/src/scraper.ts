@@ -130,6 +130,13 @@ export class Instance {
                 return null
         }
     }
+    private get PreferredProfileNoUnoId():{ username: string, platform: Schema.API.Platform } {
+        const tmpUnoId = this.account.profiles.id
+        delete this.account.profiles.id
+        const preferredProfile = this.PreferredProfile
+        this.account.profiles.id = tmpUnoId
+        return preferredProfile
+    }
     private get PreferredProfile():{ username: string, platform: Schema.API.Platform } {
         if (this.account.profiles.id) {
             return { username: this.account.profiles.id, platform: 'uno' }
@@ -222,11 +229,7 @@ export class Instance {
         }
         this.account.profiles = { ...this.account.profiles, ...profiles }
         // We cannot use uno ID for platform identities fetching
-        const tmpUnoId = this.account.profiles.id
-        delete this.account.profiles.id
-        const { username, platform } = this.PreferredProfile
-        // Now we can safely add back uno ID
-        this.account.profiles.id = tmpUnoId
+        const { username, platform } = this.PreferredProfileNoUnoId
         // Fetch all other profiles given the singular Identity
         const platformProfiles = await this.API.Platforms(username, platform)
         for(const platform in platformProfiles) {
@@ -267,11 +270,8 @@ export class Instance {
     private async MatchBatchETL(iteration?:number) {
         const { gameId, gameType, start } = this.options
         const timestamp = !iteration ? start : this.ledger[gameId][gameType].next
-        const tmpUnoId = this.account.profiles.id
-        delete this.account.profiles.id
-        const { username, platform } = this.PreferredProfile
+        const { username, platform } = this.PreferredProfileNoUnoId
         const { matches } = await this.API.MatchList(username, platform, gameType, gameId, timestamp)
-        this.account.profiles.id = tmpUnoId
         if (!matches?.length) {
             throw 'API returned empty matches...'
         }
