@@ -115,7 +115,12 @@ export class Instance {
             this.API.Tokens(this.account.auth)
         } else {
             this.API.Tokens(this.account.auth)
-            await this.IdentityETL()
+            try {
+                await this.IdentityETL()
+            } catch(e) {
+                console.log('[!] Init failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                await this.db.collection('accounts').updateOne({ _id: this.account._id }, { $set: { initFailure: true } })
+            }
         }
         if (this.ProfileRouteAvailable) {
             await this.ProfileETL()
