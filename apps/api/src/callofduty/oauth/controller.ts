@@ -19,16 +19,20 @@ export class CallOfDutyOAuthController {
             } else {
                 statusCode = 201
                 CallOfDutyAPI.Tokens(tokens)
-                const { titleIdentities } = await CallOfDutyAPI.Identity()
-                const games = []
-                const profiles = {}
-                for(const identity of titleIdentities) {
-                    profiles[identity.platform] = identity.username
-                    if (!games.includes(identity.title)) {
-                        games.push(identity.title)
+                try {
+                    const { titleIdentities } = await CallOfDutyAPI.Identity()
+                    const games = []
+                    const profiles = {}
+                    for(const identity of titleIdentities) {
+                        profiles[identity.platform] = identity.username
+                        if (!games.includes(identity.title)) {
+                            games.push(identity.title)
+                        }
                     }
+                    account = await this.authService.insertAccount(body.email, tokens, games, profiles)
+                } catch(e) {
+                    console.log('[!] Init failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                 }
-                account = await this.authService.insertAccount(body.email, tokens, games, profiles)
             }
             const jwt = await this.authService.accountJwt(account)
             return res.status(statusCode).send({ jwt })
