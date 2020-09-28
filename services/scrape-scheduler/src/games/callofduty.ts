@@ -104,7 +104,7 @@ export const initializeAccount = (acct:Schema.DB.Account) => {
 
 export const getInitializeAccountIds = async ():Promise<Schema.DB.Account[]> => {
     const db = await useClient('callofduty')
-    const accounts = await db.collection('accounts').find({}, { _id: 1 } as any).toArray()
+    const accounts = await db.collection('accounts').find({ initFailure: { $exists: false } }, { _id: 1 } as any).toArray()
     const accountIds = accounts.map(a => a._id)
     const accountLedgers = await db.collection('_ETL.ledger').find({ _id: { $in: accountIds } }, { _id: 1 } as any).toArray()
     const ledgerAccountIdStrs = accountLedgers.map(l => String(l._id))
@@ -116,7 +116,7 @@ export const getUpdateAccountIds = async ():Promise<{ledgers: any[], accounts:Sc
     const minSelectedTime = Date.now() - UPDATE_COOLDOWN
     const accountLedgers = await db.collection('_ETL.ledger').find({ selected: { $lt: minSelectedTime } }, { _id: 1 } as any).toArray()
     const validAccountIds = accountLedgers.sort((a,b) => a.selected - b.selected).map(l => l._id)
-    const validAccounts = await db.collection('accounts').find({ _id: { $in: validAccountIds } }).toArray()
+    const validAccounts = await db.collection('accounts').find({ _id: { $in: validAccountIds }, initFailure: { $exists: false } }).toArray()
     const validAccountIdStrs = validAccountIds.map(_id => String(_id))
     return {
         ledgers: accountLedgers,
