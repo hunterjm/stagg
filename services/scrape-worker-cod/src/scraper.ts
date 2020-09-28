@@ -119,7 +119,7 @@ export class Instance {
                 await this.IdentityETL()
             } catch(e) {
                 console.log('[!] Init failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                await this.db.collection('accounts').updateOne({ _id: this.account._id }, { $set: { initFailure: true } })
+                // await this.db.collection('accounts').updateOne({ _id: this.account._id }, { $set: { initFailure: true } })
             }
         }
         if (this.ProfileRouteAvailable) {
