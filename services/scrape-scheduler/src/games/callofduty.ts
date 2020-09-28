@@ -6,10 +6,12 @@ import { WORKER_COD_HOST, UPDATE_COOLDOWN } from '../config'
 export const triggerAll = async () => {
     const initAccts = await getInitializeAccountIds()
     for(const acct of initAccts) {
+        console.log('[>] Initializing', acct)
         initializeAccount(acct)
     }
     const { accounts, ledgers } = await getUpdateAccountIds()
     for(const acct of accounts) {
+        console.log('[>] Updating', acct)
         updateAccount(acct, ledgers.find(l => String(l._id) === String(acct._id)))
     }
 }
