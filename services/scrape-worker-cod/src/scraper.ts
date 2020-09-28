@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { Db, ObjectId } from 'mongodb'
 import { delay } from '@stagg/util'
 import { API, Schema, Normalize } from '@stagg/callofduty'
