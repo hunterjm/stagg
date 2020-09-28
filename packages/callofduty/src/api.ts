@@ -52,6 +52,7 @@ export default class {
         return this.request({ url: `/stats/cod/v1/title/${game}/${this.PlayerURL(username, platform)}/profile/type/${mode}` })
     }
     async MatchList(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw', next:number=0):Promise<Schema.API.MW.Routes.MatchList> {
+        this.logger('[?] Debug investigation - calling MatchList endpoint from MatchList')
         return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${mode}/start/0/end/${next}/details` })
     }
     async MatchEvents(matchId:string, game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.MatchMapEvents> {
@@ -63,7 +64,11 @@ export default class {
     async MatchSummary(match:Schema.API.MW.Match, game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.MatchList> {
         const platform = 'uno'
         const username = match.player.uno
-        return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${match.gameType}/start/${(match.utcStartSeconds-1) * 1000}/end/${(match.utcEndSeconds-1) * 1000}/details` })
+        const playerUrl = this.PlayerURL(username, platform)
+        const endThreshold = (Number(match.utcEndSeconds) - 1) * 1000
+        const startThreshold = (Number(match.utcStartSeconds) - 1) * 1000
+        this.logger('[?] Debug investigation - calling MatchList endpoint from MatchSummary')
+        return this.request({ url: `/crm/cod/v2/title/${game}/${playerUrl}/matches/${match.gameType}/start/${startThreshold}/end/${endThreshold}/details` })
     }
     async Login(email:string, password:string):Promise<{ xsrf: string, atkn: string, sso: string }> {
         const response = await axios.get('https://profile.callofduty.com/login')
