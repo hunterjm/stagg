@@ -27,6 +27,7 @@ export default async (req, res) => {
         await Runner.ETL(req.body.accountId)
         res.status(200).send({ success: true })
     } catch(error) {
+        console.log(error)
         res.status(500).send({ error })
     }
 }

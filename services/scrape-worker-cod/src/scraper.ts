@@ -242,16 +242,26 @@ export class Instance {
         if (!this.Normalizer.Profile) {
             throw `profile normalization missing for callofduty.${this.options.gameId}.${this.options.gameType}`
         }
-        const { username, platform } = this.PreferredProfile
+        const { username, platform } = this.PreferredProfileNoUnoId
         const profile = await this.API.Profile(username, platform, this.options.gameType, this.options.gameId)
         const collection = `${this.options.gameId}.${this.options.gameType}.profiles`
         const normalizedProfile = this.Normalizer.Profile(profile, this.account)
-        await this.db.collection(collection).deleteOne({ _account: this.account._id })
-        await this.db.collection(collection).insertOne({
-            _id: this.account._id,
-            updated: new Date(),
-            ...normalizedProfile,
-        })
+        try {
+            await this.db.collection(collection).insertOne({
+                _id: this.account._id,
+                updated: new Date(),
+                ...normalizedProfile,
+            })
+            this.options.logger('[+] Created new profile...')
+        } catch(e) {
+            this.options.logger('[^] Profile exists, updating...')
+            await this.db.collection(collection).updateOne({ _id: this.account._id }, {
+                $set: {
+                    updated: new Date(),
+                    ...normalizedProfile,
+                }
+            })
+        }
     }
     private async MatchETL(iteration?:number) {
         try {
