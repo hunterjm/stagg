@@ -278,6 +278,7 @@ export class Instance {
         }
     }
     private async MatchBatchETL(iteration?:number) {
+        this.options.logger('[?] Debug investigation: MatchBatchETL')
         const { gameId, gameType, start } = this.options
         const timestamp = !iteration ? start : this.ledger[gameId][gameType].next
         const { username, platform } = this.PreferredProfileNoUnoId
@@ -383,12 +384,16 @@ export class Instance {
     }
     private async MatchSummaryETL(match:Schema.API.MW.Match) {
         this.options.logger(`[>] Requesting isolated match summary for ${match.matchID}`)
+        this.options.logger('[?] Debug investigation: MatchSummaryETL')
         const { summary } = await this.API.MatchSummary(match, this.options.gameId)
         if (summary) {
+            this.options.logger(`    Saving avgLifeTime ${summary.all.avgLifeTime}`)
             const recordId = `${match.matchID}.${String(this.account._id)}`
             const collection = `${this.options.gameId}.${this.options.gameType}.match.records`
             await this.db.collection(collection).updateOne({ _id: recordId }, { $set: { 'stats.avgLifeTime': summary.all.avgLifeTime } })
             this.options.logger(`    Set avgLifeTime ${summary.all.avgLifeTime} for ${recordId}`)
+        } else {
+            this.options.logger('    MatchSummary returned empty')
         }
     }
 }
