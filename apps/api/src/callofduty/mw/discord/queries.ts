@@ -13,7 +13,7 @@ export namespace MP {
             }
         }
         return [
-            { $match: { 'player._id': playerId, modeId: { [modeIdOp]: modeIds || [] } } },
+            { $match: { _account: playerId, modeId: { [modeIdOp]: modeIds || [] } } },
             { $sort: { startTime: -1 } },
             {
                 $group: {
@@ -30,7 +30,7 @@ export namespace WZ {
         const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
         const finalCircle = Normalize.MW.WZ.CircleToTime(Normalize.MW.WZ.CircleTimes.length)
         return [
-            { $match: { 'player._id': playerId, modeId: { [modeIdOp]: modeIds || [] } } },
+            { $match: { _account: playerId, modeId: { [modeIdOp]: modeIds || [] } } },
             { $sort: { startTime: -1 } },
             {
                 $group: {
@@ -147,7 +147,7 @@ export namespace WZ {
     export function StatsReport(playerId:string, modeIds:Schema.API.MW.Match.Mode[], groupByModeId:boolean=false) {
         const modeIdOp = !modeIds || !modeIds.length ? '$nin' : '$in'
         return [
-            { $match: { 'player._id': playerId, modeId: { [modeIdOp]: modeIds || [] } } },
+            { $match: { _account: playerId, modeId: { [modeIdOp]: modeIds || [] } } },
             { $sort: { startTime: -1 } },
             {
                 $group: {
@@ -244,7 +244,7 @@ export namespace MP {
     export function StatsReport(playerId:string, modeIds:Schema.API.MW.Match.Mode[], groupByModeId:boolean=false) {
         const modeIdOp = !modeIds || !modeIds.length ? {} : { modeId: { "$in": modeIds } }
         return [
-            { $match: { 'player._id': playerId, ...modeIdOp } },
+            { $match: { _account: playerId, ...modeIdOp } },
             { $sort: { startTime: -1 } },
             {
                 $group: {

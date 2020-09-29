@@ -24,12 +24,12 @@ export class RenderController {
     @Get('/callofduty/mw/wz/barracks/user/:userId.png')
     async Barracks(@Req() req, @Res() res, @Param() { userId }):Promise<any> {
         req.headers['content-type'] = 'application/json'
-        const player = await this.codAcctService.getAccountByUserId(userId)
-        if (!player) {
+        const acct = await this.codAcctService.getAccountByUserId(userId)
+        if (!acct) {
             throw new BadRequestException('no game account for this user')
         }
         const weaponStats:any = {}
-        const weaponAggr = MP.WeaponStats(player._id, [])
+        const weaponAggr = MP.WeaponStats(acct._id, [])
         const [weaponData] = await this.db_cod.collection('mw.mp.match.records').aggregate(weaponAggr).toArray()
         for(const key in weaponData) {
             const [statKey, weaponId] = key.split('__')
@@ -54,8 +54,10 @@ export class RenderController {
         const weaponOfChoice = Object.keys(weaponStats).find(key => weaponStats[key].kills === mostKillsWithAnyWeapon)
 
         const actualBrModes:any = Object.keys(Normalize.MW.Modes).filter(mid => !mid.includes('dmz') && !mid.includes('tmd') && !mid.includes('mini'))
-        const aggr = WZ.Barracks(player._id, actualBrModes)
+        const aggr = WZ.Barracks(acct._id, actualBrModes)
         const [data] = await this.db_cod.collection('mw.wz.match.records').aggregate(aggr).toArray()
+
+        const weaponName = Normalize.MW.Weapons[weaponOfChoice] ? Normalize.MW.Weapons[weaponOfChoice].name : weaponOfChoice
 
         deprecatedRequest({
             json: true,
@@ -66,7 +68,7 @@ export class RenderController {
             },
             body: {
                 weaponId: weaponOfChoice,
-                weaponName: Normalize.MW.Weapons[weaponOfChoice].name,
+                weaponName,
                 weaponKills: mostKillsWithAnyWeapon,
                 totalWins: data.wins,
                 totalGames: data.games,

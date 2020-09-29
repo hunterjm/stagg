@@ -32,8 +32,8 @@ export class CallOfDutyAccountService {
     for(const game of account.games) {
       try {
         counts[game] = {
-          mp: await this.db_cod.collection(`${game}.mp.match.records`).estimatedDocumentCount({ 'player._id': account._id }),
-          wz: await this.db_cod.collection(`${game}.wz.match.records`).estimatedDocumentCount({ 'player._id': account._id }),
+          mp: await this.db_cod.collection(`${game}.mp.match.records`).estimatedDocumentCount({ _account: account._id }),
+          wz: await this.db_cod.collection(`${game}.wz.match.records`).estimatedDocumentCount({ _account: account._id }),
         }
       } catch(e) {}
     }

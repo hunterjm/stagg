@@ -36,6 +36,9 @@ export class MwDiscordService {
   }
   public async wzBarracks({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
     const usersArr = Object.values(users)
+    if (!user && !users?.length) {
+      throw 'No user(s) specified'
+    }
     const files = !usersArr?.length
       ? [`${SELF_HOST}/render/callofduty/mw/wz/barracks/user/${user._id}.png`]
       : [...usersArr.map(u => `${SELF_HOST}/render/callofduty/mw/wz/barracks/user/${u._id}.png`)]
@@ -49,8 +52,8 @@ export class MwDiscordService {
     return [{ files }]
   }
   public async statsReport({ user, users, params }:HandlerParams):Promise<Dispatch.Output> {
-    const player = await this.codService.getAccountByUserId(String(user._id))
-    const aggr = WZ.StatsReport(player._id, [])
+    const acct = await this.codService.getAccountByUserId(String(user._id))
+    const aggr = WZ.StatsReport(acct._id, [])
     const [data] = await this.db_cod.collection('mw.wz.match.records').aggregate(aggr).toArray()
     return Object.keys(data).map(dataKey => `${dataKey}: ${data[dataKey]}`)
   }
