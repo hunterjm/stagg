@@ -294,14 +294,14 @@ export class Instance {
             .find({ _id: { $in: recordIds } }, { matchId: 1 } as any).toArray()
         const foundRecordMatchIds = foundRecords.map(r => r.matchId)
         for(const matchId of matchIds.filter(mid => !foundRecordMatchIds.includes(mid))) {
-            await this.MatchRecordETL(matchMap[matchId])
+            try { await this.MatchRecordETL(matchMap[matchId]) } catch(e) {}
         }
         if (this.options.include?.details) {
             const foundDetails = await this.db.collection(`${gameId}.${gameType}.match.details`)
                 .find({ matchId: { $in: matchIds } }, { matchId: 1 } as any).toArray()
             const foundDetailsMatchIds = foundDetails.map(d => d.matchId)
             for(const matchId of matchIds.filter(mid => !foundDetailsMatchIds.includes(mid))) {
-                await this.MatchDetailsETL(matchMap[matchId])
+                try { await this.MatchDetailsETL(matchMap[matchId]) } catch(e) {}
             }
         }
         if (this.options.include?.events && this.MatchEventsRouteAvailable) {
@@ -309,7 +309,7 @@ export class Instance {
                 .find({ matchId: { $in: matchIds } }, { matchId: 1 } as any).toArray()
             const foundEventsMatchIds = foundEvents.map(e => e.matchId)
             for(const matchId of matchIds.filter(mid => !foundEventsMatchIds.includes(mid))) {
-                await this.MatchEventsETL(matchMap[matchId])
+                try { await this.MatchEventsETL(matchMap[matchId]) } catch(e) {}
             }
         }
         if (this.options.include?.summary) {
@@ -320,7 +320,7 @@ export class Instance {
                 }, { matchId: 1 } as any).toArray()
             const foundSummariesMatchIds = foundSummaries.map(s => s.matchId)
             for(const matchId of matchIds.filter(mid => !foundSummariesMatchIds.includes(mid))) {
-                await this.MatchSummaryETL(matchMap[matchId])
+                try { await this.MatchSummaryETL(matchMap[matchId]) } catch(e) {}
             }
         }
         // Reset failures and updated timestamp
