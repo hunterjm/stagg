@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'development'
+
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import faas from '.'

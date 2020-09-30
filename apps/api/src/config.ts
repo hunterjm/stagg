@@ -11,6 +11,7 @@ export const SELF_HOST = isDev ? `http://localhost:${PORT}` : 'https://api.stagg
 export const GMAIL_ADDRESS = process.env.GMAIL_ADDRESS
 export const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
 
+export const DISCORD_BOT_USER_ID = isDev ? '738240182670589993' : '723179755548967027'
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN
 export const DISCORD_SERVER_ID = '729780289727102976'
 export const DISCORD_INVITE_URL = 'https://discord.gg/WhWrbY8'

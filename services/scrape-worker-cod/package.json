@@ -8,7 +8,7 @@
     "dev": "ts-node-dev src/express.ts",
     "prod": "tsc && node dist/express.js",
     "build": "tsc",
-    "deploy": "yarn build && gcloud functions deploy scrape-worker-cod --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --timeout=540 --env-vars-file=.env.yaml",
+    "deploy": "yarn build && gcloud functions deploy scrape-worker-cod --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --timeout=540 --max-instances=12 --env-vars-file=.env.yaml",
     "start": "node dist/index.js",
     "test": "jest"
   },

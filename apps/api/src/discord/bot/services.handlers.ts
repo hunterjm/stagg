@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common'
 import { User } from 'src/user/schemas'
 import { MailService } from 'src/mail/services'
 import { Dispatch } from 'src/discord/bot/services.dispatch'
+import { DISCORD_BOT_USER_ID } from 'src/config'
 
 // User Settings > Text & Images > Show emoji reactions on messages
 type HandlerParams = { authorId:string, user: User, users: {[key:string]: User}, params: string[] }
@@ -66,21 +67,21 @@ export class DiscordBotHandlerService {
         '———————————————————————————',
         '**# First time users                                                                              #**',
         '———————————————————————————',
-        "Don't worry, it's a painless 2-step process:",
+        "Don't worry, it's a painless 3-step process:",
         '1) Create your account at https://profile.callofduty.com',
         '2) Sign in with your CallOfDuty account from Step #1 at https://stagg.co/callofduty/login',
+        '3) Invoke the `register` command below using your email from Step #1',
         '',
         '———————————————————————————',
         '**# Using the bot                                                                                  #**',
         '———————————————————————————',
-        'If calling the bot in a text channel you will need to prefix messages with `%` or `@Stagg`; this is not necessary in DMs. Example: `% help` or `@Stagg help` will work in both text channels or DMs while `help` will work only in DMs',
-        '',
-        'Any command that takes `<...profile(s)>` can take profile identifiers as either Discord tags, `<username> <?platform>` input, or any mixture of those. For example, to fetch `barracks` reports for the `@DrDisrespect` Discord user and the `DanL` Xbox Live gamertag you could use this command:',
+        'If calling the bot in a text channel you will need to prefix messages with `%` or `@Stagg`; this is not necessary in DMs. Example: `% help` or `@Stagg help` will work in both text channels or DMs while `help` will work only in DMs. ' +
+        'Any command that takes `<...profile(s)>` can take profile identifiers as either Discord tags, `<username> <?platform>` input, or any mixture of those. For example, to fetch `barracks` reports for the `@ZachL` Discord user and the `DanL` Xbox Live gamertag you could use this command:',
         '```',
-        '% barracks @DrDisrespect DanL XBL',
+        '% barracks @ZachL DanL XBL',
         '```',
         '———————————————————————————',
-        '**# Available commands                                                                             #**',
+        '**# Available commands                                                                    #**', // I know these are not even but they work WTf?
         '———————————————————————————',
         'Tip: `...` prefix means multiple params accepted and `?` prefix means optional params',
         //'- `search <username> <?platform>` Find profiles matching your query',
@@ -90,7 +91,7 @@ export class DiscordBotHandlerService {
         '... more coming soon!',
         '',
         '———————————————————————————',
-        '**# Support                                                                                        #**',
+        '**# Support                                                                                             #**',
         '———————————————————————————',
         'Help Guide: https://stagg.co/discord/help',
         'Stagg Discord Server: https://stagg.co/discord/join',

@@ -1,127 +1,79 @@
 import axios from 'axios'
+import { ObjectId } from 'mongodb'
+import { delay } from '@stagg/util'
 import { Schema } from '@stagg/callofduty'
 import { useClient } from '../db'
-import { WORKER_COD_HOST, UPDATE_COOLDOWN } from '../config'
+import { WORKER_COD_HOST, COOLDOWN_SEC } from '../config'
 
-export const triggerAll = async () => {
-    const initAccts = await getInitializeAccountIds()
-    for(const acct of initAccts) {
-        console.log('[>] Initializing', acct)
-        initializeAccount(acct)
+
+export const Run = async ():Promise<void> => {
+    const firstPriorityAccts = await getFreshAccts()
+    for(const acct of firstPriorityAccts) {
+        runAccount(acct._id, acct.games)
+        await delay(100)
     }
-    const { accounts, ledgers } = await getUpdateAccountIds()
-    for(const acct of accounts) {
-        console.log('[>] Updating', acct)
-        updateAccount(acct, ledgers.find(l => String(l._id) === String(acct._id)))
+    const secondPriorityAccts = await getStaleLedgers()
+    for(const ledger of secondPriorityAccts) {
+        const acct = await getAcctById(ledger._id)
+        runAccount(ledger._id, acct.games, ledger)
+        await delay(100)
     }
+    console.log('firstPriorityAccts', firstPriorityAccts)
+    console.log('secondPriorityAccts', secondPriorityAccts)
 }
 
-export const updateAccount = (acct:Schema.DB.Account, ledger?:any) => {
-    const accountId = acct._id
-    if (!acct.games || !acct.games.length) {
-        return console.log('[^] Skipping', accountId, 'at', WORKER_COD_HOST, 'for lack of games')
-    }
-    console.log('[^] Updating', accountId, 'at', WORKER_COD_HOST)
-    for(const gameId of acct.games) {
-        console.log('    Game:', gameId)
-        for(const gameType of ['wz', 'mp']) {
-            let oldestStart = 0
-            if (ledger && ledger[gameId] && ledger[gameId][gameType]) {
-                oldestStart = ledger[gameId][gameType]
+const getAcctById = async (_id:ObjectId):Promise<Schema.DB.Account> => {
+    const db = await useClient('callofduty')
+    return db.collection('accounts').findOne({ _id })
+    
+}
+const getFreshAccts = async ():Promise<Schema.DB.Account[]> => {
+    const db = await useClient('callofduty')
+    const ledgerResults = await db.collection('_ETL.ledger').find({}).toArray()
+    const ledgerAccountIds = ledgerResults.map(({ _id }) => _id)
+    return db.collection('accounts').find({ _id: { $nin: ledgerAccountIds } }).toArray()
+}
+const getStaleLedgers = async ():Promise<any[]> => {
+    const db = await useClient('callofduty')
+    const selectedLimit = Date.now() - (COOLDOWN_SEC * 1000)
+    return db.collection('_ETL.ledger').find({ selected: { $lt: selectedLimit } }, { _id: 1 } as any).sort({ selected: -1 }).toArray()
+}
+
+const runAccount = (accountId:ObjectId, games:Schema.API.Game[], ledger?:any) => {
+    console.log('Running account', accountId)
+    for(const game of games) {
+        for(const gameType of ['wz', 'mp'] as Schema.API.GameType[]) {
+            request(accountId, game, gameType)
+            if (ledger && ledger[game] && ledger[game][gameType] && ledger[game][gameType].oldest) {
+                const oldestStart = (ledger[game][gameType].oldest - 60) * 1000
+                request(accountId, game, gameType, oldestStart)
             }
-            console.log('      Type:', gameType)
-            if (oldestStart) {
-                axios.post(WORKER_COD_HOST, {
-                    accountId,
-                    gameId,
-                    gameType,
-                    retry: 3,
-                    start: oldestStart,
-                    offset: 500,
-                    redundancy: false,
-                    delay: {
-                        success: 100,
-                        failure: 500,
-                    },
-                    include: {
-                        events: true,
-                        details: true,
-                        summary: true,
-                    },
-                }).catch(e => console.log('[!] FaaS Failure'))
-            }
-            axios.post(WORKER_COD_HOST, {
-                accountId,
-                gameId,
-                gameType,
-                retry: 3,
-                start: 0,
-                offset: 500,
-                redundancy: false,
-                delay: {
-                    success: 100,
-                    failure: 500,
-                },
-                include: {
-                    events: true,
-                    details: true,
-                    summary: true,
-                },
-            }).catch(e => console.log('[!] FaaS Failure'))
         }
     }
 }
 
-export const initializeAccount = (acct:Schema.DB.Account) => {
-    const accountId = acct._id
-    if (!acct.games || !acct.games.length) {
-        return console.log('[^] Skipping', accountId, 'at', WORKER_COD_HOST, 'for lack of games')
-    }
-    console.log('[+] Initializing', accountId, 'at', WORKER_COD_HOST)
-    for(const gameId of acct.games) {
-        console.log('    Game:', gameId)
-        for(const gameType of ['wz', 'mp']) {
-            console.log('    Type:', gameType)
-            axios.post(WORKER_COD_HOST, {
-                accountId,
-                gameId,
-                gameType,
-                retry: 3,
-                start: 0,
-                offset: 500,
-                redundancy: true,
-                delay: {
-                    success: 100,
-                    failure: 500,
-                },
-                include: {
-                    events: true,
-                    details: true,
-                    summary: true,
-                },
-            }).catch(e => console.log('[!] FaaS Failure'))
-        }
-    }
-}
-
-export const getInitializeAccountIds = async ():Promise<Schema.DB.Account[]> => {
-    const db = await useClient('callofduty')
-    const accounts = await db.collection('accounts').find({ initFailure: { $exists: false } }, { _id: 1 } as any).toArray()
-    const accountIds = accounts.map(a => a._id)
-    const accountLedgers = await db.collection('_ETL.ledger').find({ _id: { $in: accountIds } }, { _id: 1 } as any).toArray()
-    const ledgerAccountIdStrs = accountLedgers.map(l => String(l._id))
-    return accounts.filter(a => !ledgerAccountIdStrs.includes(String(a._id)))
-}
-
-export const getUpdateAccountIds = async ():Promise<{ledgers: any[], accounts:Schema.DB.Account[]}> => {
-    const db = await useClient('callofduty')
-    const minSelectedTime = Date.now() - UPDATE_COOLDOWN
-    const accountLedgers = await db.collection('_ETL.ledger').find({ selected: { $lt: minSelectedTime } }, { _id: 1 } as any).toArray()
-    const validAccountIds = accountLedgers.sort((a,b) => a.selected - b.selected).map(l => l._id)
-    const validAccounts = await db.collection('accounts').find({ _id: { $in: validAccountIds }, initFailure: { $exists: false } }).toArray()
-    const validAccountIdStrs = validAccountIds.map(_id => String(_id))
-    return {
-        ledgers: accountLedgers,
-        accounts: validAccounts.sort((a,b) => validAccountIdStrs.indexOf(String(a._id)) - validAccountIdStrs.indexOf(String(b._id)))
-    }
+const request = (
+    accountId:ObjectId,
+    gameId:Schema.API.Game,
+    gameType:Schema.API.GameType,
+    start:number=0,
+):Promise<any> => {
+    console.log('[>] Requesting', WORKER_COD_HOST)
+    return axios.post(WORKER_COD_HOST, {
+        accountId,
+        gameId,
+        gameType,
+        start,
+        offset: 500,
+        redundancy: false,
+        delay: {
+            success: 100,
+            failure: 500,
+        },
+        include: {
+            events: true,
+            details: true,
+            summary: true,
+        },
+    }).catch(e => console.log('[!] FaaS Failure'))
 }

@@ -1,5 +1,5 @@
 import { API } from '@stagg/callofduty'
-import { Controller, Res, Post, Body, UnauthorizedException } from '@nestjs/common'
+import { Controller, Res, Post, Body, UnauthorizedException, BadGatewayException } from '@nestjs/common'
 import { CallOfDutyOAuthCredentialsDTO } from './dto'
 import { CallOfDutyOAuthService } from './services'
 
@@ -31,7 +31,7 @@ export class CallOfDutyOAuthController {
                     }
                     account = await this.authService.insertAccount(body.email, tokens, games, profiles)
                 } catch(e) {
-                    console.log('[!] Init failure!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                    throw new BadGatewayException('External integration failure on CallOfDuty.API.Identity')
                 }
             }
             const jwt = await this.authService.accountJwt(account)

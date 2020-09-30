@@ -1,4 +1,5 @@
-import { Instance } from './scraper'
+import { useClient } from './db'
+import { Instance } from './scrape'
 
 export default async (req, res) => {
     if (!req.body.accountId) {
@@ -14,15 +15,14 @@ export default async (req, res) => {
         const options = {
             retry: 3,
             start: 0,
-            offset: 500,
             summary: false,
-            redundancy: false,
             delay: {
                 success: 100,
                 failure: 500,
             },
             ...req.body,
         }
+        await useClient('callofduty')
         const Runner = new Instance(options)
         await Runner.ETL(req.body.accountId)
         res.status(200).send({ success: true })
