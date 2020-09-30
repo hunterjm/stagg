@@ -1,8 +1,6 @@
-# Stagg Monorepo
+# Stagg.co
 
-Make each scraper run for one batch of 20 matches. Loop through players and kick off 2 scrapers for each player/game combo, one starting at 0 and one starting at oldest end time
-
-Built with TypeScript, Node, Express, MongoDB, React, and Next; package management provided by Lerna
+Built with TypeScript, Node, Express, MongoDB, React, and Next; monorepo and package management provided by Lerna
 
 ## Getting Started
 
@@ -99,3 +97,5 @@ Switch to RDB so individual match records/performances just relate back to a row
     - Kills
     - Damage
     - Any win
+
+Make each scraper run for one batch of 20 matches. Loop through players and kick off 2 scrapers for each player/game combo, one starting at 0 and one starting at oldest end time
