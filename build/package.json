@@ -1,5 +1,5 @@
 {
-  "name": "stagg-builder",
+  "name": "@stagg/build",
   "version": "1.0.0",
   "author": "Dan Lindsey",
   "description": "Stagg Monorepo Builder",

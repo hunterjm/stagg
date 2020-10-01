@@ -1,5 +1,5 @@
 {
-  "name": "@stagg/faas-render-chart",
+  "name": "@stagg/render-chart",
   "version": "0.9.0",
   "private": true,
   "main": "index.js",

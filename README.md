@@ -72,15 +72,7 @@ Switch to RDB so individual match records/performances just relate back to a row
 - Discord rich views
 
 **Fixes/Updates**
-- Scraper should pull with uno id if possible
 - Revert back to IDB store for downloaded match data
-- Call of Duty API
-    - WZ/MP Profiles
-    - Match summaries
-    - Multiplayer API/types
-    - Some teamPlacement props are 0
-    - Scrape isolated summary for each match with `start=(startTime-1)*1000, end=(endTime-1)*1000`
-    - Alert/Logs to notify when the API returns a field we current don't include or ignore
     
 **Correlations**
 - kills/avgLifeTime
@@ -97,5 +89,3 @@ Switch to RDB so individual match records/performances just relate back to a row
     - Kills
     - Damage
     - Any win
-
-Make each scraper run for one batch of 20 matches. Loop through players and kick off 2 scrapers for each player/game combo, one starting at 0 and one starting at oldest end time

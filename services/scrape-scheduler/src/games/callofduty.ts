@@ -9,12 +9,20 @@ import { WORKER_COD_HOST, COOLDOWN_SEC } from '../config'
 export const Run = async ():Promise<void> => {
     const firstPriorityAccts = await getFreshAccts()
     for(const acct of firstPriorityAccts) {
+        if (!acct?.games?.length) {
+            console.log(`[!] No games found for ${acct._id}`)
+            continue
+        }
         runAccount(acct._id, acct.games)
         await delay(100)
     }
     const secondPriorityAccts = await getStaleLedgers()
     for(const ledger of secondPriorityAccts) {
         const acct = await getAcctById(ledger._id)
+        if (!acct?.games?.length) {
+            console.log(`[!] No games found for ${ledger._id}`)
+            continue
+        }
         runAccount(ledger._id, acct.games, ledger)
         await delay(100)
     }
