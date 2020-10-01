@@ -25,13 +25,12 @@ export const Run = async ():Promise<void> => {
 const getAcctById = async (_id:ObjectId):Promise<Schema.DB.Account> => {
     const db = await useClient('callofduty')
     return db.collection('accounts').findOne({ _id })
-    
 }
 const getFreshAccts = async ():Promise<Schema.DB.Account[]> => {
     const db = await useClient('callofduty')
     const ledgerResults = await db.collection('_ETL.ledger').find({}).toArray()
     const ledgerAccountIds = ledgerResults.map(({ _id }) => _id)
-    return db.collection('accounts').find({ _id: { $nin: ledgerAccountIds } }).toArray()
+    return db.collection('accounts').find({ _id: { $nin: ledgerAccountIds }, games: { $exists: true }, 'games.length': { $gt: 0 } }).toArray()
 }
 const getStaleLedgers = async ():Promise<any[]> => {
     const db = await useClient('callofduty')
@@ -40,7 +39,6 @@ const getStaleLedgers = async ():Promise<any[]> => {
 }
 
 const runAccount = (accountId:ObjectId, games:Schema.API.Game[], ledger?:any) => {
-    console.log('Running account', accountId)
     for(const game of games) {
         for(const gameType of ['wz', 'mp'] as Schema.API.GameType[]) {
             request(accountId, game, gameType)
