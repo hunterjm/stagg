@@ -65,8 +65,8 @@ export default class {
         const platform = 'uno'
         const username = match.player.uno
         const playerUrl = this.PlayerURL(username, platform)
-        const endThreshold = (Number(match.utcEndSeconds) + 10) * 1000
-        const startThreshold = (Number(match.utcStartSeconds) - 10) * 1000
+        const endThreshold = (Number(match.utcEndSeconds) + 25) * 1000
+        const startThreshold = (Number(match.utcStartSeconds) - 25) * 1000
         this.logger('[?] Debug investigation - calling MatchList endpoint from MatchSummary')
         return this.request({ url: `/crm/cod/v2/title/${game}/${playerUrl}/matches/${match.gameType}/start/${startThreshold}/end/${endThreshold}/details` })
     }
