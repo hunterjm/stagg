@@ -59,6 +59,8 @@ npm login --registry=https://registry.npmjs.org/ --scope=stagg
 
 ### Ideas, fixes, features, etc
 
+Potential problem with new scraper - if it goes offline for a while it will never capture beyond first 20 matches because it just keeps checking the end
+
 Switch to RDB so individual match records/performances just relate back to a row from match details
 
 **What will be free**
