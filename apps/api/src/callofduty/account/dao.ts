@@ -41,29 +41,27 @@ export class AccountLookupDAO {
     @InjectRepository(AccountLookup) private lookupRepository: Repository<AccountLookup>,
   ) {}
   public async insert(unoId:string, emails:string[], games:Schema.API.Game[], profiles:ProfileIdentifier[]):Promise<InsertResult> {
+    const profileMap = {} as any
+    for(const profile of profiles) {
+        profileMap[profile.platform] = profile.username
+    }
+    const uniqueProfiles = Object.keys(profileMap).map(platform => ({ platform, username: profileMap[platform] }))
     return this.lookupRepository.createQueryBuilder()
     .insert()
     .into(AccountLookup)
     .values({
-      unoId,
-      games: () => `array[${games.map(game => `'${game}'::citext`).join(',')}]`,
-      emails: () => `array[${emails.map(email => `'${email}'::citext`).join(',')}]`,
-      profiles: () => `array[${profiles.map(p => `'{"platform":"${p.platform}","username":"${p.username}"}'::jsonb`)}]`,
+        unoId,
+        games: () => `array[${[...new Set(games)].map(game => `'${game}'`).join(',')}]::citext[]`,
+        emails: () => `array[${[...new Set(emails)].map(email => `'${email}'`).join(',')}]::citext[]`,
+        profiles: () => `array[${uniqueProfiles.map(p => `'{"platform":"${p.platform}","username":"${p.username}"}'`)}]::jsonb[]`,
     }).execute()
   }
   public async findByUnoId(unoId:string):Promise<AccountLookup> {
     const lookup = await this.lookupRepository.findOne(unoId)
-    if (!lookup) {
-        throw `Account lookup missing for ${unoId}`
-    }
-    console.log('Raw lookup', lookup)
     return Postgres.Denormalize.Model<AccountLookup>(lookup)
   }
   public async findByEmail(email:string):Promise<AccountLookup> {
     const lookup = await this.lookupRepository.findOne({ where: `'${email}' = ANY(emails)` })
-    if (!lookup) {
-        throw `Account lookup missing for ${email}`
-    }
     return Postgres.Denormalize.Model<AccountLookup>(lookup)
   }
   public async addGame(unoId:string, game:Schema.API.Game):Promise<AccountLookup> {
@@ -80,20 +78,28 @@ export class AccountLookupDAO {
     if (!lookup) {
         throw `Account lookup missing for ${unoId}`
     }
-    console.log(propName, typeof lookup[propName], Array.isArray(lookup[propName]), lookup[propName])
-    lookup[propName].push(propValue)
+    if (propName === 'profiles') {
+        const match = lookup.profiles.find(p => p.platform.toLowerCase() === propValue.platform.toLowerCase() && p.username.toLowerCase() === propValue.username.toLowerCase())
+        if (match) {
+            return lookup
+        }
+        lookup.profiles.push(propValue)
+    } else {
+        if (lookup[propName].includes(propValue)) {
+            return lookup
+        }
+        lookup[propName].push(propValue)
+    }
     const normalized = Postgres.Normalize.Model<AccountLookup>({...lookup})
-    console.log('Saving:', normalized)
     await this.lookupRepository.createQueryBuilder()
-    .update()
-    .set({
-        unoId,
-        games: () => `${normalized.games}::citext[]` as any,
-        emails: () => `${normalized.emails}::citext[]` as any,
-        profiles: () => `${normalized.profiles}::jsonb[]` as any,
-    }).where({ unoId }).execute()
+        .update()
+        .set({
+            unoId,
+            games: () => `${normalized.games}::citext[]` as any,
+            emails: () => `${normalized.emails}::citext[]` as any,
+            profiles: () => `${normalized.profiles}::jsonb[]` as any,
+        }).where({ unoId }).execute()
     return lookup
-    // return this.lookupRepository.save(Postgres.Normalize.Model<AccountLookup>(lookup))
   }
 }
 

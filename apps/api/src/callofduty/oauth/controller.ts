@@ -43,7 +43,7 @@ export class CallOfDutyOAuthController {
         const existingUno = await this.lookupDAO.findByUnoId(uno)
         if (!existingUno) {
             await this.acctDAO.insert(uno, authTokens)
-            await this.lookupDAO.insert(uno, [body.email], games, profiles)
+            await this.lookupDAO.insert(uno, null, games, profiles)
         } else {
             await this.acctDAO.addAuth(uno, authTokens)
             await this.lookupDAO.addEmail(uno, body.email)

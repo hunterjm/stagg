@@ -17,7 +17,6 @@ import { POSTGRES } from 'src/config'
         entities: [
           'dist/**/*entity.js',
         ],
-        logging: ['query', 'error'],
         synchronize: false,
       })
     }),
