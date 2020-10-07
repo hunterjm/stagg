@@ -51,9 +51,9 @@ export default class {
     async Profile(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.Profile> {
         return this.request({ url: `/stats/cod/v1/title/${game}/${this.PlayerURL(username, platform)}/profile/type/${mode}` })
     }
-    async MatchList(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw', next:number=0):Promise<Schema.API.MW.Routes.MatchList> {
+    async MatchList(username:string, platform:Schema.API.Platform='uno', mode:Schema.API.GameType='wz', game:Schema.API.Game='mw', next:number=0, limit:number=20):Promise<Schema.API.MW.Routes.MatchList> {
         this.logger('[?] Debug investigation - calling MatchList endpoint from MatchList')
-        return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${mode}/start/0/end/${next}/details` })
+        return this.request({ url: `/crm/cod/v2/title/${game}/${this.PlayerURL(username, platform)}/matches/${mode}/start/0/end/${next}/details?limit=${limit}` })
     }
     async MatchEvents(matchId:string, game:Schema.API.Game='mw'):Promise<Schema.API.MW.Routes.MatchMapEvents> {
         return this.request({ url: `/ce/v1/title/${game}/platform/battle/match/${matchId}/matchMapEvents` })

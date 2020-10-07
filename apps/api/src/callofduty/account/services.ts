@@ -1,25 +1,30 @@
 import { Schema, Normalize } from '@stagg/callofduty'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
 import { Connection, Types } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
-import { Account } from 'src/callofduty/account/schemas'
+import { Account, AccountLookup, ProfileIdentifier } from 'src/callofduty/account/entity'
+import { Account as AcctSchema } from 'src/callofduty/account/schemas'
 
 @Injectable()
 export class CallOfDutyAccountService {
   constructor(
     @InjectConnection('stagg') private db_stg: Connection,
     @InjectConnection('callofduty') private db_cod: Connection,
+    @InjectRepository(Account) private acctRepository: Repository<Account>,
+    @InjectRepository(AccountLookup) private lookupRepository: Repository<AccountLookup>,
   ) {}
-  public async getAccountById(accountId:string):Promise<Account> {
+  public async getAccountById(accountId:string):Promise<AcctSchema> {
     return this.db_cod.collection('accounts').findOne({ _id: Types.ObjectId(accountId) })
   }
-  public async getAccountByEmail(email:string):Promise<Account> {
+  public async getAccountByEmail(email:string):Promise<AcctSchema> {
     return this.db_cod.collection('accounts').findOne({ email })
   }
-  public async getAccountByPlatformUsername(platform:Schema.API.Platform, username:string):Promise<Account> {
+  public async getAccountByPlatformUsername(platform:Schema.API.Platform, username:string):Promise<AcctSchema> {
     return this.db_cod.collection('accounts').findOne({ [`profiles.${platform}`]: username })
   }
-  public async getAccountByUserId(userId:string):Promise<Account> {
+  public async getAccountByUserId(userId:string):Promise<AcctSchema> {
     const user = await this.db_stg.collection('users').findOne({ _id: Types.ObjectId(userId) })
     return this.getAccountById(user?.accounts?.callofduty)
   }
@@ -27,7 +32,7 @@ export class CallOfDutyAccountService {
     const tokens = await this.db_cod.collection('accounts').find({ 'auth.atkn': { $exists: true } }, { auth: 1 } as any).toArray()
     return tokens[Math.floor(Math.random() * Math.floor(tokens.length))].auth
   }
-  public async getMatchRecordCountsForAccount(account:Partial<Account>):Promise<{ [key:string]: { mp: number, wz: number } }> {
+  public async getMatchRecordCountsForAccount(account:Partial<AcctSchema>):Promise<{ [key:string]: { mp: number, wz: number } }> {
     const counts = {}
     for(const game of account.games) {
       try {

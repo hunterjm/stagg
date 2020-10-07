@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common'
-import { CallOfDutyOAuthService } from './services'
-import { CallOfDutyOAuthController } from './controller'
+import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
+import { CallOfDutyOAuthService } from 'src/callofduty/oauth/services'
+import { CallOfDutyOAuthController } from 'src/callofduty/oauth/controller'
 
 @Module({
-  imports: [],
+  imports: [CallOfDutyAccountModule],
   providers: [CallOfDutyOAuthService],
   controllers: [CallOfDutyOAuthController],
 })

@@ -20,6 +20,20 @@ export const FAAS_URL = {
     RENDER_HTML: isDev ? 'http://localhost:8089' : 'https://us-east1-stagcp.cloudfunctions.net/render-html'
 }
 
+export namespace Postgres {
+    export const HOST = process.env.POSTGRES_HOST
+    export const PORT = Number(process.env.POSTGRES_PORT)
+    export const USER = process.env.POSTGRES_USER
+    export const PASS = process.env.POSTGRES_PASS
+}
+
+export const POSTGRES = {
+    HOST: Postgres.HOST,
+    PORT: Postgres.PORT,
+    USER: Postgres.USER,
+    PASS: Postgres.PASS,
+}
+
 export namespace Mongo {
     export const HOST = process.env.MONGO_HOST
     export const USER = process.env.MONGO_USER
