@@ -21,9 +21,14 @@ export class CallOfDutyAccountController {
     ) {}
 
     @Put('/:unoId/:gameId/:platform/:username')
-    async AddGameProfile(@Param() { unoId, gameId, platform, username }):Promise<{ success: boolean }> {
-        await this.lookupDAO.addGame(unoId, gameId)
-        await this.lookupDAO.addProfile(unoId, { platform, username })
+    async RecordProfile(@Param() { unoId, gameId, platform, username }):Promise<{ success: boolean }> {
+        const lookup = await this.lookupDAO.findByUnoId(unoId)
+        if (!lookup) {
+            await this.lookupDAO.insert(unoId, null, [gameId], [{ platform, username }])
+        } else {
+            await this.lookupDAO.addGame(unoId, gameId)
+            await this.lookupDAO.addProfile(unoId, { platform, username })
+        }
         return { success: true }
     }
 

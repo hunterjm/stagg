@@ -1,9 +1,9 @@
 import { Schema } from '@stagg/callofduty'
-import { Postgres } from '@stagg/util'
-import { InsertResult, Repository, UpdateResult, In } from 'typeorm'
+import { InsertResult, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Injectable } from '@nestjs/common'
 import { Account, AccountLookup, ProfileIdentifier } from 'src/callofduty/account/entity'
+import { Postgres } from 'src/util'
 
 @Injectable()
 export class AccountDAO {
@@ -28,16 +28,22 @@ export class AccountDAO {
       return Postgres.Denormalize.Model<Account>(acct)
   }
   public async addAuth(unoId:string, tokens:Schema.API.Tokens):Promise<Account> {
-    const parsedAcct = await this.findByUnoId(unoId)
-    parsedAcct.auth.push(tokens)
-    return this.acctRepository.save(parsedAcct)
+    const account = await this.findByUnoId(unoId)
+    account.auth.push(tokens)
+    const normalized = Postgres.Normalize.Model<Account>({...account})
+    await this.acctRepository.createQueryBuilder()
+        .update()
+        .set({
+            unoId,
+            auth: () => `${normalized.auth}::jsonb[]` as any,
+        }).where({ unoId }).execute()
+    return account
   }
 }
 
 @Injectable()
 export class AccountLookupDAO {
   constructor(
-    // @InjectRepository(Account) private acctRepository: Repository<Account>,
     @InjectRepository(AccountLookup) private lookupRepository: Repository<AccountLookup>,
   ) {}
   public async insert(unoId:string, emails:string[], games:Schema.API.Game[], profiles:ProfileIdentifier[]):Promise<InsertResult> {

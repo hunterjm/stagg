@@ -1,3 +1,4 @@
+import { Schema } from '../../..'
 import * as MP from './mp'
 import * as WZ from './wz'
 
@@ -18,7 +19,7 @@ export interface Loadout {
 }
 export namespace Loadout {
     export interface Weapon {
-        weapon: string
+        weapon: Schema.API.MW.Loadout.Weapon.Name
         variant: number
         attachments: string[]
     }
