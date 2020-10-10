@@ -21,17 +21,15 @@ export const FAAS_URL = {
 }
 
 export namespace Postgres {
-    export const HOST = process.env.POSTGRES_HOST
-    export const PORT = Number(process.env.POSTGRES_PORT)
     export const USER = process.env.POSTGRES_USER
     export const PASS = process.env.POSTGRES_PASS
+    export const SOCKETPATH = process.env.POSTGRES_SOCKETPATH
 }
 
 export const POSTGRES = {
-    HOST: Postgres.HOST,
-    PORT: Postgres.PORT,
     USER: Postgres.USER,
     PASS: Postgres.PASS,
+    SOCKETPATH: Postgres.SOCKETPATH,
 }
 
 export namespace Mongo {

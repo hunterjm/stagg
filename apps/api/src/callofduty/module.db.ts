@@ -9,11 +9,12 @@ import { POSTGRES } from 'src/config'
       inject: [],
       useFactory: () => ({
         type: 'postgres',
-        host: POSTGRES.HOST,
-        port: POSTGRES.PORT,
         username: POSTGRES.USER,
         password: POSTGRES.PASS,
         database: 'callofduty',
+        extra: {
+          socketPath: POSTGRES.SOCKETPATH,
+        },
         entities: [
           'dist/**/*entity.js',
         ],

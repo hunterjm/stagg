@@ -17,10 +17,7 @@ steps:
       args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_PASS > build/.env.MONGO_PASS' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=POSTGRES_HOST > build/.env.POSTGRES_HOST' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=POSTGRES_PORT > build/.env.POSTGRES_PORT' ]
+      args: [ '-c', 'gcloud secrets versions access latest --secret=POSTGRES_SOCKETPATH > build/.env.POSTGRES_SOCKETPATH' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
       args: [ '-c', 'gcloud secrets versions access latest --secret=POSTGRES_USER > build/.env.POSTGRES_USER' ]

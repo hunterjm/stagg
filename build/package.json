@@ -21,10 +21,9 @@
           "MONGO_HOST",
           "MONGO_USER",
           "MONGO_PASS",
-          "POSTGRES_HOST",
-          "POSTGRES_PORT",
           "POSTGRES_USER",
           "POSTGRES_PASS",
+          "POSTGRES_SOCKETPATH",
           "DISCORD_TOKEN",
           "GMAIL_ADDRESS",
           "GMAIL_PASSWORD"
