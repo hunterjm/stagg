@@ -19,8 +19,12 @@
         "secrets": [
           "JWT_SECRET",
           "MONGO_HOST",
+          "MONGO_PORT",
           "MONGO_USER",
           "MONGO_PASS",
+          "POSTGRES_HOST",
+          "POSTGRES_USER",
+          "POSTGRES_PASS",
           "DISCORD_TOKEN",
           "GMAIL_ADDRESS",
           "GMAIL_PASSWORD"
