@@ -1,4 +1,4 @@
-import { Schema } from '@stagg/callofduty'
+import { Foo, Schema } from '@stagg/callofduty'
 import {
     Controller,
     Get,
@@ -6,18 +6,21 @@ import {
     Patch,
     Param,
 } from '@nestjs/common'
-import { AccountLookupDAO } from 'src/callofduty/account/dao'
-import { CallOfDutyAccountService } from 'src/callofduty/account/services'
+// import { AccountLookupDAO } from 'src/callofduty/account/dao'
+// import { CallOfDutyAccountService } from 'src/callofduty/account/services'
 
 @Controller('callofduty/match')
-export class CallOfDutyAccountController {
+export class CallOfDutyMatchController {
     constructor(
-        private readonly acctSrvc: CallOfDutyAccountService,
-        private readonly lookupDAO: AccountLookupDAO,
+        // private readonly acctSrvc: CallOfDutyAccountService,
+        // private readonly lookupDAO: AccountLookupDAO,
     ) {}
 
     @Get('/:matchId')
     async GetMatchDetails(@Param() { matchId }):Promise<{ success: boolean }> {
+        const foo = new Foo()
+        const bar:Foo.Bar = foo.bar()
+        console.log(foo, bar)
         return { success: true }
     }
 

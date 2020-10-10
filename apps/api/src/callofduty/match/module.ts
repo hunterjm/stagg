@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { CallOfDutyDbModule } from 'src/callofduty/module.db'
 import { CallOfDutyMatchService } from 'src/callofduty/match/services'
-import { CallOfDutyAccountController } from 'src/callofduty/match/controller'
+import { CallOfDutyMatchController } from 'src/callofduty/match/controller'
 import * as Match from 'src/callofduty/match/entity'
 
 @Module({
@@ -17,6 +17,6 @@ import * as Match from 'src/callofduty/match/entity'
   ],
   exports: [],
   providers: [CallOfDutyMatchService],
-  controllers: [CallOfDutyAccountController],
+  controllers: [CallOfDutyMatchController],
 })
 export class CallOfDutyMatchModule {}
