@@ -1,10 +1,7 @@
 import { Schema, Normalize } from '@stagg/callofduty'
-import { Repository } from 'typeorm'
-import { InjectRepository } from '@nestjs/typeorm'
 import { Connection, Types } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
-import { Account, AccountLookup, ProfileIdentifier } from 'src/callofduty/account/entity'
 import { Account as AcctSchema } from 'src/callofduty/account/schemas'
 
 @Injectable()
@@ -12,8 +9,6 @@ export class CallOfDutyAccountService {
   constructor(
     @InjectConnection('stagg') private db_stg: Connection,
     @InjectConnection('callofduty') private db_cod: Connection,
-    @InjectRepository(Account) private acctRepository: Repository<Account>,
-    @InjectRepository(AccountLookup) private lookupRepository: Repository<AccountLookup>,
   ) {}
   public async getAccountById(accountId:string):Promise<AcctSchema> {
     return this.db_cod.collection('accounts').findOne({ _id: Types.ObjectId(accountId) })

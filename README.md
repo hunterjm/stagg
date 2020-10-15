@@ -49,6 +49,15 @@ You should specify which ports your local instances of applications will use by 
 
 The environment variables `NODE_ENV=development` is required for `apps/web-ui` unless you want to run the production configuration without hot-reloading.
 
+### Connecting to the database
+
+You must use Google Cloud Proxy to connect from your local machine to the cloud database instance.
+
+```
+cd C:\Dev\Tools\GCP
+cloud_sql_proxy_x64 --instances=stagcp:us-east1:production=tcp:5432
+```
+
 ### Publishing to NPM
 
 To publish new packages, you will need access to [Stagg NPM](https://www.npmjs.com/settings/stagg/packages). After gaining permissions to publish to this organization, use the following command to authenticate your local client.

@@ -1,14 +1,12 @@
-import { API } from '@stagg/callofduty'
+import { API, Schema } from '@stagg/callofduty'
 import { Controller, Res, Post, Body, UnauthorizedException, BadGatewayException, BadRequestException } from '@nestjs/common'
-import { AccountDAO, AccountLookupDAO } from 'src/callofduty/account/dao'
+import { AccountDAO } from 'src/callofduty/account/entity'
 import { CallOfDutyOAuthCredentialsDTO } from 'src/callofduty/oauth/dto'
-import { CallOfDutyOAuthService } from 'src/callofduty/oauth/services'
 
 @Controller('callofduty/oauth')
 export class CallOfDutyOAuthController {
     constructor(
         private readonly acctDAO: AccountDAO,
-        private readonly lookupDAO: AccountLookupDAO,
     ) {}
 
     @Post('credentials')
@@ -20,9 +18,10 @@ export class CallOfDutyOAuthController {
         } catch(e) {
             throw new UnauthorizedException(e)
         }
-        const emailFound = await this.lookupDAO.findByEmail(body.email)
+        const emailFound = await this.acctDAO.findByEmail(body.email)
         if (emailFound) {
-            await this.acctDAO.addAuth(emailFound.unoId, authTokens)
+            emailFound.auth.push(authTokens)
+            await this.acctDAO.update(emailFound)
             return res.status(200).send({ jwt: '' })
         }
         // assume it is a new login, fetch identity and a single match for unoId
@@ -35,25 +34,32 @@ export class CallOfDutyOAuthController {
                 games.push(identity.title)
             }
         }
-        const { matches: [lastMatch] } = await CallOfDutyAPI.MatchList(profiles[0].username, profiles[0].platform, 'wz', 'mw', 0, 1)
-        if (!lastMatch) {
-            throw new BadRequestException('No Modern Warfare matches found')
+        if (!profiles.length) {
+            throw new BadRequestException('no identity found for account')
         }
-        const { player: { uno } } = lastMatch
-        const existingUno = await this.lookupDAO.findByUnoId(uno)
-        if (!existingUno) {
-            await this.acctDAO.insert(uno, authTokens)
-            await this.lookupDAO.insert(uno, null, games, profiles)
-        } else {
-            await this.acctDAO.addAuth(uno, authTokens)
-            await this.lookupDAO.addEmail(uno, body.email)
-            for(const gameId of games) {
-                await this.lookupDAO.addGame(uno, gameId)
-            }
-            for(const profile of profiles) {
-                await this.lookupDAO.addProfile(uno, profile)
+        const { username, platform } = profiles[0]
+        // if not found by email, try fetching identity profiles
+        const searchByIdentity = await this.acctDAO.findByProfile(username, platform)
+        if (searchByIdentity) {
+            searchByIdentity.auth.push(authTokens)
+            await this.acctDAO.update(searchByIdentity)
+            return res.status(200).send({ jwt: '' })
+        }
+        // if not found by identity profiles, try fetching all platform profiles
+        const platformIds = await CallOfDutyAPI.Platforms(username, platform)
+        for(const platform of Object.keys(platformIds) as Schema.API.Platform[]) {
+            const { username } = platformIds[platform]
+            profiles.push({ username, platform })
+            const found = await this.acctDAO.findByProfile(username, platform)
+            if (found) {
+                found.auth.push(authTokens)
+                await this.acctDAO.update(found)
+                return res.status(200).send({ jwt: '' })
             }
         }
-        return res.status(existingUno ? 200 : 201).send({ jwt: '' })
+        // if still no profile matches, assume it is a new login and create account
+        await this.acctDAO.insert({ games, profiles, emails: [body.email], auth: [authTokens] })
+        // !! TODO: should kick-off ETL for new account so it doesn't wait in queue
+        return res.status(201).send({ jwt: '' })
     }
 }

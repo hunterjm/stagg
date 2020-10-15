@@ -1,3 +1,20 @@
+export namespace Token {
+    export class API {
+        constructor(private readonly options:Partial<Token.API>) {}
+    }
+    export interface API {
+        ip?: string
+        agent?: string
+        profiles?: {
+            id: string
+            domain: 'user' | 'callofduty'
+        }[]
+        subscriptions?: {
+            premium?: boolean
+            developer?: boolean
+        }
+    }
+}
 export namespace Postgres {
     export namespace Normalize {
         export const Element = (elem:any) => {

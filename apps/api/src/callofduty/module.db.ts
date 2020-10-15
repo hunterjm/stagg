@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { POSTGRES } from 'src/config'
+import { PGSQL } from 'src/config'
 
 @Module({
   imports: [
@@ -9,11 +9,11 @@ import { POSTGRES } from 'src/config'
       inject: [],
       useFactory: () => ({
         type: 'postgres',
-        username: POSTGRES.USER,
-        password: POSTGRES.PASS,
+        username: PGSQL.USER,
+        password: PGSQL.PASS,
         database: 'callofduty',
         extra: {
-          socketPath: POSTGRES.SOCKETPATH,
+          socketPath: PGSQL.SOCKETPATH,
         },
         entities: [
           'dist/**/*entity.js',

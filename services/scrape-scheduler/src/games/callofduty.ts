@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb'
 import { delay } from '@stagg/util'
 import { Schema } from '@stagg/callofduty'
 import { useClient } from '../db'
-import { WORKER_COD_HOST, COOLDOWN_SEC } from '../config'
+import { FAAS_ETL_COD_HOST, COOLDOWN_SEC } from '../config'
 
 
 export const Run = async ():Promise<void> => {
@@ -64,8 +64,8 @@ const request = (
     gameType:Schema.API.GameType,
     start:number=0,
 ):Promise<any> => {
-    console.log('[>] Requesting', WORKER_COD_HOST)
-    return axios.post(WORKER_COD_HOST, {
+    console.log('[>] Requesting', FAAS_ETL_COD_HOST)
+    return axios.post(FAAS_ETL_COD_HOST, {
         accountId,
         gameId,
         gameType,

@@ -3,20 +3,38 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { CallOfDutyDbModule } from 'src/callofduty/module.db'
 import { CallOfDutyMatchService } from 'src/callofduty/match/services'
 import { CallOfDutyMatchController } from 'src/callofduty/match/controller'
-import * as Match from 'src/callofduty/match/entity'
+import {
+  MwMpMatchRecord,
+  MwWzMatchRecord,
+  MwMpMatchDetails,
+  MwWzMatchDetails,
+  MwMpMatchRecordDAO,
+  MwWzMatchRecordDAO,
+  MwMpMatchDetailsDAO,
+  MwWzMatchDetailsDAO,
+} from 'src/callofduty/match/entity'
+import { Account } from 'src/callofduty/account/entity'
+import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      Match.MW.MP.Record,
-      Match.MW.MP.Details,
-      Match.MW.WZ.Record,
-      Match.MW.WZ.Details,
+      MwMpMatchRecord,
+      MwWzMatchRecord,
+      MwMpMatchDetails,
+      MwWzMatchDetails,
     ]),
-    CallOfDutyDbModule
+    CallOfDutyDbModule,
+    CallOfDutyAccountModule,
   ],
   exports: [],
-  providers: [CallOfDutyMatchService],
+  providers: [
+    CallOfDutyMatchService,
+    MwMpMatchRecordDAO,
+    MwWzMatchRecordDAO,
+    MwMpMatchDetailsDAO,
+    MwWzMatchDetailsDAO,
+  ],
   controllers: [CallOfDutyMatchController],
 })
 export class CallOfDutyMatchModule {}

@@ -167,7 +167,7 @@ export namespace Routes {
         matches: Match[]
     }
     export interface MatchDetails {
-        allPlayers: MatchDetails.PlayerReport[]
+        allPlayers: Match[] // MatchDetails.PlayerReport[]
     }
     export namespace MatchDetails {
         export interface PlayerReport {

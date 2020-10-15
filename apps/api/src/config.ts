@@ -12,7 +12,7 @@ export const GMAIL_ADDRESS = process.env.GMAIL_ADDRESS
 export const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
 
 export const DISCORD_BOT_USER_ID = isDev ? '738240182670589993' : '723179755548967027'
-export const DISCORD_TOKEN = process.env.DISCORD_TOKEN
+export const DISCORD_CLIENT_TOKEN = process.env.DISCORD_CLIENT_TOKEN
 export const DISCORD_SERVER_ID = '729780289727102976'
 export const DISCORD_INVITE_URL = 'https://discord.gg/WhWrbY8'
 
@@ -21,15 +21,18 @@ export const FAAS_URL = {
 }
 
 export namespace Postgres {
-    export const USER = process.env.POSTGRES_USER
-    export const PASS = process.env.POSTGRES_PASS
-    export const SOCKETPATH = process.env.POSTGRES_SOCKETPATH
+    export const USER = process.env.PGSQL_USER
+    export const PASS = process.env.PGSQL_PASS
+    export const SOCKETPATH = process.env.PGSQL_SOCKETPATH
 }
 
-export const POSTGRES = {
+export const PGSQL = {
     USER: Postgres.USER,
     PASS: Postgres.PASS,
     SOCKETPATH: Postgres.SOCKETPATH,
+    CODE: {
+        DUPLICATE: 23505
+    }
 }
 
 export namespace Mongo {
