@@ -114,14 +114,14 @@ export class MwMpMatchDetailsDAO {
  ***********************************************************************************************************/
 @Entity({ name: 'mw/mp/match/records' })
 export class MwMpMatchRecord {
-  @PrimaryColumn('uuid')
-  id: string
-
-  @Column('uuid')
-  accountId: string
+  @PrimaryColumn('text', { unique: true })
+  recordId: string // <matchId>.<accountId>
 
   @Column('text')
   matchId: string
+
+  @Column('uuid')
+  accountId: string
 
   @Column('citext')
   modeId: Schema.API.MW.Match.Mode
@@ -138,16 +138,25 @@ export class MwMpMatchRecord {
   @Column('citext')
   username: string
 
-  @Column('citext')
+  @Column('citext', { nullable: true })
   clantag: string
+
+  @Column('boolean')
+  quit: boolean
 
   @Column('integer')
   score: number
 
+  @Column('integer')
+  scoreAxis: number
+
+  @Column('integer')
+  scoreAllies: number
+
   @Column('numeric')
   timePlayed: number
 
-  @Column('numeric')
+  @Column('numeric', { nullable: true })
   avgLifeTime: number
 
   @Column('integer')
@@ -249,6 +258,7 @@ export class MwMpMatchRecordDAO {
   private normalizeModel(match:Partial<MwMpMatchRecord>) {
     return {
       ...match,
+      recordId: `${match.matchId}.${match.accountId}`,
       weapons: () => `'${JSON.stringify(match.weapons)}'::jsonb`,
       killstreaks: () => `'${JSON.stringify(match.killstreaks)}'::jsonb`,
       objectives: () => `'{}'::jsonb`,
@@ -331,15 +341,14 @@ export class MwWzMatchDetailsDAO {
  ***********************************************************************************************************/
 @Entity({ name: 'mw/wz/match/records' })
 export class MwWzMatchRecord {
-  @PrimaryColumn('uuid')
-  @Index({ unique: true })
-  id: string
-
-  @Column('uuid')
-  accountId: string
+  @PrimaryColumn('text', { unique: true })
+  recordId: string // <matchId>.<accountId>
 
   @Column('text')
   matchId: string
+
+  @Column('uuid')
+  accountId: string
 
   @Column('citext')
   modeId: Schema.API.MW.Match.Mode
@@ -482,7 +491,7 @@ export class MwWzMatchRecordDAO {
   private normalizeModel(match:Partial<MwWzMatchRecord>) {
     return {
       ...match,
-
+      recordId: `${match.matchId}.${match.accountId}`,
     }
   }
   public async insert(match:Partial<MwWzMatchRecord>):Promise<InsertResult> {

@@ -40,8 +40,8 @@ export namespace Postgres {
         export const Model = <T>(model:any):T => {
             for(const key in model) {
                 if (!model[key].match) {
-                    console.log(`[?] Postgres.Denormalize.Model cannot match on ${key}, skipping...`)
-                    console.log(typeof model[key], model[key])
+                    // console.log(`[?] Postgres.Denormalize.Model cannot match on ${key}, skipping...`)
+                    // console.log(typeof model[key], model[key])
                     continue
                 }
                 if (model[key].match(/^"{.*}"$/)) { // JSON

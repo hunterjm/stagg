@@ -115,7 +115,7 @@ export namespace Worker {
                 platformIds: true,
                 profileData: true,
                 friendsList: true,
-                matchEvents: true,
+                matchEvents: false,
                 matchDetails: true,
                 matchSummary: true,
                 accountDiscovery: true,

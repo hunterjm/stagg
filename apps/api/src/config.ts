@@ -20,6 +20,12 @@ export const FAAS_URL = {
     RENDER_HTML: isDev ? 'http://localhost:8089' : 'https://us-east1-stagcp.cloudfunctions.net/render-html'
 }
 
+export const FAAS = {
+    ETL_COD: process.env.FAAS_ETL_COD_HOST,
+    RENDER_HTML: process.env.FAAS_RENDER_HTML_HOST,
+    RENDER_CHART: process.env.FAAS_RENDER_CHART_HOST,
+}
+
 export namespace Postgres {
     export const USER = process.env.PGSQL_USER
     export const PASS = process.env.PGSQL_PASS

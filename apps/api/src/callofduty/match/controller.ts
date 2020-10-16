@@ -19,6 +19,7 @@ import {
     MwMpMatchDetailsDAO,
     MwWzMatchDetailsDAO,
   } from 'src/callofduty/match/entity'
+import { CallOfDutyMatchService } from 'src/callofduty/match/services'
 import { AccountDAO } from 'src/callofduty/account/entity'
 // import { CallOfDutyAccountService } from 'src/callofduty/account/services'
 
@@ -31,6 +32,7 @@ export class CallOfDutyMatchController {
         private readonly MwMpDetailsDao: MwMpMatchDetailsDAO,
         private readonly MwWzRecordDao: MwWzMatchRecordDAO,
         private readonly MwWzDetailsDao: MwWzMatchDetailsDAO,
+        private readonly MatchService: CallOfDutyMatchService,
     ) {}
     @Put('/:gameId/:gameType/:matchId/events')
     async SaveMatchEvents(@Param() { gameId, gameType, matchId }):Promise<{ success: boolean }> {
@@ -42,28 +44,11 @@ export class CallOfDutyMatchController {
         @Body() payload:Schema.API.MW.Match,
         @Param() { gameId, gameType, matchId, unoId }
     ):Promise<{ success: boolean }> {
-        console.log(this.AccountDao)
         const { id:accountId } = await this.AccountDao.findByUnoId(unoId)
         if (!accountId) {
             throw new BadRequestException(`invalid unoId "${unoId}"`)
         }
-        const gameKey = gameId.toUpperCase()
-        const gameTypeKey = gameType.toUpperCase()
-        if (!NormalizeMatch[gameKey]) {
-            throw new BadRequestException(`invalid or unsupported game "${gameId}"`)
-        }
-        if (!NormalizeMatch[gameKey][gameTypeKey]) {
-            throw new BadRequestException(`invalid or unsupported mode "${gameType}"`)
-        }
-        if (!NormalizeMatch[gameKey][gameTypeKey].Record) {
-            throw new BadRequestException(`unsupported game/mode "${gameId}"/"${gameType}"`)
-        }
-        switch(`${gameId}/${gameType}`) {
-            case 'mw/mp':
-                await this.MwMpRecordDao.insert({ accountId, ...NormalizeMatch.MW.MP.Record(payload as Schema.API.MW.MP.Match)})
-                break
-            default: throw new BadRequestException(`unsupported game/mode "${gameId}"/"${gameType}"`)
-        }
+        await this.MatchService.insertMatchRecord(accountId, gameId, gameType, payload)
         return { success: true }
     }
 
@@ -72,6 +57,11 @@ export class CallOfDutyMatchController {
         @Body() payload:Schema.API.MW.Match,
         @Param() { gameId, gameType, matchId, platform, username }
     ):Promise<{ success: boolean }> {
+        const { id:accountId } = await this.AccountDao.findByProfile(username, platform)
+        if (!accountId) {
+            throw new BadRequestException(`invalid profile "${platform}/${username}}"`)
+        }
+        await this.MatchService.insertMatchRecord(accountId, gameId, gameType, payload)
         return { success: true }
     }
 

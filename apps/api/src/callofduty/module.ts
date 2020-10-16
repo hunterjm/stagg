@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { CallOfDutyEtlModule } from './etl/module'
 import { CallOfDutyOAuthModule } from './oauth/module'
 import { ModernWarfareModule } from './mw/module'
 import { CallOfDutyMatchModule } from './match/module'
@@ -8,6 +9,7 @@ import { CallOfDutyFriendsModule } from './friends/module'
 
 @Module({
   imports: [
+    CallOfDutyEtlModule,
     ModernWarfareModule,
     CallOfDutyMatchModule,
     CallOfDutyOAuthModule,

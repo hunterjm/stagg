@@ -1,6 +1,7 @@
 import { Worker } from './fresh'
 
 export default async (req, res) => {
+    console.log('[+] ETL Request')
     const required = ['gameId', 'gameType', 'authTokens', 'startTime', 'username', 'platform']
     for(const field of required) {
         if (!req.body[field]) {

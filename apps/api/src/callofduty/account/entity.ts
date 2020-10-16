@@ -42,7 +42,6 @@ export class AccountDAO {
     @InjectRepository(Account) private acctRepo: Repository<Account>,
   ) {}
   private normalizeModel({ games, profiles, origin, access, unoId='', auth=[], emails=[] }:Partial<Account>) {
-    console.log('PROFILES:', profiles)
     const indexedProfiles:{[key:string]:Account.Schema.ProfileId} = {}
     for(const { platform, username } of profiles) {
       indexedProfiles[`${platform}/${username}`] = { platform, username }

@@ -26,6 +26,7 @@
           "PGSQL_USER",
           "PGSQL_PASS",
           "PGSQL_SOCKETPATH",
+          "FAAS_ETL_COD_HOST",
           "FAAS_RENDER_HTML_HOST",
           "FAAS_RENDER_CHART_HOST",
           "DISCORD_CLIENT_TOKEN",
