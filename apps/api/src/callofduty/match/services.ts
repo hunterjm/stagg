@@ -27,24 +27,19 @@ export class CallOfDutyMatchService {
     private readonly MwWzDetailsDao: MwWzMatchDetailsDAO,
   ) {}
   public async insertMatchRecord(accountId:string, gameId:Schema.API.Game, gameType:Schema.API.GameType, match:Schema.API.MW.Match) {
-    const gameKey = gameId.toUpperCase()
-    const gameTypeKey = gameType.toUpperCase()
-    if (!NormalizeMatch[gameKey]) {
-        throw new BadRequestException(`invalid or unsupported game "${gameId}"`)
-    }
-    if (!NormalizeMatch[gameKey][gameTypeKey]) {
-        throw new BadRequestException(`invalid or unsupported mode "${gameType}"`)
-    }
-    if (!NormalizeMatch[gameKey][gameTypeKey].Record) {
-        throw new BadRequestException(`unsupported game/mode "${gameId}"/"${gameType}"`)
-    }
+    const gameKey = gameId.toLowerCase()
+    const gameTypeKey = gameType.toLowerCase()
     const resources = {
       'mw/mp': {
         dao: this.MwMpRecordDao,
-        normalizer: NormalizeMatch.MW.MP.Record
+        normalizer: NormalizeMatch.MwMpRecord
+      },
+      'mw/wz': {
+        dao: this.MwWzRecordDao,
+        normalizer: NormalizeMatch.MwWzRecord
       }
     }
-    const resourceKey = `${gameId}/${gameType}`
+    const resourceKey = `${gameKey}/${gameTypeKey}`
     if (!resources[resourceKey]) {
       throw new BadRequestException(`unsupported game/mode "${gameId}"/"${gameType}"`)
     }
@@ -59,6 +54,7 @@ export class CallOfDutyMatchService {
       if (String(e.code) === String(PGSQL.CODE.DUPLICATE)) {
         throw new BadRequestException(`duplicate match record for ${gameId}/${gameType}/${match.matchID}/${accountId}`)
       }
+      console.log(e.message)
       throw new InternalServerErrorException('something went wrong, please try again')
     }
   }

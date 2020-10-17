@@ -118,6 +118,9 @@ export namespace Match {
         objectiveBrDownEnemyCircle6?: number
         objectiveBrDownEnemyCircle7?: number
         objectiveBrDownEnemyCircle8?: number
+        objectiveBrDownEnemyCircle9?: number
+        objectiveBrDownEnemyCircle10?: number
+        objectiveBrDownEnemyCircle11?: number
         objectiveBrMissionPickupTablet?: number
         objectiveMunitionsBoxTeammateUsed?: number
         objectiveManualFlareMissileRedirect?: number

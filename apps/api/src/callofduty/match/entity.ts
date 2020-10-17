@@ -261,8 +261,8 @@ export class MwMpMatchRecordDAO {
       recordId: `${match.matchId}.${match.accountId}`,
       weapons: () => `'${JSON.stringify(match.weapons)}'::jsonb`,
       killstreaks: () => `'${JSON.stringify(match.killstreaks)}'::jsonb`,
-      objectives: () => `'{}'::jsonb`,
-      loadouts: () => `array[]::jsonb[]`,
+      objectives: () => `'${JSON.stringify(match.objectives)}'::jsonb`,
+      loadouts: () => `array[${match.loadouts.map(l => `'${JSON.stringify(l)}'`).join(',')}]::jsonb[]`,
     }
   }
   public async insert(match:Partial<MwMpMatchRecord>):Promise<InsertResult> {
@@ -374,7 +374,7 @@ export class MwWzMatchRecord {
   @Column('numeric')
   timePlayed: number
 
-  @Column('numeric')
+  @Column('numeric', { nullable: true })
   avgLifeTime: number
 
   @Column('integer')
@@ -489,9 +489,15 @@ export class MwWzMatchRecordDAO {
     @InjectRepository(MwWzMatchRecord) private matchRecordRepo: Repository<MwWzMatchRecord>,
   ) {}
   private normalizeModel(match:Partial<MwWzMatchRecord>) {
+    console.log({
+      ...match,
+      recordId: `${match.matchId}.${match.accountId}`,
+      loadouts: () => `array[${match.loadouts.map(l => `'${JSON.stringify(l)}'`).join(',')}]::jsonb[]`,
+    })
     return {
       ...match,
       recordId: `${match.matchId}.${match.accountId}`,
+      loadouts: () => `array[${match.loadouts.map(l => `'${JSON.stringify(l)}'`).join(',')}]::jsonb[]`,
     }
   }
   public async insert(match:Partial<MwWzMatchRecord>):Promise<InsertResult> {
