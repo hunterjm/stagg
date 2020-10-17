@@ -1,6 +1,6 @@
 {
   "name": "@stagg/render-html",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
