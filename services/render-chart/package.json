@@ -1,6 +1,6 @@
 {
-  "name": "@stagg/faas-render-chart",
-  "version": "0.8.0",
+  "name": "@stagg/render-chart",
+  "version": "0.9.1",
   "private": true,
   "main": "index.js",
   "license": "GPL-3.0",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node --max-http-header-size=65536 index.js",
-    "deploy": "gcloud functions deploy render-chart --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB",
+    "deploy": "gcloud functions deploy render-chart --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --timeout=60",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --single-quote --trailing-comma all --print-width 100 --write \"**/*.js\"",

@@ -1,30 +1,86 @@
 import { Schema } from '@stagg/callofduty'
-import { Controller, Get, Param, NotFoundException, InternalServerErrorException } from '@nestjs/common'
-import { CallOfDutyAccountService } from 'src/callofduty/account/services'
-import { Account } from 'src/callofduty/account/schemas'
+import {
+    Controller,
+    Get,
+    Put,
+    Post,
+    Body,
+    Param,
+    Delete,
+    NotFoundException,
+    ConflictException,
+    InternalServerErrorException
+} from '@nestjs/common'
+import { AccountDAO } from 'src/callofduty/account/entity'
+import { PGSQL } from 'src/config'
 
-@Controller('callofduty/profile')
+@Controller('callofduty/account')
 export class CallOfDutyAccountController {
-    constructor(private readonly playerService: CallOfDutyAccountService) {}
+    constructor(
+        private readonly acctDao: AccountDAO
+    ) {}
 
-    @Get('/diff/account/:accountId')
-    async GetProfileDiffByAccountId(@Param() { accountId }):Promise<{ account?: Partial<Account>, profile: any }> {
-        const acct = await this.playerService.getAccountById(accountId)
+    @Put('/:accountId/unoId/:unoId')
+    async SaveAccountUnoId(@Param() { accountId, unoId }):Promise<{ success: boolean }> {
+        const acct = await this.acctDao.findById(accountId)
         if (!acct) {
-            throw new NotFoundException('user does not exist')
+            throw new NotFoundException('invalid account id')
         }
-        const [platform] = Object.keys(acct.profiles) as Schema.API.Platform[]
-        const [username] = Object.values(acct.profiles)
-        return this.playerService.getProfileDiff(platform, username)
+        acct.unoId = unoId
+        await this.acctDao.update(acct)
+        return { success: true }
     }
 
-    @Get('/diff/:platform/:username')
-    async GetProfileDiffByPlatformUsername(@Param() { platform, username }):Promise<{ account?: Partial<Account>, profile: any }> {
-        return this.playerService.getProfileDiff(platform, username)
+    @Put('/:accountId/profile/:platform/:username')
+    async SaveAccountProfile(@Param() { accountId, platform, username }):Promise<{ success: boolean }> {
+        const acct = await this.acctDao.findById(accountId)
+        if (!acct) {
+            throw new NotFoundException('invalid account id')
+        }
+        acct.profiles.push({ username, platform })
+        await this.acctDao.update(acct)
+        return { success: true }
     }
 
-    // @Get('/diff/:game/:gameType/:platform/:username')
-    // async GetProfileDiffByPlatformUsername(@Param() { game, gameType, platform, username }):Promise<{ account?: Partial<Account>, profile: any }> {
-    //     return this.playerService.getProfileDiff(game, gameType, platform, username)
-    // }
+    @Delete('/:accountId/profile/:platform/:username')
+    async DeleteAccountProfile(@Param() { accountId, platform, username }):Promise<{ success: boolean }> {
+        const acct = await this.acctDao.findById(accountId)
+        if (!acct) {
+            throw new NotFoundException('invalid account id')
+        }
+        for(const i in acct.profiles) {
+            const p = acct.profiles[i]
+            if (p.platform.toLowerCase() === platform.toLowerCase() && p.username.toLowerCase() === username.toLowerCase()) {
+                delete acct.profiles[i]
+                await this.acctDao.update(acct)
+            }
+        }
+        return { success: true }
+    }
+
+    @Put('/:origin/:gameId/:unoId')
+    async SaveDiscoveredAccount(@Param() { gameId, origin, unoId }):Promise<{ success: boolean }> {
+        try {
+            await this.acctDao.insert({ origin, unoId, games: [gameId], profiles: [] })
+            return { success: true }
+        } catch(e) {
+            if (String(e.code) === String(PGSQL.CODE.DUPLICATE)) {
+                throw new ConflictException(`duplicate profile for unoId ${unoId}`)
+            }
+            throw new InternalServerErrorException('something went wrong, please try again')
+        }
+    }
+
+    @Put('/:origin/:gameId/:unoId/:platform/:username')
+    async SaveDiscoveredAccountWithProfile(@Param() { gameId, origin, unoId, platform, username }):Promise<{ success: boolean }> {
+        try {
+            await this.acctDao.insert({ origin, unoId, games: [gameId], profiles: [{ platform, username }] })
+            return { success: true }
+        } catch(e) {
+            if (String(e.code) === String(PGSQL.CODE.DUPLICATE)) {
+                throw new ConflictException(`duplicate profile for unoId ${unoId}`)
+            }
+            throw new InternalServerErrorException('something went wrong, please try again')
+        }
+    }
 }

@@ -31,15 +31,15 @@ export const FeaturesTiles = ({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       ScrollReveal().reveal('#features-tiles-one');
-      ScrollReveal().reveal('##features-tiles-two', { delay: 200 });
+      ScrollReveal().reveal('#features-tiles-two', { delay: 200 });
       ScrollReveal().reveal('#features-tiles-three', {
         delay: 400,
       });
-      ScrollReveal().reveal('##features-tiles-four');
+      ScrollReveal().reveal('#features-tiles-four');
       ScrollReveal().reveal('#features-tiles-five', {
         delay: 200,
       });
-      ScrollReveal().reveal('##features-tiles-six', { delay: 400 });
+      ScrollReveal().reveal('#features-tiles-six', { delay: 400 });
     }
   }, []);
 

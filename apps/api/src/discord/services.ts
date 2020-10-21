@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js'
 import { Injectable } from '@nestjs/common'
-import { DISCORD_TOKEN } from 'src/config'
+import { DISCORD_CLIENT_TOKEN } from 'src/config'
 import { User } from 'src/user/schemas'
 import { Dispatch } from 'src/discord/bot/services.dispatch'
 import { formatOutput, Output } from 'src/discord/bot/util'
@@ -12,7 +12,7 @@ export class DiscordService {
   constructor(
     private readonly dispatchService: DiscordBotDispatchService
   ) {
-    this.client.login(DISCORD_TOKEN)
+    this.client.login(DISCORD_CLIENT_TOKEN)
   }
   public async sendToUser(discordId:string, text:Output, files?:string[]) {
     const user = await this.client.users.fetch(discordId)

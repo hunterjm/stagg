@@ -1,6 +1,6 @@
 {
-  "name": "stagg-nest-api",
-  "version": "0.8.9",
+  "name": "@stagg/api",
+  "version": "0.9.3",
   "author": "Dan Lindsey",
   "private": true,
   "license": "UNLICENSED",
@@ -11,6 +11,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prod": "nest start",
     "dev": "nest start --watch",
+    "deploy": "gcloud app deploy --version=production",
     "debug": "nest start --debug --watch",
     "start": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -22,11 +23,12 @@
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
+    "@nestjs/config": "^0.5.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/mongoose": "^7.0.2",
     "@nestjs/platform-express": "^7.0.0",
-    "@stagg/callofduty": "^0.8.9",
-    "@stagg/mdb": "^0.8.9",
+    "@nestjs/typeorm": "^7.1.4",
+    "@stagg/callofduty": "^0.9.3",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "discord.js": "^12.3.1",
@@ -35,11 +37,14 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.27",
     "ordinal": "^1.0.3",
+    "pg": "^8.3.3",
     "randomstring": "^1.1.5",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "typeorm": "^0.2.28",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",

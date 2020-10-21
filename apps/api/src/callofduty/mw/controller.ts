@@ -1,7 +1,7 @@
 import { Schema, Normalize } from '@stagg/callofduty'
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common'
 
-@Controller('callofduty/mw')
+@Controller('callofduty/assets/mw')
 export class ModernWarfareController {
     constructor() {}
 

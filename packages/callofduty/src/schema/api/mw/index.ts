@@ -28,6 +28,7 @@ export namespace Loadout {
             name: string
             label: string
             image: string
+            category: null
         }
         export type Name = 
             // pistols
@@ -50,8 +51,8 @@ export namespace Loadout {
     }
 }
 
-export type Summary = WZ.Summary
 export type Match = MP.Match | WZ.Match
+export type Summary = MP.Summary | WZ.Summary
 export namespace Match {
     export type Mode = MP.Match.Mode | WZ.Match.Mode
     export interface Common {
@@ -122,7 +123,7 @@ export interface PlayerStats {
 export namespace Routes {
     export interface Identity {
         titleIdentities: {
-            title: string // game name eg: bo4 / mw
+            title: Schema.Game // game name eg: bo4 / mw
             platform: Schema.Platform
             username: string
             activeDate: number
@@ -158,9 +159,151 @@ export namespace Routes {
             }[]
         }
     }
-    export interface Matches {
-        summary: Summary,
+    export interface MatchList {
+        summary: {
+            all: Summary
+            [key:string]: Summary // { modeId: Summary }
+        },
         matches: Match[]
+    }
+    export interface MatchDetails {
+        allPlayers: Match[] // MatchDetails.PlayerReport[]
+    }
+    export namespace MatchDetails {
+        export interface PlayerReport {
+            // in Match Details you get match info inside every player object because CoD API devs are so 1337
+            utcStartSeconds: number
+            utcEndSeconds: number
+            map: Schema.MW.Map
+            mode: Schema.MW.Match.Mode
+            matchID: string
+            duration: number
+            playlistName: null,
+            version: number
+            gameType: Schema.GameType
+            playerCount: number
+            teamCount: number
+            rankedTeams: null
+            draw: boolean
+            privateMatch: boolean
+            playerStats: PlayerReport.PlayerStats
+            player: PlayerReport.Player
+        }
+        export namespace PlayerReport {
+            export interface Player {
+                team: string
+                rank: number
+                awards: {}
+                username: string
+                uno: string
+                clantag: string
+                brMissionStats: {
+                    missionsComplete: number
+                    totalMissionXpEarned: number
+                    totalMissionWeaponXpEarned: number
+                    missionStatsByType: {
+                        [key:string]: Player.Mission.Stats // { Mission.Type: Mission.Stats }
+                    }
+                }
+                loadout: Loadout[]
+            }
+            export namespace Player {
+                export namespace Mission {
+                    export type Type = 'scavenger' | 'vip' | 'assassination' | 'domination' | 'timedrun'
+                    export interface Stats {
+                        xp: number
+                        count: number
+                        weaponXp: number
+                    }
+                }
+            }
+            export interface PlayerStats {
+                kills: number
+                medalXp: number
+                objectiveTeamWiped: number
+                objectiveLastStandKill: number
+                matchXp: number
+                scoreXp: number
+                wallBangs: number
+                score: number
+                totalXp: number
+                headshots: number
+                assists: number
+                challengeXp: number
+                rank: number
+                scorePerMinute: number
+                distanceTraveled: number
+                teamSurvivalTime: number
+                deaths: number
+                objectiveBrDownEnemyCircle4: number
+                kdRatio: number
+                objectiveBrDownEnemyCircle2: number
+                objectiveBrDownEnemyCircle1: number
+                objectiveBrMissionPickupTablet: number
+                bonusXp: number
+                objectiveReviver: number
+                objectiveBrKioskBuy: number
+                gulagDeaths: number
+                timePlayed: number
+                executions: number
+                gulagKills: number
+                nearmisses: number
+                objectiveBrCacheOpen: number
+                percentTimeMoving: number
+                miscXp: number
+                longestStreak: number
+                teamPlacement: number
+                damageDone: number
+                damageTaken: number
+            }
+        }
+    }
+    export interface MatchMapEvents {
+        matchId: string
+        mode: Schema.MW.Match.Mode
+        matchStart: number // milliseconds
+        matchEnd: number // milliseconds
+        map: {
+            mapId: Schema.MW.Map
+            imageUrl: string // no http, just filename
+            left: number
+            right: number
+            top: number
+            bottom: number
+            rotation: null
+        }
+        teams: MatchMapEvents.Team[]
+        engagements: MatchMapEvents.Engagement[]
+    }
+    export namespace MatchMapEvents {
+        export type Team = Team.Member[]
+        export namespace Team {
+            export interface Member {
+                provider: Schema.Platform
+                username: string
+                unoId: string
+                unoUsername: string
+            }
+        }
+        export interface Engagement {
+            time: number
+            a: number
+            v: number
+            ax: number
+            ay: number
+            vx: number
+            vy: number
+            aLoc: number
+            vLoc: number
+            cause: Engagement.Cause
+        }
+        export namespace Engagement {
+            export type Cause = 'crush' | 'falling' | 'impact' | 'suicide' |
+                'melee' | 'execution' |
+                'fire' | 'explosive' | 'grenade_splash' |
+                'head_shot' | 'rifle_bullet' | 'pistol_bullet' |
+                'projectile' | 'projectile_splash'
+        }
     }
     export interface Profile {
         title: 'mw'

@@ -1,8 +1,8 @@
-import { API, Schema } from '@stagg/callofduty'
+import { Schema, Normalize } from '@stagg/callofduty'
 import { Connection, Types } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
-import { Account } from 'src/callofduty/account/schemas'
+import { Account as AcctSchema } from 'src/callofduty/account/schemas'
 
 @Injectable()
 export class CallOfDutyAccountService {
@@ -10,16 +10,16 @@ export class CallOfDutyAccountService {
     @InjectConnection('stagg') private db_stg: Connection,
     @InjectConnection('callofduty') private db_cod: Connection,
   ) {}
-  public async getAccountById(accountId:string):Promise<Account> {
+  public async getAccountById(accountId:string):Promise<AcctSchema> {
     return this.db_cod.collection('accounts').findOne({ _id: Types.ObjectId(accountId) })
   }
-  public async getAccountByEmail(email:string):Promise<Account> {
+  public async getAccountByEmail(email:string):Promise<AcctSchema> {
     return this.db_cod.collection('accounts').findOne({ email })
   }
-  public async getAccountByPlatformUsername(platform:Schema.API.Platform, username:string):Promise<Account> {
+  public async getAccountByPlatformUsername(platform:Schema.API.Platform, username:string):Promise<AcctSchema> {
     return this.db_cod.collection('accounts').findOne({ [`profiles.${platform}`]: username })
   }
-  public async getAccountByUserId(userId:string):Promise<Account> {
+  public async getAccountByUserId(userId:string):Promise<AcctSchema> {
     const user = await this.db_stg.collection('users').findOne({ _id: Types.ObjectId(userId) })
     return this.getAccountById(user?.accounts?.callofduty)
   }
@@ -27,13 +27,13 @@ export class CallOfDutyAccountService {
     const tokens = await this.db_cod.collection('accounts').find({ 'auth.atkn': { $exists: true } }, { auth: 1 } as any).toArray()
     return tokens[Math.floor(Math.random() * Math.floor(tokens.length))].auth
   }
-  public async getMatchRecordCountsForAccount(account:Partial<Account>):Promise<{ [key:string]: { mp: number, wz: number } }> {
+  public async getMatchRecordCountsForAccount(account:Partial<AcctSchema>):Promise<{ [key:string]: { mp: number, wz: number } }> {
     const counts = {}
     for(const game of account.games) {
       try {
         counts[game] = {
-          mp: await this.db_cod.collection(`_raw.${game}.mp.matches`).estimatedDocumentCount({ 'player._id': account._id }),
-          wz: await this.db_cod.collection(`_raw.${game}.wz.matches`).estimatedDocumentCount({ 'player._id': account._id }),
+          mp: await this.db_cod.collection(`${game}.mp.match.records`).estimatedDocumentCount({ _account: account._id }),
+          wz: await this.db_cod.collection(`${game}.wz.match.records`).estimatedDocumentCount({ _account: account._id }),
         }
       } catch(e) {}
     }
@@ -55,16 +55,44 @@ export class CallOfDutyAccountService {
             profiles: acct?.profiles,
             matches: matchCounts,
         }
-        const api = new API(auth)
         const apiMatchCounts = {}
         const gameProfileData = {}
         for(const game of account?.games) {
-            try { gameProfileData[game] = await api.Profile(username, platform, 'mp', game) } catch(e) {}
-            apiMatchCounts[game] = gameProfileData[game]?.lifetime?.all?.properties?.totalGamesPlayed || 0
+            try { gameProfileData[game] = await this.db_cod.collection(`${game}.mp.profiles`).findOne({ _account: acct._id }) } catch(e) {}
+            apiMatchCounts[game] = gameProfileData[game]?.total?.games || 0
         }
         return {
             account,
             profile: { matches: apiMatchCounts },
         }
+  }
+  public async searchAccount(
+    platform:Schema.API.Platform,
+    username:string,
+    game?:Schema.API.Game
+  ):Promise<{ username: string, platform: Schema.API.Platform }[]> {
+    const queries = []
+    const gameQuery = game ? { games: game } : {}
+    if (platform) {
+        queries.push({ ...gameQuery, [`profiles.${platform.toLowerCase()}`]: { $regex: username, $options: 'i' } })
+    } else {
+        for(const p in Normalize.Platforms) {
+            queries.push({ ...gameQuery, [`profiles.${p}`]: { $regex: username, $options: 'i' } })
+        }
+    }
+    const accounts = await this.db_cod.collection('accounts').find({ $or: queries }).toArray()
+    if (!accounts || !accounts.length) {
+        return []
+    }
+    const results = []
+    for(const acct of accounts) {
+        for(const platform in acct.profiles) {
+          const uname = acct.profiles[platform]
+          if (uname.toLowerCase().includes(username.toLowerCase())) {
+            results.push({ username: acct.profiles[platform], platform })
+          }
+        }
+    }
+    return results
   }
 }

@@ -61,7 +61,7 @@ const Random404Page = () => {
                                 </div>
                                 <div className="contant_box_404">
                                     <h3 className="h2">
-                                        Look like you're lost
+                                        Looks like you're lost
                                     </h3>
                                     <p>the page you are looking for not avaible!</p>
                                     <a href="/" className="link_404">Go Home</a>

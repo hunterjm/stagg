@@ -1,7 +1,63 @@
 import * as Schema from '.'
 export type Map = 'mp_rust' | string
 export interface Summary {
-
+    matchXp: number
+    scoreXp: number
+    accuracy: number
+    objectiveMedalScoreKillSsSentryGun: number
+    losses: number
+    shotsLanded: number
+    objectiveMedalModeXAssaultScore: number
+    objectiveMedalModeXDefendScore: number
+    score: number
+    totalXp: number
+    objectiveMedalModeHpSecureScore: number
+    rank: number
+    objectiveMedalScoreSsKillPacSentry: number
+    deaths: number
+    objectiveDestroyedEquipment: number
+    wins: number
+    objectiveMedalScoreKillSsHoverJet: number
+    kdRatio: number
+    shotsMissed: number
+    objectiveMedalScoreSsKillChopperGunner: number
+    scorePerGame: number
+    timePlayed: number
+    headshotPercentage: number
+    objectiveKillConfirmed: number
+    matchesPlayed: number
+    suicides: number
+    objectiveKothInObj: number
+    wlRatio: number
+    nearmisses: number
+    percentTimeMoving: number
+    damageDone: number
+    shotsFired: number
+    kills: number
+    medalXp: number
+    averageSpeedDuringMatch: number
+    objectiveMedalModeDomSecureScore: number
+    wallBangs: number
+    avgLifeTime: number
+    objectiveMedalModeDomSecureAssistScore: number
+    headshots: number
+    assists: number
+    scorePerMinute: number
+    distanceTraveled: number
+    objectiveKillDenied: number
+    objectiveMedalModeDomSecureNeutralScore: number
+    objectiveKcFriendlyPickup: number
+    executions: number
+    seasonRank: number
+    objectiveObjProgDefend: number
+    objectiveMedalModeDomSecureBScore: number
+    miscXp: number
+    longestStreak: number
+    objectiveMedalScoreKillSsPacSentry: number
+    objectiveMedalScoreSsKillHoverJet: number
+    objectiveMedalModeKcOwnTagsScore: number
+    objectiveCaptureKill: number
+    damageTaken: number
 }
 export interface Match extends Schema.Match.Common {
     gameType: 'mp'

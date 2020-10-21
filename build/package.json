@@ -1,5 +1,5 @@
 {
-  "name": "stagg-builder",
+  "name": "@stagg/build",
   "version": "1.0.0",
   "author": "Dan Lindsey",
   "description": "Stagg Monorepo Builder",
@@ -18,12 +18,21 @@
         "instance": "F1",
         "secrets": [
           "JWT_SECRET",
+          "GMAIL_USER",
+          "GMAIL_PASS",
           "MONGO_HOST",
           "MONGO_USER",
           "MONGO_PASS",
-          "DISCORD_TOKEN",
-          "GMAIL_ADDRESS",
-          "GMAIL_PASSWORD"
+          "PGSQL_USER",
+          "PGSQL_PASS",
+          "PGSQL_PORT",
+          "PGSQL_INSTANCE",
+          "PGSQL_SOCKETPATH",
+          "FAAS_ETL_COD_HOST",
+          "FAAS_RENDER_HTML_HOST",
+          "FAAS_RENDER_CHART_HOST",
+          "DISCORD_CLIENT_TOKEN",
+          "DISCORD_CHANNEL_NOTIFY_SYS"
         ]
       },
       "web-ui": {
@@ -45,18 +54,13 @@
         "region": "us-east1",
         "secrets": []
       },
-      "scrape-cod-cron": {
-        "memory": "128MB",
-        "region": "us-east1",
-        "secrets": []
-      },
-      "scrape-cod-worker": {
+      "etl-callofduty": {
         "memory": "128MB",
         "region": "us-east1",
         "secrets": [
-          "MONGO_HOST",
-          "MONGO_USER",
-          "MONGO_PASS"
+          "API_HOST",
+          "FAAS_ETL_COD_TTL",
+          "FAAS_ETL_COD_HOST"
         ]
       }
     }

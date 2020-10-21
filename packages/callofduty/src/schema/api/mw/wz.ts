@@ -2,7 +2,37 @@ import * as Schema from '.'
 
 export type Map = 'mp_don3' | 'mp_donetsk' | 'mp_donetsk2'
 export interface Summary {
-
+    kills: number
+    objectiveTeamWiped: number
+    objectiveLastStandKill: number
+    wallBangs: number
+    avgLifeTime: number
+    score: number
+    headshots: number
+    assists: number
+    killsPerGame: number
+    scorePerMinute: number
+    distanceTraveled: number
+    deaths: number
+    objectiveDestroyedEquipment: number
+    objectiveMedalScoreSsKillPrecisionAirstrike: number
+    objectiveBrDownEnemyCircle3: number
+    objectiveBrDownEnemyCircle2: number
+    kdRatio: number
+    objectiveBrDownEnemyCircle1: number
+    objectiveBrMissionPickupTablet: number
+    objectiveReviver: number
+    objectiveBrKioskBuy: number
+    gulagDeaths: number
+    timePlayed: number
+    headshotPercentage: number
+    executions: number
+    matchesPlayed: number
+    gulagKills: number
+    nearmisses: number
+    objectiveBrCacheOpen: number
+    damageDone: number
+    damageTaken: number
 }
 export interface Match extends Schema.Match.Common {
     gameType: 'wz'
@@ -24,7 +54,7 @@ export namespace Match {
         'br_25' | 'br_71' | 'br_74' | 'br_77' | 'br_86' | 'br_87' | 'br_88' | 'br_89' | 
         'br_brsolo' | 'br_brduos' | 'br_brtrios' | 'br_brquads' | 'br_br_real' | 'br_brthquad' |
         'brtdm_rmbl' | 'br_mini_miniroyale' | 'br_jugg_brtriojugr' | 'br_jugg_brquadjugr' | 'br_brbbsolo' |
-        'br_brtriostim_name2' | 'br_brduostim_name2' | 'br_brbbquad'
+        'br_brtriostim_name2' | 'br_brduostim_name2' | 'br_brbbquad' | 'br_truckwar_trwarsquads'
     export interface Team {
         name: string
         placement: number
@@ -88,6 +118,9 @@ export namespace Match {
         objectiveBrDownEnemyCircle6?: number
         objectiveBrDownEnemyCircle7?: number
         objectiveBrDownEnemyCircle8?: number
+        objectiveBrDownEnemyCircle9?: number
+        objectiveBrDownEnemyCircle10?: number
+        objectiveBrDownEnemyCircle11?: number
         objectiveBrMissionPickupTablet?: number
         objectiveMunitionsBoxTeammateUsed?: number
         objectiveManualFlareMissileRedirect?: number

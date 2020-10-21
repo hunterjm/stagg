@@ -1,6 +1,6 @@
-# Stagg Monorepo
+# Stagg.co
 
-Built with TypeScript, Node, Express, MongoDB, React, and Next; package management provided by Lerna
+Built with TypeScript, Node, Express, MongoDB, React, and Next; monorepo and package management provided by Lerna
 
 ## Getting Started
 
@@ -49,6 +49,15 @@ You should specify which ports your local instances of applications will use by 
 
 The environment variables `NODE_ENV=development` is required for `apps/web-ui` unless you want to run the production configuration without hot-reloading.
 
+### Connecting to the database
+
+You must use Google Cloud Proxy to connect from your local machine to the cloud database instance.
+
+```
+cd C:\Dev\Tools\GCP
+cloud_sql_proxy_x64 --instances=stagcp:us-east1:production=tcp:5432
+```
+
 ### Publishing to NPM
 
 To publish new packages, you will need access to [Stagg NPM](https://www.npmjs.com/settings/stagg/packages). After gaining permissions to publish to this organization, use the following command to authenticate your local client.
@@ -58,6 +67,10 @@ npm login --registry=https://registry.npmjs.org/ --scope=stagg
 ```
 
 ### Ideas, fixes, features, etc
+
+Potential problem with new scraper - if it goes offline for a while it will never capture beyond first 20 matches because it just keeps checking the end
+
+Switch to RDB so individual match records/performances just relate back to a row from match details
 
 **What will be free**
 - Pull your own profile
@@ -70,15 +83,7 @@ npm login --registry=https://registry.npmjs.org/ --scope=stagg
 - Discord rich views
 
 **Fixes/Updates**
-- Scraper should pull with uno id if possible
 - Revert back to IDB store for downloaded match data
-- Call of Duty API
-    - WZ/MP Profiles
-    - Match summaries
-    - Multiplayer API/types
-    - Some teamPlacement props are 0
-    - Scrape isolated summary for each match with `start=(startTime-1)*1000, end=(endTime-1)*1000`
-    - Alert/Logs to notify when the API returns a field we current don't include or ignore
     
 **Correlations**
 - kills/avgLifeTime

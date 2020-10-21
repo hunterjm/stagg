@@ -1,19 +1,14 @@
-import * as API from '../../api'
+import { Schema } from '../../..'
+import * as MP from './mp'
+import * as WZ from './wz'
 
-export interface Match {
-    matchId: string
-    mapId: API.MW.Map
-    modeId: API.MW.Match.Mode
-    startTime: number
-    endTime: number
+export { MP, WZ }
+
+export namespace Match {
+    export type Record = MP.Match.Record | WZ.Match.Record
+    export type Details = MP.Match.Details | WZ.Match.Details
 }
-export interface Performance {
-    matchId: string
-    mapId: API.MW.Map
-    modeId: API.MW.Match.Mode
-    startTime: number
-    endTime: number
-}
+
 export interface Loadout {
     primary: Loadout.Weapon
     secondary: Loadout.Weapon
@@ -24,7 +19,7 @@ export interface Loadout {
 }
 export namespace Loadout {
     export interface Weapon {
-        weapon: string
+        weapon: Schema.API.MW.Loadout.Weapon.Name
         variant: number
         attachments: string[]
     }

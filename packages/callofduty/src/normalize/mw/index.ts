@@ -1,3 +1,4 @@
+import * as Match from './match'
 import { Profile } from './profile'
 import { Map, Maps } from './maps'
 import { Mode, Modes } from './modes'
@@ -8,35 +9,86 @@ import { Killstreak, Killstreaks, KillstreakObjective } from './killstreaks'
 // https://my.callofduty.com/api/papi-client/ce/v1/title/mw/platform/battle/match/8944019869464002060/matchMapEvents // heatmap
 
 namespace WZ {
-    export const Circle = (timePlayedSeconds:number):{ circle:number, gas:boolean } => {
+    export const CircleTimes = [
         // Circle 1 - 4m 30s time before Circle starts to close. Then 4m 30s for the circle to shrink
-        if (timePlayedSeconds < 4.5 * 60)   return { circle: 1, gas: false }
-        if (timePlayedSeconds < 9 * 60)     return { circle: 1, gas: true }
+        {
+            circleId: 1,
+            duration: 4.5 * 60,
+            durationGas: 4.5 * 60,
+        },
         // Circle 2 - 1m 30s time before Circle starts to close. Then 2m 30s for the circle to shrink
-        if (timePlayedSeconds < 10.5 * 60)  return { circle: 2, gas: false }
-        if (timePlayedSeconds < 13 * 60)    return { circle: 2, gas: true }
+        {
+            circleId: 2,
+            duration: 1.5 * 60,
+            durationGas: 2.5 * 60,
+        },
         // Circle 3 - 1m 15s time before Circle starts to close. Then 2m 00s for the circle to shrink
-        if (timePlayedSeconds < 14.25 * 60) return { circle: 3, gas: false }
-        if (timePlayedSeconds < 16.25 * 60) return { circle: 3, gas: true }
+        {
+            circleId: 3,
+            duration: 1.25 * 60,
+            durationGas: 2.0 * 60,
+        },
         // Circle 4 - 1m 00s time before Circle starts to close. Then 1m 30s for the circle to shrink
-        if (timePlayedSeconds < 17.25 * 60) return { circle: 4, gas: false }
-        if (timePlayedSeconds < 18.75 * 60) return { circle: 4, gas: true }
+        {
+            circleId: 4,
+            duration: 1.00 * 60,
+            durationGas: 1.5 * 60,
+        },
         // Circle 5 - 1m 00s time before Circle starts to close. Then 1m 00s for the circle to shrink
-        if (timePlayedSeconds < 19.75 * 60) return { circle: 5, gas: false }
-        if (timePlayedSeconds < 20.75 * 60) return { circle: 5, gas: true }
+        {
+            circleId: 5,
+            duration: 1.00 * 60,
+            durationGas: 1.0 * 60,
+        },
         // Circle 6 - 0m 45s time before Circle starts to close. Then 0m 45s for the circle to shrink
-        if (timePlayedSeconds < 21.5 * 60)  return { circle: 6, gas: false }
-        if (timePlayedSeconds < 22.25 * 60) return { circle: 6, gas: true }
+        {
+            circleId: 6,
+            duration: 0.75 * 60,
+            durationGas: 0.75 * 60,
+        },
         // Circle 7 - 0m 30s time before Circle starts to close. Then 0m 45s for the circle to shrink
-        if (timePlayedSeconds < 22.75 * 60) return { circle: 7, gas: false }
-        if (timePlayedSeconds < 23.5 * 60)  return { circle: 7, gas: true }
+        {
+            circleId: 7,
+            duration: 0.5 * 60,
+            durationGas: 0.75 * 60,
+        },
         // Then the 8th and final circle will continue to shrink to nothing over 1m 30s
+        {
+            circleId: 8,
+            duration: 0,
+            durationGas: 0,
+        },
+    ]
+    export const TimeToCircle = (timePlayedSeconds:number):{ circle:number, gas:boolean } => {
+        let accum = 0
+        for(const circle of CircleTimes) {
+            accum += circle.duration
+            if (accum >= timePlayedSeconds) {
+                return { circle: circle.circleId, gas: false }
+            }
+            accum += circle.durationGas
+            if (accum >= timePlayedSeconds) {
+                return { circle: circle.circleId, gas: true }
+            }
+        }
         return { circle: 8, gas: true }
+    }
+    export const CircleToTime = (cId:number):{ prevGas:number, circleStart:number, nextGas:number } => {
+        let accum = 0
+        for(const { circleId, duration, durationGas } of CircleTimes) {
+            if (circleId === cId) {
+                return { prevGas: accum, circleStart: accum + duration, nextGas: accum + duration + durationGas }
+            }
+            accum += duration
+            accum += durationGas
+        }
+        return null
     }
 }
 
 export {
     WZ,
+    Match,
     Profile,
     Map, Maps,
     Mode, Modes,

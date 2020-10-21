@@ -4,8 +4,8 @@ import { InjectConnection } from '@nestjs/mongoose'
 import { Normalize } from '@stagg/callofduty'
 import { UserService } from 'src/user/services'
 import { User } from 'src/user/schemas'
+import { MwDiscordService } from 'src/callofduty/mw/discord/services'
 import { DiscordBotHandlerService } from 'src/discord/bot/services.handlers'
-import { DiscordBotCallOfDutyHandlerService } from 'src/discord/bot/services.h.callofduty'
 
 export namespace Dispatch {
   export type Handler = Handler.Sync | Handler.Async
@@ -33,7 +33,7 @@ export class DiscordBotDispatchService {
   constructor(
     private readonly userService: UserService,
     private readonly handlerService: DiscordBotHandlerService,
-    private readonly codHandler: DiscordBotCallOfDutyHandlerService,
+    private readonly codMwHandler: MwDiscordService,
     @InjectConnection('callofduty') private db_cod: Connection,
   ) {}
   private get dispatchTree() {
@@ -43,21 +43,24 @@ export class DiscordBotDispatchService {
       register: this.handlerService.register.bind(this.handlerService),
       help: this.handlerService.help.bind(this.handlerService),
       shortcut: this.handlerService.shortcut.bind(this.handlerService),
-      barracks: this.codHandler.wzBarracks.bind(this.codHandler),
-      report: {
-        cod: {
-          mw: {
-            wz: {
-              all: this.codHandler.statsReport.bind(this.codHandler),
-              barracks: this.codHandler.wzBarracks.bind(this.codHandler),
-            }
+      callofduty: {
+        search: this.codMwHandler.search.bind(this.codMwHandler),
+        mw: {
+          _default: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
+          search: this.codMwHandler.search.bind(this.codMwHandler),
+          wz: {
+            _default: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
+            barracks: this.codMwHandler.wzBarracks.bind(this.codMwHandler),
           }
         }
-      }
+      },
     }
     // Alias tree defines shortcuts and aliases to use with the root tree for better UX
     const alias = {
-      helpme: root.help,
+      cod: root.callofduty,
+      mw: root.callofduty.mw,
+      wz: root.callofduty.mw.wz,
+      barracks: root.callofduty.mw.wz.barracks,
     }
     return { ...alias, ...root }
   }
@@ -72,7 +75,8 @@ export class DiscordBotDispatchService {
         const o = await output({ authorId, user, users, params: remainingParams })
         return o
       } catch(e) {
-        return [`ERROR: ${e}`]
+        console.log(e)
+        return [`(!) ${e}`]
       }
   }
   private inputReduceCmds(shortcuts:any, ...chain:string[]):{ output: Function, input: string[]} {
@@ -97,7 +101,11 @@ export class DiscordBotDispatchService {
         }
     }
     if (!dispatcher || typeof dispatcher !== 'function') {
-        throw 'unknown dispatcher'
+        if (!dispatcher['_default']) {
+          throw 'invalid command'
+        } else {
+          dispatcher = dispatcher['_default']
+        }
     }
     return { output: dispatcher, input: [...hydratedChain.slice(lastDispatcherIndex+1)] }
   }

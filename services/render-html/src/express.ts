@@ -6,5 +6,5 @@ const app = express()
 app.use(bodyParser.json())
 app.use('/', faas)
 app.listen(8089, () => {
-    console.log('[>] FaaS running on http://localhost:8089')
+    console.log('[>] FaaS running on http://localhost:8101')
 })
