@@ -117,7 +117,7 @@ export namespace Worker {
                 profileData: false,
                 friendsList: false,
                 matchEvents: false,
-                matchSummary: false,
+                matchSummary: true,
                 matchDetails: false,
                 accountDiscovery: false,
                 deleteInvalidProfiles: true,
