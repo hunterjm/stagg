@@ -129,7 +129,7 @@ export namespace Worker {
             this.profiles = account.profiles
         }
         private get HttpHeaders() {
-            return { headers: { 'X-Integrity-Token': this.jwt } }
+            return { headers: { 'x-integrity-jwt': this.jwt } }
         }
         public async Run() {
             await this.ExecuteOnce()
