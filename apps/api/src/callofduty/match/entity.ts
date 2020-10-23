@@ -513,4 +513,8 @@ export class MwWzMatchRecordDAO {
   public async findById(matchId:string, accountId:string):Promise<MwWzMatchRecord> {
       return this.matchRecordRepo.findOne({ where: { accountId, matchId } })
   }
+  // public async aggrStats(accountId:string) {
+  //   return this.matchRecordRepo.createQueryBuilder()
+  //     .select
+  // }
 }

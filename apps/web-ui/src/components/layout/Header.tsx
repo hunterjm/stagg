@@ -125,7 +125,7 @@ export const Header = ({
                   {!hideSignin && (
                     <ul className="list-reset header-nav-right">
                       <li>
-                        <Link href="/callofduty/login">
+                        <Link href="/oauth/callofduty">
                           <a
                             onClick={closeMenu}
                             className="button button-primary button-wide-mobile button-sm"

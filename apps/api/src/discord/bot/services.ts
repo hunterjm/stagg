@@ -2,10 +2,10 @@ import * as Discord from 'discord.js'
 import { Connection } from 'mongoose'
 import { InjectConnection } from '@nestjs/mongoose'
 import { Injectable } from '@nestjs/common'
-import { DISCORD_CLIENT_TOKEN } from 'src/config'
 import { UserService } from 'src/user/services'
 import { DiscordBotDispatchService } from 'src/discord/bot/services.dispatch'
 import { formatOutput, Output } from 'src/discord/bot/util'
+import { DISCORD } from 'src/config'
 
 // User Settings > Text & Images > Show emoji reactions on messages
 
@@ -17,7 +17,7 @@ export class DiscordBotService {
     private readonly botDispatchService: DiscordBotDispatchService,
     @InjectConnection('discord') private db_discord: Connection,
   ) {
-    this.client.login(DISCORD_CLIENT_TOKEN)
+    this.client.login(DISCORD.CLIENT.TOKEN)
     this.client.on('ready', () => {
       console.log(
           `${'\x1b[32m' /* green */}${'\x1b[1m' /* bright/bold */}`+

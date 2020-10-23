@@ -14,6 +14,21 @@ export class UserService {
     private readonly codAcctDao: AccountDAO,
     @InjectConnection('stagg') private db_stg: Connection,
   ) {}
+  public verifyJwt<T>(jwt:string) {
+    const payload:any = JWT.verify(jwt, JWT_SECRET)
+    return payload as T
+  }
+  public getJwtPayload(headers:any) {
+    if (!headers?.authorization) {
+      return null
+    }
+    try {
+      const payload = this.verifyJwt<{ user: User }>(headers.authorization.replace('Bearer ', ''))
+      return payload
+    } catch(e) {
+      return null
+    }
+  }
   public async generateJwt(user:User):Promise<string> {
     const accounts = await this.fetchDomainAccounts(user.userId)
     return JWT.sign({ user, accounts }, JWT_SECRET)

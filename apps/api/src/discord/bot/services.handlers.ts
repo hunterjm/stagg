@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common'
 import { User } from 'src/user/schemas'
 import { MailService } from 'src/mail/services'
 import { Dispatch } from 'src/discord/bot/services.dispatch'
-import { DISCORD_BOT_USER_ID } from 'src/config'
 
 // User Settings > Text & Images > Show emoji reactions on messages
 type HandlerParams = { authorId:string, user: User, users: {[key:string]: User}, params: string[] }
@@ -69,7 +68,7 @@ export class DiscordBotHandlerService {
         '———————————————————————————',
         "Don't worry, it's a painless 3-step process:",
         '1) Create your account at https://profile.callofduty.com',
-        '2) Sign in with your CallOfDuty account from Step #1 at https://stagg.co/callofduty/login',
+        '2) Sign in with your CallOfDuty account from Step #1 at https://stagg.co/oauth/callofduty',
         '3) Invoke the `register` command below using your email from Step #1',
         '',
         '———————————————————————————',

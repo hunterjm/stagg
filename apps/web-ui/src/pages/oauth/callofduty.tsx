@@ -5,6 +5,7 @@ import { Center } from 'src/components/sections/partials/Center'
 import styled from 'styled-components'
 import cfg from 'config/ui'
 import { API } from 'src/api-services'
+import Cookies from 'js-cookie'
 
 const Wrapper = styled.div`
   * {
@@ -117,6 +118,9 @@ const CallOfDutyLogin = () => {
     setFormResponse(loginRes)
     if (loginRes?.errors?.length) {
       setBtnDisabled(false)
+    }
+    if (loginRes?.response?.jwt) {
+      Cookies.set('jwt.user', loginRes?.response?.jwt)
     }
     if (loginRes?.forward) {
       console.log('Forwarding to', loginRes.forward)

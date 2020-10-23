@@ -27,7 +27,7 @@ export const login = async (email:string, password:string):Promise<LoginResult> 
     if (response?.jwt) {
         const decoded = JWT.decode(response.jwt) as DecodedJWT
         const encodedUsername = decoded?.callofduty?.profiles?.uno?.replace('#', '@')
-        const forward = status === 201 ? `/callofduty/uploading/${decoded.callofduty.id}` : `/callofduty/${encodedUsername}`
+        const forward = '/me' // status === 201 ? `/callofduty/uploading/${decoded.callofduty.id}` : `/callofduty/${encodedUsername}`
         return {
             forward,
             response,

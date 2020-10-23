@@ -2,6 +2,7 @@ import { API, Schema } from '@stagg/callofduty'
 import { Controller, Res, Post, Body, UnauthorizedException, BadGatewayException } from '@nestjs/common'
 import { AccountDAO } from 'src/callofduty/account/entity'
 import { CallOfDutyOAuthCredentialsDTO } from 'src/callofduty/oauth/dto'
+import { CallOfDutyOAuthService } from 'src/callofduty/oauth/services'
 import { CallOfDutyEtlService } from 'src/callofduty/etl/services'
 import { UserService } from 'src/user/services'
 import { UserDAO } from 'src/user/entity'
@@ -13,6 +14,7 @@ export class CallOfDutyOAuthController {
         private readonly acctDAO: AccountDAO,
         private readonly userService: UserService,
         private readonly etlService: CallOfDutyEtlService,
+        private readonly oauthService: CallOfDutyOAuthService,
     ) {}
 
     @Post('credentials')
@@ -64,13 +66,8 @@ export class CallOfDutyOAuthController {
             }
         }
         // if still no profile matches, assume it is a new login and create account
-        const apiKey = await this.userService.generateApiKey()
-        await this.userDAO.insert({ apiKey })
-        const { userId } = await this.userDAO.findByApiKey(apiKey)
-        console.log('new user id', userId)
-        await this.acctDAO.insert({ userId, games, profiles, emails: [body.email], auth: [authTokens] })
-        const newAcct = await this.acctDAO.findByEmail(body.email)
-        this.etlService.triggerETL(newAcct)
-        return res.status(201).send({ jwt: await this.userService.generateJwtById(userId) })
+        const { user, account } = await this.oauthService.createNewAccount(body.email, games, profiles, authTokens)
+        this.etlService.triggerETL(account)
+        return res.status(201).send({ jwt: await this.userService.generateJwtById(user.userId) })
     }
 }

@@ -13,7 +13,7 @@ import {
 import { WZ, MP } from 'src/callofduty/mw/discord/queries'
 import { CallOfDutyAccountService } from 'src/callofduty/account/services'
 import { Schema, Normalize } from '@stagg/callofduty'
-import { FAAS_URL } from 'src/config'
+import { FAAS } from 'src/config'
 
 @Controller('/render')
 export class RenderController {
@@ -21,6 +21,10 @@ export class RenderController {
         private readonly codAcctService: CallOfDutyAccountService,
         @InjectConnection('callofduty') private db_cod: Connection,
     ) {}
+    @Get('/callofduty/mw/wz/barracks/account/:accountId.png')
+    async NewBarracks(@Req() req, @Res() res, @Param() { accountId }):Promise<any> {
+
+    }
     @Get('/callofduty/mw/wz/barracks/user/:userId.png')
     async Barracks(@Req() req, @Res() res, @Param() { userId }):Promise<any> {
         req.headers['content-type'] = 'application/json'
@@ -61,7 +65,7 @@ export class RenderController {
 
         deprecatedRequest({
             json: true,
-            url: `${FAAS_URL.RENDER_HTML}?v=cod.mw.wz.barracks`,
+            url: `${FAAS.RENDER_HTML}?v=cod.mw.wz.barracks`,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

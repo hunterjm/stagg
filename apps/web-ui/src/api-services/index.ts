@@ -1,4 +1,5 @@
 import cfg from 'config/ui'
+import Cookies from 'js-cookie'
 import * as Discord from './discord'
 import * as CallOfDuty from './callofduty'
 
@@ -21,11 +22,15 @@ export const API = {
     },
     async Fetch<T>(url:string, method:'GET'|'PUT'|'POST', payload?:{[key:string]:any}):Promise<Response<T>> {
         const requestUrl = this.url(`${cfg.api.host}/${url}`)
+        const headers:any = {
+            'content-type': 'application/json',
+        }
+        if (Cookies.get('jwt.user')) {
+            headers.authorization = `Bearer ${Cookies.get('jwt.user')}`
+        }
         const requestOptions:any = {
             method,
-            headers: {
-              'content-type': 'application/json',
-            }
+            headers,
         }
         if (payload) {
             requestOptions.body = JSON.stringify(payload)

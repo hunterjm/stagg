@@ -1,13 +1,15 @@
 import * as Discord from 'discord.js'
-import { Controller, Get, Param, Res, BadRequestException } from '@nestjs/common'
+import { Controller, Get, Put, Param, Headers, Res, BadRequestException, UnauthorizedException } from '@nestjs/common'
 import { UserService } from 'src/user/services'
 import { DiscordService } from 'src/discord/services'
+import { AccountDAO } from 'src/discord/entity'
 import { Dispatch } from 'src/discord/bot/services.dispatch'
-import { DISCORD_INVITE_URL } from 'src/config'
+import { DISCORD } from 'src/config'
 
 @Controller('/discord')
 export class DiscordController {
     constructor(
+        private readonly acctDao: AccountDAO,
         private readonly userService: UserService,
         private readonly discordService: DiscordService,
     ) {}
@@ -17,7 +19,7 @@ export class DiscordController {
     }
     @Get('/join')
     async Join(@Res() res):Promise<void> {
-        res.redirect(DISCORD_INVITE_URL)
+        res.redirect(DISCORD.SERVER.INVITE)
     }
     @Get('/guilds')
     async Guilds():Promise<Discord.Guild[]> {
@@ -38,6 +40,23 @@ export class DiscordController {
     @Get('/guilds/:guildId/members')
     async GuildMembersById(@Param() { guildId }):Promise<Discord.GuildMember[]> {
         return this.discordService.client.guilds.cache.get(guildId).members.cache.array()
+    }
+    @Put('/oauth/exchange/:accessToken')
+    async ExchangeAccessToken(@Headers() headers, @Param() { accessToken }):Promise<{ success: boolean }> {
+        const jwt = this.userService.getJwtPayload(headers)
+        if (!jwt) {
+            throw new UnauthorizedException('unauthorized')
+        }
+        const discordUser = await this.discordService.exchangeAccessToken(accessToken)
+        console.log('New Discord Account:', {
+            ...discordUser,
+            userId: jwt.user.userId,
+        })
+        await this.acctDao.insert({
+            ...discordUser,
+            userId: jwt.user.userId,
+        })
+        return { success: true }
     }
     @Get('/cmd/:userId/*')
     async SimulateBotCommand(@Param() params):Promise<Dispatch.Output> {

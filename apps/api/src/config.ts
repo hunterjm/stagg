@@ -6,18 +6,37 @@ export const IS_DEV = process.env.NODE_ENV === 'development'
 export const PORT = process.env.PORT || 8080
 export const JWT_SECRET = process.env.JWT_SECRET
 
+export const WEB_HOST = IS_DEV ? 'http://localhost:8080' : 'https://stagg.co'
 export const SELF_HOST = IS_DEV ? `http://localhost:${PORT}` : 'https://api.stagg.co'
 
-export const GMAIL_ADDRESS = process.env.GMAIL_ADDRESS
-export const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
+export const GMAIL = {
+    USER: process.env.GMAIL_USER,
+    PASS: process.env.GMAIL_PASS,
+}
 
-export const DISCORD_BOT_USER_ID = IS_DEV ? '738240182670589993' : '723179755548967027'
-export const DISCORD_CLIENT_TOKEN = process.env.DISCORD_CLIENT_TOKEN
-export const DISCORD_SERVER_ID = '729780289727102976'
-export const DISCORD_INVITE_URL = 'https://discord.gg/WhWrbY8'
-
-export const FAAS_URL = {
-    RENDER_HTML: IS_DEV ? 'http://localhost:8089' : 'https://us-east1-stagcp.cloudfunctions.net/render-html'
+export const DISCORD = {
+    OAUTH: {
+        SCOPE: 'identify',
+        REDIRECT: `${WEB_HOST}/oauth/discord`,
+        HOST: {
+            IDENTIFY: `https://discord.com/api/v6/users/@me`,
+            EXCHANGE: `https://discord.com/api/v6/oauth2/token`,
+        }
+    },
+    SERVER: {
+        ID: '729780289727102976',
+        INVITE: 'https://discord.gg/WhWrbY8',
+    },
+    CLIENT: {
+        ID: process.env.DISCORD_CLIENT_ID,
+        TOKEN: process.env.DISCORD_CLIENT_TOKEN,
+        SECRET: process.env.DISCORD_CLIENT_SECRET,
+    },
+    CHANNELS: {
+        NOTIFY: {
+            SYS: process.env.DISCORD_CHANNEL_NOTIFY_SYS
+        }
+    }
 }
 
 export const FAAS = {
@@ -26,20 +45,12 @@ export const FAAS = {
     RENDER_CHART: process.env.FAAS_RENDER_CHART_HOST,
 }
 
-export namespace Postgres {
-    export const USER = process.env.PGSQL_USER
-    export const PASS = process.env.PGSQL_PASS
-    export const PORT = Number(process.env.PGSQL_PORT)
-    export const INSTANCE = process.env.PGSQL_INSTANCE
-    export const SOCKETPATH = process.env.PGSQL_SOCKETPATH
-}
-
 export const PGSQL = {
-    USER: Postgres.USER,
-    PASS: Postgres.PASS,
-    PORT: Postgres.PORT,
-    INSTANCE: Postgres.INSTANCE,
-    SOCKETPATH: Postgres.SOCKETPATH,
+    USER: process.env.PGSQL_USER,
+    PASS: process.env.PGSQL_PASS,
+    PORT: Number(process.env.PGSQL_PORT),
+    INSTANCE: process.env.PGSQL_INSTANCE,
+    SOCKETPATH: process.env.PGSQL_SOCKETPATH,
     CODE: {
         DUPLICATE: 23505
     },
