@@ -11,5 +11,5 @@ export const simCommand = async (...chain:string[]):Promise<DiscordOutput> => {
     return response
 }
 export const exchangeToken = async (accessToken:string):Promise<any> => {
-    return API.Put<{ jwt:string }>(`/discord/oauth/exchange/${accessToken}`)
+    return API.Get<{ jwt:string }>(`/discord/oauth/exchange/${accessToken}`)
 }

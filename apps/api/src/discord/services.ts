@@ -40,7 +40,7 @@ export class DiscordService {
     const { data: { access_token, refresh_token } } = await axios.post(DISCORD.OAUTH.HOST.EXCHANGE, qs.stringify(payload))
     const { data: { id, username, discriminator, avatar } } = await axios.get(DISCORD.OAUTH.HOST.IDENTIFY, { headers: { 'Authorization': `Bearer ${access_token}` } })
     return {
-      discordId: id,
+      id,
       avatar,
       accessToken: access_token,
       refreshToken: refresh_token,

@@ -1,33 +1,33 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import { Layout } from 'src/components/layout'
+import Router from 'next/router'
+// import * as Cookies from 'cookies'
+import Cookies from 'js-cookie'
 import { API } from 'src/api-services'
 
-const DiscordOAuth = () => {
-  const router = useRouter()
-  const tokenState = router.query.state as string
-  const accessToken = router.query.code as string
-  const [jwt, setJwt] = useState('')
-  const exchangeToken = async () => {
-    if (!accessToken) {
-        return
-    }
-    const res = await API.Discord.exchangeToken(accessToken)
-    if (res.status === 200) {
-        window.location.href = '/me'
-    }
+const DiscordOAuth = ({ jwt }) => {
+  try {
+    window
+  } catch(e) {
+    return null
   }
-  useEffect(() => {
-      exchangeToken()
-  }, [router.query.code]) 
-  return (
-    <Layout title="Discord Simulator">
-      <div style={{textAlign: 'center', paddingTop: '128px'}}>
-        <h1>{ jwt ? 'Success' : 'One sec...' }</h1>
-      </div>
-    </Layout>
-  );
-};
+  console.log(jwt)
+  if (!jwt) {
+    return null
+  }
+  Cookies.set('jwt.discord', jwt)
+  Router.push('/me')
+  return null
+}
 
+DiscordOAuth.getInitialProps = async (ctx) => {
+  // const { req, res } = ctx
+  // const cookies = new Cookies(req, res)
+  const { status, response } = await API.Discord.exchangeToken(ctx.query.code)
+  console.log(response)
+  return { jwt: response?.jwt }
+  // cookies.set('oauth.discord', JSON.stringify(response))
+  // res.writeHead(302, { Location: '/me' })
+  // res.end()
+  // return {}
+}
 // eslint-disable-next-line import/no-default-export
 export default DiscordOAuth

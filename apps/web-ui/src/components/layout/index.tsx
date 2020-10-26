@@ -5,17 +5,18 @@ import { Footer } from './Footer';
 import { Header } from './Header';
 
 interface LayoutProps {
-  title: string;
-  children: ReactNode;
+  title: string
+  children: ReactNode
+  hideSignIn?: boolean
 }
 
-export const Layout = ({ title, children }: LayoutProps) => {
+export const Layout = ({ title, children, hideSignIn }: LayoutProps) => {
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
-      <Header navPosition="right" />
+      <Header navPosition="right" hideSignIn={hideSignIn} />
       <main className="site-content" style={{minHeight: 'calc(100vh - 100px)'}}>{children}</main>
       <Footer />
     </>

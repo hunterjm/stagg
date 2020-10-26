@@ -43,12 +43,14 @@ footer i.icon-npm {
     color: #CC3534;
 }
 
+i.filled,
 footer i.icon-discord {
     position: relative;
     bottom: -0.05em;
     font-size: 1.25em;
     z-index: 1;
 }
+i.filled:after,
 footer i.icon-discord:after {
     position: absolute;
     top: 0.25em;
@@ -59,6 +61,16 @@ footer i.icon-discord:after {
     width: 0.5em;
     height: 0.5em;
     background: white;
+}
+i.filled:after {
+    width: 80%;
+    height: 80%;
+    top: 2px;
+    left: 2px;
+}
+
+i.icon-discord.filled:after {
+    height: 70%;
 }
 
 .hero-figure a:before {

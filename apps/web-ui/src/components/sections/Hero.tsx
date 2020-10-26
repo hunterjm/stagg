@@ -87,7 +87,7 @@ export const Hero = ({
               </p>
               <div id="hero-button">
                 <ButtonGroup>
-                  <Button as="a" color="primary" wideMobile href="/oauth/callofduty">
+                  <Button as="a" color="primary" wideMobile href="/me">
                     Get Started
                   </Button>
                   <Button

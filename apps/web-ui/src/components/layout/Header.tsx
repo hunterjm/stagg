@@ -1,14 +1,15 @@
-import classNames from 'classnames';
-import Link from 'next/link';
-import React, { useState, useRef, useEffect } from 'react';
-
-import { Logo } from './partials/Logo';
+import classNames from 'classnames'
+import Link from 'next/link'
+import React, { useState, useRef, useEffect } from 'react'
+import Cookies from 'js-cookie'
+import { Logo } from './partials/Logo'
+import cfg from 'config/ui'
 
 interface HeaderProps {
   className?: string;
   navPosition?: string;
   hideNav?: boolean;
-  hideSignin?: boolean;
+  hideSignIn?: boolean;
   bottomOuterDivider?: boolean;
   bottomDivider?: boolean;
 }
@@ -23,7 +24,7 @@ export const Header = ({
   className,
   navPosition,
   hideNav,
-  hideSignin,
+  hideSignIn,
   bottomOuterDivider,
   bottomDivider,
   ...props
@@ -122,7 +123,10 @@ export const Header = ({
                       </Link>
                     </li>
                   </ul>
-                  {!hideSignin && (
+                  {/* {
+                    Cookies.get(cfg.cookies.userJwt) && 'Hello'
+                  } */}
+                  {!hideSignIn && (
                     <ul className="list-reset header-nav-right">
                       <li>
                         <Link href="/login">

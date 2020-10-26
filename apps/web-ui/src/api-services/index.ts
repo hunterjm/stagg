@@ -18,15 +18,15 @@ export const API = {
     Discord,
     CallOfDuty,
     url(url:string):string {
-        return url.replace(/\/+/g, '/').replace(/http(s?):/, 'http$1://')
+        return url.replace(/\/+/g, '/').replace(/http(s?):\/*/, 'http$1://')
     },
     async Fetch<T>(url:string, method:'GET'|'PUT'|'POST', payload?:{[key:string]:any}):Promise<Response<T>> {
         const requestUrl = this.url(`${cfg.api.host}/${url}`)
         const headers:any = {
             'content-type': 'application/json',
         }
-        if (Cookies.get('jwt.user')) {
-            headers.authorization = `Bearer ${Cookies.get('jwt.user')}`
+        if (Cookies.get(cfg.cookies.userJwt)) {
+            headers.authorization = `Bearer ${Cookies.get(cfg.cookies.userJwt)}`
         }
         const requestOptions:any = {
             method,

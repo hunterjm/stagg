@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?llpz1l');
-  src:  url('fonts/icomoon.eot?llpz1l#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?llpz1l') format('truetype'),
-    url('fonts/icomoon.woff?llpz1l') format('woff'),
-    url('fonts/icomoon.svg?llpz1l#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?ubpdcr');
+  src:  url('fonts/icomoon.eot?ubpdcr#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?ubpdcr') format('truetype'),
+    url('fonts/icomoon.woff?ubpdcr') format('woff'),
+    url('fonts/icomoon.svg?ubpdcr#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,48 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-battlenet:before {
+  content: "\e911";
+}
+.icon-callofduty-bo:before {
+  content: "\e912";
+}
+.icon-callofduty-bo4:before {
+  content: "\e913";
+}
+.icon-callofduty-mw:before {
+  content: "\e914";
+}
+.icon-playstation:before {
+  content: "\e915";
+}
+.icon-steam1:before {
+  content: "\e916";
+}
+.icon-xbox:before {
+  content: "\e917";
+}
+.icon-callofduty-c:before {
+  content: "\e910";
+}
+.icon-discord-check:before {
+  content: "\e90f";
+}
+.icon-bullets:before {
+  content: "\e909";
+}
+.icon-crosshair:before {
+  content: "\e90a";
+}
+.icon-killstreak:before {
+  content: "\e90b";
+}
+.icon-knives:before {
+  content: "\e90c";
+}
+.icon-watch:before {
+  content: "\e90d";
+}
 .icon-fortnite:before {
   content: "\e904";
 }
@@ -33,6 +75,9 @@
 }
 .icon-csgo:before {
   content: "\e906";
+}
+.icon-csgo-negative:before {
+  content: "\e90e";
 }
 .icon-pubg:before {
   content: "\e907";
@@ -53,65 +98,11 @@
   content: "\e901";
   color: #7289da;
 }
-.icon-podcast:before {
-  content: "\e91c";
+.icon-user:before {
+  content: "\e971";
 }
-.icon-feed:before {
-  content: "\e91d";
-}
-.icon-stack:before {
-  content: "\e92e";
-}
-.icon-ticket:before {
-  content: "\e939";
-}
-.icon-cart:before {
-  content: "\e93a";
-}
-.icon-coin-dollar:before {
-  content: "\e93b";
-}
-.icon-coin-euro:before {
-  content: "\e93c";
-}
-.icon-coin-pound:before {
-  content: "\e93d";
-}
-.icon-coin-yen:before {
-  content: "\e93e";
-}
-.icon-credit-card:before {
-  content: "\e93f";
-}
-.icon-calculator:before {
-  content: "\e940";
-}
-.icon-alarm:before {
-  content: "\e950";
-}
-.icon-bell:before {
-  content: "\e951";
-}
-.icon-stopwatch:before {
-  content: "\e952";
-}
-.icon-calendar:before {
-  content: "\e953";
-}
-.icon-display:before {
-  content: "\e956";
-}
-.icon-laptop:before {
-  content: "\e957";
-}
-.icon-mobile:before {
-  content: "\e958";
-}
-.icon-mobile2:before {
-  content: "\e959";
-}
-.icon-download:before {
-  content: "\e960";
+.icon-users:before {
+  content: "\e972";
 }
 .icon-user-plus:before {
   content: "\e973";
@@ -122,44 +113,11 @@
 .icon-user-check:before {
   content: "\e975";
 }
-.icon-spinner:before {
-  content: "\e97a";
-}
-.icon-spinner2:before {
-  content: "\e97b";
-}
-.icon-spinner3:before {
-  content: "\e97c";
-}
-.icon-spinner4:before {
-  content: "\e97d";
-}
-.icon-spinner5:before {
-  content: "\e97e";
-}
-.icon-spinner6:before {
-  content: "\e97f";
-}
-.icon-spinner7:before {
-  content: "\e980";
-}
-.icon-spinner8:before {
-  content: "\e981";
-}
-.icon-spinner9:before {
-  content: "\e982";
+.icon-user-tie:before {
+  content: "\e976";
 }
 .icon-spinner10:before {
   content: "\e983";
-}
-.icon-spinner11:before {
-  content: "\e984";
-}
-.icon-binoculars:before {
-  content: "\e985";
-}
-.icon-search:before {
-  content: "\e986";
 }
 .icon-zoom-in:before {
   content: "\e987";
@@ -187,24 +145,6 @@
 }
 .icon-lock:before {
   content: "\e98f";
-}
-.icon-unlocked:before {
-  content: "\e990";
-}
-.icon-wrench:before {
-  content: "\e991";
-}
-.icon-equalizer:before {
-  content: "\e992";
-}
-.icon-equalizer2:before {
-  content: "\e993";
-}
-.icon-cog:before {
-  content: "\e994";
-}
-.icon-cogs:before {
-  content: "\e995";
 }
 .icon-hammer:before {
   content: "\e996";
