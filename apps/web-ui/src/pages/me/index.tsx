@@ -4,6 +4,7 @@ import { Layout } from 'src/components/layout'
 import { getUser } from 'src/hooks/getUser'
 import { notify } from 'src/hooks/notify'
 import { AccountBoxes } from './Accounts'
+import { API } from 'src/api-services'
 
 const domainIdNames = {
   discord: 'Discord',
@@ -13,10 +14,19 @@ const domainIdNames = {
 const Dashboard = () => {
   const [user, setUser] = useState(null)
   const [ready, setReady] = useState(false)
-  const [userId, setUserId] = useState(null)
+  const [authJwt, setAuthJwt] = useState(null)
   const { accounts } = user || {}
-  const triggerLogin = async (domainId:string) => {
-
+  const triggerLogin = async () => {
+    const { response } = await API.login(authJwt)
+    if ( response?.jwt ) {
+      Cookies.set('jwt.user', response.jwt)
+      notify({
+        title: 'All clear for take off',
+        message: 'You have been logged in',
+        type: 'success',
+        duration: 1500,
+      })
+    }
   }
   useEffect(() => {
     if (!user) {
@@ -24,16 +34,9 @@ const Dashboard = () => {
       return
     }
     for(const domainId of Object.keys(accounts)) {
-      if (accounts[domainId].userId) {
+      if (accounts[domainId]?.userId) {
         setReady(true)
-        triggerLogin(domainId)
-        setUserId(accounts[domainId].userId)
-        notify({
-          title: 'One moment',
-          message: 'Logging you into your account...',
-          type: 'info',
-          duration: 0,
-        })
+        setAuthJwt(Cookies.get(`jwt.${domainId}`))
       }
       if (Cookies.get(`alert.oauth.${domainId}`)) {
         notify({
@@ -49,6 +52,12 @@ const Dashboard = () => {
       setReady(true)
     }
   }, [user])
+  useEffect(() => {
+    if (!authJwt || Cookies.get('jwt.user')) {
+      return
+    }
+    triggerLogin()
+  }, [authJwt])
   return (
     <Layout title="Dashboard" hideSignIn>
       <div className="illustration-section-01" />
