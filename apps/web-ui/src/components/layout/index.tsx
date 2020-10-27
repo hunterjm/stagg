@@ -1,8 +1,7 @@
-import Head from 'next/head';
-import React, { ReactNode } from 'react';
-
-import { Footer } from './Footer';
-import { Header } from './Header';
+import Head from 'next/head'
+import React, { ReactNode } from 'react'
+import { Footer } from './Footer'
+import { Header } from './Header'
 
 interface LayoutProps {
   title: string
@@ -20,5 +19,5 @@ export const Layout = ({ title, children, hideSignIn }: LayoutProps) => {
       <main className="site-content" style={{minHeight: 'calc(100vh - 100px)'}}>{children}</main>
       <Footer />
     </>
-  );
-};
+  )
+}

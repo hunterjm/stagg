@@ -43,7 +43,7 @@ export class DiscordBotService {
         // Loading message sent, now dispatch the request and respond as necessary...
         await this.dispatch(m, log)
       } catch(e) {
-        console.log('[.] Discord message request log already exists, ignoring...')
+        // Discord message request log already exists, ignoring...
       }
     })
   }

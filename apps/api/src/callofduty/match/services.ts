@@ -79,7 +79,6 @@ export class CallOfDutyMatchService {
       if (String(e.code) === String(PGSQL.CODE.DUPLICATE)) {
         throw new BadRequestException(`duplicate match record for ${gameId}/${gameType}/${match.matchID}/${accountId}`)
       }
-      console.log(e.message)
       throw new InternalServerErrorException('something went wrong, please try again')
     }
   }

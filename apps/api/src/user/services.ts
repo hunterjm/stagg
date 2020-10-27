@@ -38,7 +38,7 @@ export class UserService {
       const user = await this.userDao.findById(userId)
       return this.generateJwt(user)
     } catch(e) {
-      console.log('Error generating jwt:', e)
+      return null
     }
   }
   public async generateApiKey():Promise<string> {

@@ -116,3 +116,55 @@ export namespace Account {
     export type ProfileId = { username: string, platform: COD.Schema.API.Platform }
   }
 }
+
+
+
+@Entity({ name: 'accounts/auth', database: 'callofduty' })
+export class AccountAuth {
+  @PrimaryColumn('uuid')
+  @Index({ unique: true })
+  id: string
+
+  @Column('citext')
+  email: string
+
+  @Column('citext', { array: true })
+  games: COD.Schema.API.Game[]
+
+  @Column('jsonb', { array: true })
+  profiles: Account.Schema.ProfileId[]
+
+  @Column('jsonb')
+  auth: Account.Schema.AuthTokens
+
+  @Column()
+  created: number
+}
+
+@Injectable()
+export class AccountAuthDAO {
+  constructor(
+    @InjectRepository(AccountAuth, 'callofduty') private authRepo: Repository<AccountAuth>,
+  ) {}
+  private normalizeModel({ games, profiles, auth, email }:Partial<AccountAuth>) {
+    const indexedProfiles:{[key:string]:Account.Schema.ProfileId} = {}
+    for(const { platform, username } of profiles) {
+      indexedProfiles[`${platform}/${username}`] = { platform, username }
+    }
+    return {
+      email,
+      games: () => `array[${[...new Set(games)].map(game => `'${game}'`).join(',')}]::citext[]`,
+      auth: () => `'${JSON.stringify(auth)}'::jsonb`,
+      profiles: () => `array[${Object.values(indexedProfiles).map(p => `'{"platform":"${p.platform}","username":"${p.username}"}'`)}]::jsonb[]`,
+    }
+  }
+  public async insert(auth:Partial<AccountAuth>):Promise<string> {
+    await this.authRepo.createQueryBuilder()
+      .insert()
+      .into(AccountAuth)
+      .values(this.normalizeModel(auth))
+      .execute()
+    const { id } = await this.authRepo.findOne({ where: { email: auth.email }, order: { created: 1 } })
+    return id
+  }
+}

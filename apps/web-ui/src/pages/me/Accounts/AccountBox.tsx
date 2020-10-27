@@ -51,13 +51,24 @@ export const AccountBox = styled.div`
   }
 
   .action.remove {
+    width: 90px;
+    text-align: center;
     border-color: #22B14C;
     color: #22B14C;
-    cursor: default;
   }
 
   .action.remove:after {
     content: "Looks good";
+  }
+
+  .action.remove:hover {
+    border-color: red;
+    color: red;
+    content: "Remove?";
+  }
+
+  .action.remove:hover:after {
+    content: "Remove?";
   }
 
   .action.loading {

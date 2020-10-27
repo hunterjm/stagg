@@ -75,7 +75,6 @@ export class DiscordBotDispatchService {
         const o = await output({ authorId, user, users, params: remainingParams })
         return o
       } catch(e) {
-        console.log(e)
         return [`(!) ${e}`]
       }
   }

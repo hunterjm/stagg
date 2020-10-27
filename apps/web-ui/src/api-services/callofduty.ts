@@ -23,10 +23,10 @@ export interface LoginResult {
     forward?: string
 }
 export const login = async (email:string, password:string):Promise<LoginResult> => {
-    const { status, message, response } = await API.Post<LoginResponse>('/callofduty/oauth/credentials', { email, password })
+    const { status, message, response } = await API.Post<LoginResponse>('/callofduty/oauth/passthrough', { email, password })
     if (response?.jwt) {
-        const decoded = JWT.decode(response.jwt) as DecodedJWT
-        const encodedUsername = decoded?.callofduty?.profiles?.uno?.replace('#', '@')
+        // const decoded = JWT.decode(response.jwt) as DecodedJWT
+        // const encodedUsername = decoded?.callofduty?.profiles?.uno?.replace('#', '@')
         const forward = '/me' // status === 201 ? `/callofduty/uploading/${decoded.callofduty.id}` : `/callofduty/${encodedUsername}`
         return {
             forward,

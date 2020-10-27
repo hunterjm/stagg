@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import { AccountBox } from './AccountBox'
 import { getUser } from 'src/hooks/getUser'
@@ -7,12 +8,16 @@ export const DiscordAccount = () => {
   const [user, setUser] = useState(null)
   const [added, setAdded] = useState(false)
   const { accounts: { discord } } = user || { accounts: {} }
+  const removeAcct = () => {
+      setUser(null)
+      setAdded(false)
+      Cookies.remove('jwt.discord')
+  }
   useEffect(() => {
     if (!user) {
       setUser(getUser())
       return
     }
-    console.log('!!!!!!!!!!!!', discord)
     if (!added && discord) {
       setAdded(true)
     }
@@ -43,7 +48,7 @@ export const DiscordAccount = () => {
         }
         {
           added ? (
-            <div className="action remove" />
+            <div className="action remove" onClick={removeAcct} />
           ) : (
             <a href={`${cfg.discord.url.oauth}&state=1`} className="action add" />
           )

@@ -47,23 +47,6 @@ export class DiscordController {
         const discordInfo = await this.discordService.exchangeAccessToken(accessToken)
         return { jwt: JWT.sign(discordInfo, JWT_SECRET) }
     }
-    // @Put('/oauth/exchange/:accessToken')
-    // async ExchangeAccessToken(@Headers() headers, @Param() { accessToken }):Promise<{ success: boolean }> {
-    //     const jwt = this.userService.getJwtPayload(headers)
-    //     if (!jwt) {
-    //         throw new UnauthorizedException('unauthorized')
-    //     }
-    //     const discordUser = await this.discordService.exchangeAccessToken(accessToken)
-    //     console.log('New Discord Account:', {
-    //         ...discordUser,
-    //         userId: jwt.user.userId,
-    //     })
-    //     await this.acctDao.insert({
-    //         ...discordUser,
-    //         userId: jwt.user.userId,
-    //     })
-    //     return { success: true }
-    // }
     @Get('/cmd/:userId/*')
     async SimulateBotCommand(@Param() params):Promise<Dispatch.Output> {
         const { userId } = params

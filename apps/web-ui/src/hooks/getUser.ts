@@ -16,16 +16,15 @@ export namespace OAuth {
     export interface Discord {
         state: string
         token: string
-        id?: string
-        tag?: string
-        avatar?: string
+        id: string
+        tag: string
+        avatar: string
     }
     export interface CallOfDuty {
-        accountId?: string
         email: string
         games: string[]
-        auth: { sso: string, xsrf: string, atkn: string }
         profiles: { platform: string, username: string }[]
+        authTokens: { sso: string, xsrf: string, atkn: string }
     }
 }
 const getDiscordAccountCookies = () => {
@@ -39,15 +38,21 @@ const getDiscordOAuthCookies = ():OAuth.Discord => {
         return null
     }
 }
-const getCallOfDutyOAuthCookies = () => {
-    
+const getCallOfDutyOAuthCookies = ():OAuth.CallOfDuty => {
+    const jwt = Cookies.get('jwt.callofduty')
+    try {
+        return JWT.decode(jwt) as OAuth.CallOfDuty
+    } catch(e) {
+        return null
+    }
 }
 const getCallOfDutyAccountCookies = () => {
 
 }
 export const getUser = ():UserModel => {
     const accounts = {
-        discord: getDiscordOAuthCookies()
+        discord: getDiscordOAuthCookies(),
+        callofduty: getCallOfDutyOAuthCookies(),
     }
     return { accounts }
 }

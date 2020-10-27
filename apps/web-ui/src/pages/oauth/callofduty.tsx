@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import cfg from 'config/ui'
 import { API } from 'src/api-services'
 import Cookies from 'js-cookie'
+import Router from 'next/router'
 
 const Wrapper = styled.div`
   * {
@@ -118,14 +119,13 @@ const CallOfDutyLogin = () => {
     setFormResponse(loginRes)
     if (loginRes?.errors?.length) {
       setBtnDisabled(false)
+      return
     }
     if (loginRes?.response?.jwt) {
-      Cookies.set('jwt.user', loginRes?.response?.jwt)
+      Cookies.set('jwt.callofduty', loginRes?.response?.jwt)
+      Cookies.set('alert.oauth.callofduty', 'true')
     }
-    if (loginRes?.forward) {
-      console.log('Forwarding to', loginRes.forward)
-      setTimeout(() => window.location.href = loginRes.forward, cfg.delay.forward)
-    }
+    Router.push('/me')
   }
   const ErrorMessage = () => {
     if (!formResponse?.errors?.length) {
@@ -133,14 +133,8 @@ const CallOfDutyLogin = () => {
     }
     return <p className="response error">{formResponse.errors[0]}</p>
   }
-  const SuccessMessage = () => {
-    if (!formResponse?.response?.jwt) {
-      return <></>
-    }
-    return <p className="response success">login successful, one moment...</p>
-  }
   return (
-    <Layout title="Best-in-class stats, coaching, matchmaking, and more | Stagg.co">
+    <Layout hideSignIn title="Best-in-class stats, coaching, matchmaking, and more | Stagg.co">
       <Wrapper>
         <Center>
           <FormWrapper>
@@ -174,7 +168,6 @@ const CallOfDutyLogin = () => {
                 {btnDisabled ? 'Loading...' : 'Sign In'}
               </Button>
               <ErrorMessage />
-              <SuccessMessage />
             </InputWrapper>
           </FormWrapper>
           <p>

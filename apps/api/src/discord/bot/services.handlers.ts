@@ -173,11 +173,9 @@ export class DiscordBotHandlerService {
 //     instructions.push(`${!channel ? '2' : '1'}. Send an invite to this channel for other players to join your party`)
 //     squadText.send(formatOutput(instructions))
 //     setTimeout(() => {
-//         console.log('Cleaning up roles and channels')
 //         squadRole.delete(`Squad ${TKN} disbanded`)
 //         squadVoice.delete(`Squad ${TKN} disbanded`)
 //         squadText.delete(`Squad ${TKN} disbanded`)
-//         console.log('Cleanup completed')
 //     }, 15000)
 // }
 // // https://discord.com/oauth2/authorize?client_id=738240182670589993&scope=bot&permissions=268487696

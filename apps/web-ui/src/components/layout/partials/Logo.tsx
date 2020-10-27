@@ -14,12 +14,12 @@ export const Logo = ({ className, ...props }: LogoProps) => {
     <div {...props} className={classes}>
       <h1 className="m-0">
         <Link href="/">
-          <a>
+            <>
             <i className="icon-stagg-antlers" />
             <span>Stagg</span>
-          </a>
+            </>
         </Link>
       </h1>
     </div>
-  );
-};
+  )
+}

@@ -15,10 +15,6 @@ export class MailService {
   private sendEmail(to:string, subject:string, html:string):Promise<any> {
     const user = GMAIL.USER
     const pass = GMAIL.PASS
-    console.log('[>] Dispatching email:')
-    console.log('    From:', user)
-    console.log('    Subject:', subject)
-    console.log('    To:', to)
     return new Promise((resolve,reject) => 
       gmailSend({ to, subject, user, pass })
         ({ html }, (error, result, fullResult) => error ? reject(error) : resolve({ result, fullResult }))

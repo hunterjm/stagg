@@ -1,4 +1,4 @@
-import { Controller, Put, Param } from '@nestjs/common'
+import { Controller, Post, Param } from '@nestjs/common'
 import { UserService } from 'src/user/services'
 import { DiscordService } from 'src/discord/services'
 
@@ -6,8 +6,8 @@ import { DiscordService } from 'src/discord/services'
 export class UserController {
     constructor(
     ) {}
-    @Put('/:userId')
-    async HealthCheck(@Param() { userId }):Promise<string> {
+    @Post('/:userId')
+    async Create(@Param() { userId }):Promise<string> {
         return 'ok'
     }
 }

@@ -1,9 +1,67 @@
+import Cookies from 'js-cookie'
+import { useState, useEffect } from 'react'
 import { AccountBox } from './AccountBox'
 import { getUser } from 'src/hooks/getUser'
 
+const gameInfo = {
+    bo4: {
+        icon: 'bo4',
+        name: 'Black Ops 4',
+    },
+    mw: {
+        icon: 'mw',
+        name: 'Modern Warfare',
+    },
+    bocw: {
+        icon: 'bo',
+        name: 'Black Ops: Cold War',
+    }
+}
+
+const platformInfo = {
+    xbl: {
+        icon: 'xbox',
+        name: 'XBOX',
+    },
+    psn: {
+        icon: 'playstation',
+        name: 'PlayStation',
+    },
+    steam: {
+        icon: 'steam',
+        name: 'Steam',
+    },
+    battle: {
+        icon: 'battlenet',
+        name: 'Battle.net',
+    },
+    uno: {
+        icon: 'battlenet',
+        name: 'Activision',
+    },
+}
+
 export const CallOfDutyAccount = () => {
-    const { accounts: { callofduty } } = getUser()
-    const actionStatus = callofduty?.games ? 'remove' : 'add'
+    const [user, setUser] = useState(null)
+    const [added, setAdded] = useState(false)
+    const { accounts: { callofduty } } = user || { accounts: {} }
+    const removeAcct = () => {
+        setUser(null)
+        setAdded(false)
+        Cookies.remove('jwt.callofduty')
+    }
+    useEffect(() => {
+      if (!user) {
+        setUser(getUser())
+        return
+      }
+      if (!added && callofduty) {
+        setAdded(true)
+      }
+      if (added && !callofduty) {
+        setAdded(false)
+      }
+    }, [user])
     return (
         <AccountBox>
             <div className="branding">
@@ -22,20 +80,39 @@ export const CallOfDutyAccount = () => {
                     <>
                     <div className="profiles">
                         <h6>GAMES</h6>
-                        <i className="icon-callofduty-bo" title="Black Ops: Cold War" />
-                        <i className="icon-callofduty-mw" title="Modern Warfare" />
-                        <i className="icon-callofduty-bo4" title="Black Ops 4" />
+                        {
+                            callofduty.games.map(gameId => (
+                                <i className={`icon-callofduty-${gameInfo[gameId].icon}`} title={gameInfo[gameId].name} />
+                            ))
+                        }
                     </div>
                     <div className="platforms">
                         <h6>PROFILES</h6>
-                        <div><i className="icon-xbox" title="XBOX" /> danL</div>
-                        <div><i className="icon-playstation" title="PlayStation" /> mdlindsey89</div>
-                        <div><i className="icon-battlenet" title="Battle.net" /> MellowD#6997890</div>
+                        {
+                            callofduty.profiles
+                                .filter(({ platform }) => platform !== 'battle')
+                                .map(({ username, platform }) => {
+                                    if (!platformInfo[platform]) {
+                                        console.log('No info for platform', platform)
+                                        return null
+                                    }
+                                    const [actualUsername] = username.split('#')
+                                    return (
+                                        <div><i className={`icon-${platformInfo[platform].icon}`} title={platformInfo[platform].name} /> {actualUsername}</div>
+                                    )
+                                })
+                        }
                     </div>
                     </>
                 )
             }
-            <a href="/oauth/callofduty" className={`action ${actionStatus}`} />
+            {
+              added ? (
+                <div className="action remove" onClick={removeAcct} />
+              ) : (
+                <a href="/oauth/callofduty" className="action add" />
+              )
+            }
         </AccountBox>
     )
 }
