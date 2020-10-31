@@ -81,8 +81,8 @@ export const CallOfDutyAccount = () => {
                     <div className="profiles">
                         <h6>GAMES</h6>
                         {
-                            callofduty.games.map(gameId => (
-                                <i className={`icon-callofduty-${gameInfo[gameId].icon}`} title={gameInfo[gameId].name} />
+                            callofduty.games.map((gameId:string) => (
+                                <i key={gameId} className={`icon-callofduty-${gameInfo[gameId].icon}`} title={gameInfo[gameId].name} />
                             ))
                         }
                     </div>
@@ -98,7 +98,10 @@ export const CallOfDutyAccount = () => {
                                     }
                                     const [actualUsername] = username.split('#')
                                     return (
-                                        <div><i className={`icon-${platformInfo[platform].icon}`} title={platformInfo[platform].name} /> {actualUsername}</div>
+                                        <div key={`${platform}:${username}`}>
+                                            <i className={`icon-${platformInfo[platform].icon}`} title={platformInfo[platform].name} />
+                                            {actualUsername}
+                                        </div>
                                     )
                                 })
                         }
