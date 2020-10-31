@@ -1,30 +1,22 @@
 import Cookies from 'js-cookie'
-import { useState, useEffect } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useState, useEffect, useContext } from 'react'
 import { AccountBox } from './AccountBox'
-import { getUser } from 'src/hooks/getUser'
+import { Context } from 'src/store'
 import cfg from 'config/ui'
 
-export const DiscordAccount = () => {
-  const [user, setUser] = useState(null)
+const DiscordAccountComponent = () => {
+  const store = useContext(Context)
   const [added, setAdded] = useState(false)
-  const { accounts: { discord } } = user || { accounts: {} }
+  const { id, avatar, tag } = store.userState?.oauth?.discord || {}
   const removeAcct = () => {
-      setUser(null)
-      setAdded(false)
-      Cookies.remove('jwt.discord')
+    setAdded(false)
+    store.refreshUserState()
+    Cookies.remove('jwt.discord')
   }
   useEffect(() => {
-    if (!user) {
-      setUser(getUser())
-      return
-    }
-    if (!added && discord) {
-      setAdded(true)
-    }
-    if (added && !discord) {
-      setAdded(false)
-    }
-  }, [user])
+    setAdded(Boolean(store.userState?.oauth?.discord?.id))
+  }, [store])
   return (
       <AccountBox>
         <div className="branding">
@@ -42,7 +34,7 @@ export const DiscordAccount = () => {
           !added ? null : (
             <div className="profiles">
                 <h6>PROFILE</h6>
-                <img className="icon" src={`https://cdn.discordapp.com/avatars/${discord.id}/${discord.avatar}.png`} /> {discord.tag}
+                <img className="icon" src={`https://cdn.discordapp.com/avatars/${id}/${avatar}.png`} /> {tag}
             </div>
           )
         }
@@ -56,3 +48,4 @@ export const DiscordAccount = () => {
       </AccountBox>
   )
 }
+export const DiscordAccount = observer(DiscordAccountComponent)

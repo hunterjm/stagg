@@ -9,6 +9,9 @@ export default {
     api: {
         host: isDev ? 'http://localhost:8081' : 'https://api.stagg.co'
     },
+    idb: {
+        store: 'stagg'
+    },
     upload: {
         ready: {
             ratio: 0.5,
@@ -42,7 +45,7 @@ export default {
             id: 'callofduty',
             name: 'Call of Duty',
             icon: 'icon-callofduty',
-            supported: 'Warzone & Multiplayer for Modern Warfare & Black Ops 4',
+            supported: 'Black Ops: Cold War, Modern Warfare, and Black Ops 4',
         },
         {
             id: 'csgo',

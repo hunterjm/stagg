@@ -1,27 +1,47 @@
 import 'mobx-react-lite/batchingForReactDom'
 import { observable } from 'mobx'
 import { createContext } from 'react'
-import { Types } from './index'
+import { getUser } from 'src/hooks/getUser'
 
-export class Instance {
-    @observable private _profiles:Types.Profile[] = []
-    get profiles() { return [...this._profiles.map((p:Types.Profile) => ({...p, key: `${p.mode}:${p.platform}:${p.username}`}))] }
-    addProfile(profile:Types.Profile) {
-        if (!this._profiles.find(p => p.mode === profile.mode && p.platform === profile.platform && p.username === profile.username)) {
-            this._profiles.push(profile)
-        }
+export interface UserStateModel {
+    user?: UserModel
+    oauth?: OAuthModel
+}
+export interface UserModel {
+    userId?: string
+    apiKey?: string
+    created?: Date
+}
+export interface OAuthModel {
+    discord?: OAuth.Discord
+    callofduty?: OAuth.CallOfDuty
+}
+export interface DomainAccount {
+    domainId: string
+    accountId: string
+}
+export namespace OAuth {
+    export interface Discord {
+        state: string
+        token: string
+        id: string
+        tag: string
+        avatar: string
     }
-    removeProfile({ mode, platform, username }:Types.Profile) {
-        this._profiles = this._profiles
-            .filter((p:Types.Profile) => !(p.mode === mode && p.platform === platform && p.username === username))
-    }
-    setProfileSyncDetails({ mode, platform, username }:Types.Profile, syncDetails:Partial<Types.Profile.Sync>) {
-        const profile = this._profiles.find((p:Types.Profile) => p.mode === mode && p.platform === platform && p.username === username)
-        if (!profile.sync) profile.sync = {} as Types.Profile.Sync
-        for(const key in syncDetails) profile.sync[key] = syncDetails[key]
+    export interface CallOfDuty {
+        email: string
+        games: string[]
+        profiles: { platform: string, username: string }[]
+        authTokens: { sso: string, xsrf: string, atkn: string }
     }
 }
+export class MobX {
+    @observable private _userState:UserStateModel = getUser()
+    get userState() { return this._userState }
+    get loggedIn() { return Boolean(this._userState?.user?.userId) }
+    refreshUserState() { this._userState = getUser() }
+}
   
-export const Context = createContext(new Instance)
+export const Context = createContext(new MobX)
 
   

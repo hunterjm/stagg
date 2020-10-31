@@ -1,12 +1,18 @@
 import Cookies from 'js-cookie'
 import * as JWT from 'jsonwebtoken'
 
+export interface UserStateModel {
+    user?: UserModel
+    oauth?: OAuthModel
+}
 export interface UserModel {
     userId?: string
-    accounts?: {
-        discord?: OAuth.Discord
-        callofduty?: OAuth.CallOfDuty
-    }
+    apiKey?: string
+    created?: Date
+}
+export interface OAuthModel {
+    discord?: OAuth.Discord
+    callofduty?: OAuth.CallOfDuty
 }
 export interface DomainAccount {
     domainId: string
@@ -27,9 +33,6 @@ export namespace OAuth {
         authTokens: { sso: string, xsrf: string, atkn: string }
     }
 }
-const getDiscordAccountCookies = () => {
-
-}
 const getDiscordOAuthCookies = ():OAuth.Discord => {
     const jwt = Cookies.get('jwt.discord')
     try {
@@ -46,13 +49,19 @@ const getCallOfDutyOAuthCookies = ():OAuth.CallOfDuty => {
         return null
     }
 }
-const getCallOfDutyAccountCookies = () => {
-
+const getUserDetailsCookies = () => {
+    const jwt = Cookies.get('jwt.user')
+    try {
+        return JWT.decode(jwt) as any
+    } catch(e) {
+        return null
+    }
 }
-export const getUser = ():UserModel => {
-    const accounts = {
+export const getUser = ():UserStateModel => {
+    const user = getUserDetailsCookies()
+    const oauth = {
         discord: getDiscordOAuthCookies(),
         callofduty: getCallOfDutyOAuthCookies(),
     }
-    return { accounts }
+    return { ...user, oauth }
 }

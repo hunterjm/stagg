@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react'
 import 'public/scss/style.scss'
 import 'react-notifications-component/dist/theme.css'
 import ReactNotification from 'react-notifications-component'
-import { JwtContext } from 'src/hooks/context'
 
 
 let ScrollReveal: scrollReveal.ScrollRevealObject;
@@ -22,10 +21,10 @@ function StaggWebUI({ Component, pageProps }: AppProps) {
   }, [])
 
   return (
-    <JwtContext.Provider value={{ jwt, setJwt }}>
+    <>
       <ReactNotification />
       <Component {...pageProps} />
-    </JwtContext.Provider>
+    </>
   )
 }
 

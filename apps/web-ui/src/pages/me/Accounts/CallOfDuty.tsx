@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie'
-import { useState, useEffect } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useState, useEffect, useContext } from 'react'
 import { AccountBox } from './AccountBox'
-import { getUser } from 'src/hooks/getUser'
+import { Context } from 'src/store'
 
 const gameInfo = {
     bo4: {
@@ -41,27 +42,18 @@ const platformInfo = {
     },
 }
 
-export const CallOfDutyAccount = () => {
-    const [user, setUser] = useState(null)
+const CallOfDutyAccountComponent = () => {
+    const store = useContext(Context)
     const [added, setAdded] = useState(false)
-    const { accounts: { callofduty } } = user || { accounts: {} }
+    const { games, profiles } = store.userState?.oauth?.callofduty || {}
     const removeAcct = () => {
-        setUser(null)
-        setAdded(false)
-        Cookies.remove('jwt.callofduty')
+      setAdded(false)
+      store.refreshUserState()
+      Cookies.remove('jwt.callofduty')
     }
     useEffect(() => {
-      if (!user) {
-        setUser(getUser())
-        return
-      }
-      if (!added && callofduty) {
-        setAdded(true)
-      }
-      if (added && !callofduty) {
-        setAdded(false)
-      }
-    }, [user])
+      setAdded(Boolean(store.userState?.oauth?.callofduty?.profiles?.length))
+    }, [store])
     return (
         <AccountBox>
             <div className="branding">
@@ -76,12 +68,12 @@ export const CallOfDutyAccount = () => {
                 </ul>
             </div>
             {
-                !callofduty?.games ? null : (
+                !added ? null : (
                     <>
                     <div className="profiles">
                         <h6>GAMES</h6>
                         {
-                            callofduty.games.map((gameId:string) => (
+                            games?.map((gameId:string) => (
                                 <i key={gameId} className={`icon-callofduty-${gameInfo[gameId].icon}`} title={gameInfo[gameId].name} />
                             ))
                         }
@@ -89,8 +81,7 @@ export const CallOfDutyAccount = () => {
                     <div className="platforms">
                         <h6>PROFILES</h6>
                         {
-                            callofduty.profiles
-                                .filter(({ platform }) => platform !== 'battle')
+                            profiles?.filter(({ platform }) => platform !== 'battle')
                                 .map(({ username, platform }) => {
                                     if (!platformInfo[platform]) {
                                         console.log('No info for platform', platform)
@@ -119,3 +110,4 @@ export const CallOfDutyAccount = () => {
         </AccountBox>
     )
 }
+export const CallOfDutyAccount = observer(CallOfDutyAccountComponent)

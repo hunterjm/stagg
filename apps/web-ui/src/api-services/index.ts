@@ -20,8 +20,8 @@ export const API = {
     url(url:string):string {
         return url.replace(/\/+/g, '/').replace(/http(s?):\/*/, 'http$1://')
     },
-    async login(jwt:string) {
-        return API.Post<{ jwt:string }>('/user/login', { jwt, foo: 'bar' })
+    async login(domainId:string) {
+        return API.Post<{ jwt:string }>('/user/login', { jwt: Cookies.get(`jwt.${domainId}`) })
     },
     async Fetch<T>(url:string, method:'GET'|'PUT'|'POST', payload?:{[key:string]:any}):Promise<Response<T>> {
         const requestUrl = this.url(`${cfg.api.host}/${url}`)
