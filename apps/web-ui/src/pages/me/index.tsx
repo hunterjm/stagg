@@ -1,5 +1,6 @@
 import Router from 'next/router'
 import Cookies from 'js-cookie'
+import { autorun } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useState, useEffect, useContext } from 'react'
 import { Layout } from 'src/components/layout'
@@ -31,28 +32,30 @@ const Dashboard = () => {
       duration: 2500,
     })
   }
-  useEffect(() => {
-    setButtonDisabled(!store.loggedIn)
-    for(const domainId of Object.keys(store.userState.oauth)) {
-      if (store.userState.user?.userId) {
-        loginAlert()
-        return
+  useEffect(
+    () => autorun(() => {
+      setButtonDisabled(!store.loggedIn)
+      for(const domainId of Object.keys(store.userState.oauth)) {
+        if (store.userState.user?.userId) {
+          loginAlert()
+          return
+        }
+        if (store.userState.oauth[domainId]?.userId) {
+          triggerLogin(domainId)
+          return
+        }
+        if (Cookies.get(`alert.oauth.${domainId}`)) {
+          notify({
+            title: 'Woohoo!',
+            message: `${domainIdNames[domainId]} account linked`,
+            type: 'success',
+            duration: 2500,
+          })
+          Cookies.remove(`alert.oauth.${domainId}`)
+        }
       }
-      if (store.userState.oauth[domainId]?.userId) {
-        triggerLogin(domainId)
-        return
-      }
-      if (Cookies.get(`alert.oauth.${domainId}`)) {
-        notify({
-          title: 'Woohoo!',
-          message: `${domainIdNames[domainId]} account linked`,
-          type: 'success',
-          duration: 2500,
-        })
-        Cookies.remove(`alert.oauth.${domainId}`)
-      }
-    }
-  }, [store.userState])
+    })
+  )
   return (
     <Layout title="Dashboard" hideSignIn>
       <div className="illustration-section-01" />
