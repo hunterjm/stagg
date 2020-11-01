@@ -1,7 +1,8 @@
+import dynamic from 'next/dynamic'
 import { DiscordAccount } from './Discord'
 import { CallOfDutyAccount } from './CallOfDuty'
 
-export const AccountBoxes = () => {
+const AccountBoxesComponent = () => {
   return (
       <div className="container" style={{textAlign: 'center'}}>
           <DiscordAccount />
@@ -9,3 +10,7 @@ export const AccountBoxes = () => {
       </div>
   )
 }
+
+export const AccountBoxes = dynamic(() => Promise.resolve(AccountBoxesComponent), {
+  ssr: true
+})

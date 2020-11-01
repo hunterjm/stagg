@@ -1,8 +1,6 @@
 import Cookies from 'js-cookie'
-import { observer } from 'mobx-react-lite'
-import { useState, useEffect, useContext } from 'react'
+import * as store from 'src/store'
 import { AccountBox } from './AccountBox'
-import { Context } from 'src/store'
 
 const gameInfo = {
     bo4: {
@@ -42,18 +40,20 @@ const platformInfo = {
     },
 }
 
-const CallOfDutyAccountComponent = () => {
-    const store = useContext(Context)
-    const [added, setAdded] = useState(false)
-    const { games, profiles } = store.userState?.oauth?.callofduty || {}
+export const CallOfDutyAccount = () => {
+    const storeUserState = store.useState(store.userState)
+    const userState = storeUserState.get()
+    const { games, profiles } = userState.oauth?.callofduty || {}
     const removeAcct = () => {
-      setAdded(false)
-      store.refreshUserState()
+      storeUserState.set(state => ({
+          ...state,
+          oauth: {
+              ...state.oauth,
+              callofduty: null
+          }
+      }))
       Cookies.remove('jwt.callofduty')
     }
-    useEffect(() => {
-      setAdded(Boolean(store.userState?.oauth?.callofduty?.profiles?.length))
-    }, [store])
     return (
         <AccountBox>
             <div className="branding">
@@ -68,7 +68,7 @@ const CallOfDutyAccountComponent = () => {
                 </ul>
             </div>
             {
-                !added ? null : (
+                !profiles?.length ? null : (
                     <>
                     <div className="profiles">
                         <h6>GAMES</h6>
@@ -101,7 +101,7 @@ const CallOfDutyAccountComponent = () => {
                 )
             }
             {
-              added ? (
+              profiles?.length ? (
                 <div className="action remove" onClick={removeAcct} />
               ) : (
                 <a href="/oauth/callofduty" className="action add" />
@@ -110,4 +110,3 @@ const CallOfDutyAccountComponent = () => {
         </AccountBox>
     )
 }
-export const CallOfDutyAccount = observer(CallOfDutyAccountComponent)
