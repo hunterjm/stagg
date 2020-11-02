@@ -1,24 +1,45 @@
-import { Schema } from '@stagg/callofduty'
+import * as JWT from 'jsonwebtoken'
+import { API, Schema } from '@stagg/callofduty'
 import {
     Controller,
-    Get,
     Put,
+    Get,
     Post,
     Body,
     Param,
     Delete,
     NotFoundException,
     ConflictException,
-    InternalServerErrorException
+    BadRequestException,
+    BadGatewayException,
+    UnauthorizedException,
+    InternalServerErrorException,
 } from '@nestjs/common'
-import { AccountDAO } from 'src/callofduty/account/entity'
-import { PGSQL } from 'src/config'
+import { AccountCredentialsDTO } from './dto'
+import { AccountDAO, AccountAuthDAO } from './entity'
+import { CallOfDutyAccountService } from './services'
+import { PGSQL, JWT_SECRET } from 'src/config'
 
 @Controller('callofduty/account')
 export class CallOfDutyAccountController {
     constructor(
-        private readonly acctDao: AccountDAO
+        private readonly acctDao: AccountDAO,
+        private readonly authDao: AccountAuthDAO,
+        private readonly acctSvcs: CallOfDutyAccountService,
     ) {}
+
+    @Get('/etl/:accountId')
+    async AccountETL(@Param() { accountId }):Promise<{ success: boolean }> {
+        const acct = await this.acctDao.findById(accountId)
+        if (!acct) {
+            throw new BadRequestException('invalid account id')
+        }
+        if (!acct.auth.length) {
+            throw new BadRequestException('can only run auth accounts')
+        }
+        this.acctSvcs.triggerETL(acct)
+        return { success: true }
+    }
 
     @Put('/:accountId/unoId/:unoId')
     async SaveAccountUnoId(@Param() { accountId, unoId }):Promise<{ success: boolean }> {
@@ -82,5 +103,63 @@ export class CallOfDutyAccountController {
             }
             throw new InternalServerErrorException('something went wrong, please try again')
         }
+    }
+
+    @Post('authorize')
+    async CredentialsLogin(@Body() body: AccountCredentialsDTO):Promise<{ jwt:string }> {
+        let authTokens = null
+        const CallOfDutyAPI = new API()
+        try {
+            authTokens = await CallOfDutyAPI.Login(body.email, body.password)
+        } catch(e) {
+            throw new UnauthorizedException(e)
+        }
+        let userId = ''
+        const games = []
+        const profiles = []
+        const emailFound = await this.acctDao.findByEmail(body.email)
+        if (emailFound) {
+            userId = emailFound.userId
+        }
+        const { titleIdentities } = await CallOfDutyAPI.Tokens(authTokens).Identity()
+        for(const identity of titleIdentities) {
+            profiles.push({ platform: identity.platform, username: identity.username })
+            if (!games.includes(identity.title)) {
+                games.push(identity.title)
+            }
+        }
+        if (!profiles.length) {
+            throw new BadGatewayException('no identity found for account')
+        }
+        const { username, platform } = profiles[0]
+        if (!userId) {
+            const searchByIdentity = await this.acctDao.findByProfile(username, platform)
+            if (searchByIdentity) {
+                userId = searchByIdentity.userId
+            }
+        }
+        const platformIds = await CallOfDutyAPI.Platforms(username, platform)
+        for(const platform of Object.keys(platformIds) as Schema.API.Platform[]) {
+            const { username } = platformIds[platform]
+            profiles.push({ username, platform })
+        }
+        // get unique profiles
+        const mappedProfiles = {}
+        for(const { username, platform } of profiles) {
+            mappedProfiles[platform] = username
+        }
+        const uniqueProfiles = Object.keys(mappedProfiles).map(platform => ({ platform, username: mappedProfiles[platform] })) as any
+        if (!userId) {
+            for(const { username, platform } of uniqueProfiles) {
+                const found = await this.acctDao.findByProfile(username, platform)
+                if (found) {
+                    userId = found.userId
+                    break
+                }
+            }
+        }
+        const authId = await this.authDao.insert({ games, profiles: uniqueProfiles, email: body.email, auth: authTokens })
+        const jwt = JWT.sign({ userId, games, profiles: uniqueProfiles, authId }, JWT_SECRET)
+        return { jwt }
     }
 }

@@ -4,14 +4,10 @@ import * as gmailSend from 'gmail-send'
 import { Injectable } from '@nestjs/common'
 import { GMAIL } from 'src/config'
 import templateConfirmDiscordCode from './templates/confirm.discord.code'
-import { Connection, Types } from 'mongoose'
-import { InjectConnection } from '@nestjs/mongoose'
 
 @Injectable()
 export class MailService {
-  constructor(
-    @InjectConnection('stagg') private db_stg: Connection,
-  ) {}
+  constructor() {}
   private sendEmail(to:string, subject:string, html:string):Promise<any> {
     const user = GMAIL.USER
     const pass = GMAIL.PASS

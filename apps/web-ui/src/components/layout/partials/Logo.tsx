@@ -1,10 +1,8 @@
-import classNames from 'classnames';
-import Link from 'next/link';
-import LogoSVG from 'public/icons/logo.svg';
-import React from 'react';
+import Link from 'next/link'
+import classNames from 'classnames'
 
 interface LogoProps {
-  className?: string;
+  className?: string
 }
 
 export const Logo = ({ className, ...props }: LogoProps) => {

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node", "mongoose", "jest", "jsonwebtoken"],
+    "types": ["node", "jest", "jsonwebtoken"],
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,

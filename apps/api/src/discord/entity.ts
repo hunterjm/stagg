@@ -18,12 +18,6 @@ export class Account {
   @Column('citext')
   avatar: string
 
-  @Column('text')
-  accessToken: string
-
-  @Column('text')
-  refreshToken: string
-
   @Column()
   created: number
 }
@@ -33,6 +27,9 @@ export class AccountDAO {
   constructor(
     @InjectRepository(Account, 'discord') private acctRepo: Repository<Account>,
   ) {}
+  public async findById(discordId:string):Promise<Account> {
+    return this.acctRepo.findOne({ where: { discordId } })
+  }
   public async insert(acct:Partial<Account>):Promise<InsertResult> {
     return this.acctRepo.createQueryBuilder()
       .insert()

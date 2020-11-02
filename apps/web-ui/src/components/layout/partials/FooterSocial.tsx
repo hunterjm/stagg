@@ -1,13 +1,11 @@
-import classNames from 'classnames';
-import config from 'config/ui';
-import React from 'react';
+import classNames from 'classnames'
 
 interface FooterSocialProps {
-  className?: string;
+  className?: string
 }
 
 export const FooterSocial = ({ className, ...props }: FooterSocialProps) => {
-  const classes = classNames('footer-social', className);
+  const classes = classNames('footer-social', className)
   return (
     <div {...props} className={classes}>
       <ul className="list-reset">
@@ -22,11 +20,11 @@ export const FooterSocial = ({ className, ...props }: FooterSocialProps) => {
           </a>
         </li>
         <li>
-          <a href={config.discord.url.join} target="_blank">
+          <a href="/discord/join" target="_blank">
             <i className="icon-discord" />
           </a>
         </li>
       </ul>
     </div>
-  );
-};
+  )
+}

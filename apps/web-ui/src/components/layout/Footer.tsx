@@ -1,14 +1,13 @@
-import classNames from 'classnames';
-import React from 'react';
+import classNames from 'classnames'
 
-import { FooterNav } from './partials/FooterNav';
-import { FooterSocial } from './partials/FooterSocial';
-import { Logo } from './partials/Logo';
+import { FooterNav } from './partials/FooterNav'
+import { FooterSocial } from './partials/FooterSocial'
+import { Logo } from './partials/Logo'
 
 interface FooterProps {
   className?: string;
-  topOuterDivider?: boolean;
-  topDivider?: boolean;
+  topOuterDivider?: boolean
+  topDivider?: boolean
 }
 
 export const Footer = ({
@@ -45,5 +44,5 @@ export const Footer = ({
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}

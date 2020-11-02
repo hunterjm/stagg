@@ -1,11 +1,8 @@
-import React from 'react';
-import { Layout } from 'src/components/layout';
-import { Cta } from 'src/components/sections/Cta';
-import { FeaturesSplit } from 'src/components/sections/FeaturesSplit';
-import { FeaturesTiles } from 'src/components/sections/FeaturesTiles';
-import { Hero } from 'src/components/sections/Hero';
-import { SignUp } from 'src/components/sections/SignUp';
-import { Testimonial } from 'src/components/sections/Testimonial';
+import { Layout } from 'src/components/layout'
+import { FeaturesSplit } from 'src/components/sections/FeaturesSplit'
+import { FeaturesTiles } from 'src/components/sections/FeaturesTiles'
+import { Hero } from 'src/components/sections/Hero'
+import { SignUp } from 'src/components/sections/SignUp'
 
 const Index = () => {
   return (
@@ -24,8 +21,8 @@ const Index = () => {
         <SignUp />
       </>
     </Layout>
-  );
-};
+  )
+}
 
 // eslint-disable-next-line import/no-default-export
-export default Index;
+export default Index

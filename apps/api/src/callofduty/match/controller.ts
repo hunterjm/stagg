@@ -1,7 +1,6 @@
 import { Schema } from '@stagg/callofduty'
 import {
     Controller,
-    Get,
     Put,
     Patch,
     Param,
@@ -18,10 +17,10 @@ import {
     MwWzMatchRecordDAO,
     MwMpMatchDetailsDAO,
     MwWzMatchDetailsDAO,
-  } from 'src/callofduty/match/entity'
-import { CallOfDutyMatchService } from 'src/callofduty/match/services'
+  } from './entity'
+import { CallOfDutyMatchService } from './services'
 import { AccountDAO } from 'src/callofduty/account/entity'
-// import { CallOfDutyAccountService } from 'src/callofduty/account/services'
+// Can get rid of this by getting accountId from the jwt, it's already verified anyway
 
 
 @Controller('callofduty/match')

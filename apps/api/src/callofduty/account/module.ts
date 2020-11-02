@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { CallOfDutyDbModule } from 'src/callofduty/module.db'
-import { Account, AccountDAO, AccountAuth, AccountAuthDAO } from 'src/callofduty/account/entity'
-import { CallOfDutyAccountService } from 'src/callofduty/account/services'
-import { CallOfDutyAccountController } from 'src/callofduty/account/controller'
+import { CallOfDutyDbModule } from '../module.db'
+import { CallOfDutyAccountService } from './services'
+import { CallOfDutyAccountController } from './controller'
+import { Account, AccountDAO, AccountAuth, AccountAuthDAO } from './entity'
 
 @Module({
   imports: [

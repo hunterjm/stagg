@@ -1,9 +1,8 @@
-import classNames from 'classnames';
-import Link from 'next/link';
-import React from 'react';
+import Link from 'next/link'
+import classNames from 'classnames'
 
 interface FooterNavProps {
-  className?: string;
+  className?: string
 }
 
 export const FooterNav = ({ className, ...props }: FooterNavProps) => {
@@ -19,5 +18,5 @@ export const FooterNav = ({ className, ...props }: FooterNavProps) => {
         </li>
       </ul>
     </nav>
-  );
-};
+  )
+}

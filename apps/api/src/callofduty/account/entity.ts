@@ -158,6 +158,9 @@ export class AccountAuthDAO {
       profiles: () => `array[${Object.values(indexedProfiles).map(p => `'{"platform":"${p.platform}","username":"${p.username}"}'`)}]::jsonb[]`,
     }
   }
+  public async findById(id:string):Promise<AccountAuth> {
+    return this.authRepo.findOne({ where: { id } })
+  }
   public async insert(auth:Partial<AccountAuth>):Promise<string> {
     await this.authRepo.createQueryBuilder()
       .insert()

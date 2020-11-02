@@ -2,7 +2,7 @@ import Router from 'next/router'
 import Cookies from 'js-cookie'
 import { API } from 'src/api-services'
 
-const DiscordOAuth = ({ jwt }) => {
+const DiscordOAuth = ({ jwt, forward }) => {
   try {
     window
   } catch(e) {
@@ -13,13 +13,14 @@ const DiscordOAuth = ({ jwt }) => {
   }
   Cookies.set('jwt.discord', jwt)
   Cookies.set('alert.oauth.discord', 'true')
-  Router.push('/me')
+  Router.push('/start')
   return null
 }
 
 DiscordOAuth.getInitialProps = async (ctx) => {
+  const forward = ctx.query.state
   const { response } = await API.Discord.exchangeToken(ctx.query.code)
-  return { jwt: response?.jwt }
+  return { jwt: response?.jwt, forward }
 }
 // eslint-disable-next-line import/no-default-export
 export default DiscordOAuth

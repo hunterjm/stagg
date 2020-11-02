@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { DiscordModule } from 'src/discord/module'
 import { User, UserDAO } from 'src/user/entity'
@@ -10,7 +10,8 @@ import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
 @Module({
   imports: [
     StaggDbModule,
-    CallOfDutyAccountModule,
+    forwardRef(() => DiscordModule),
+    forwardRef(() => CallOfDutyAccountModule),
     TypeOrmModule.forFeature([User], 'stagg'),
   ],
   exports: [UserService, UserDAO],

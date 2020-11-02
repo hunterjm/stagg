@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CallOfDutyOAuthController } from './controller'
+import { CallOfDutyAccountController } from './controller'
 
 describe('Oauth Controller', () => {
-  let controller: CallOfDutyOAuthController
+  let controller: CallOfDutyAccountController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [CallOfDutyOAuthController],
+      controllers: [CallOfDutyAccountController],
     }).compile()
 
-    controller = module.get<CallOfDutyOAuthController>(CallOfDutyOAuthController)
+    controller = module.get<CallOfDutyAccountController>(CallOfDutyAccountController)
   })
 
   it('should be defined', () => {

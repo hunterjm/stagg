@@ -20,15 +20,6 @@ steps:
       args: [ '-c', 'gcloud secrets versions access latest --secret=GMAIL_PASS > build/.env.GMAIL_PASS' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_HOST > build/.env.MONGO_HOST' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_USER > build/.env.MONGO_USER' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_PASS > build/.env.MONGO_PASS' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
       args: [ '-c', 'gcloud secrets versions access latest --secret=PGSQL_USER > build/.env.PGSQL_USER' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'

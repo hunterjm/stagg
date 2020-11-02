@@ -1,4 +1,3 @@
-import { Schema } from '@stagg/callofduty'
 import {
     Controller,
     Put,

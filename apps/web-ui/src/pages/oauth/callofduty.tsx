@@ -3,7 +3,6 @@ import { TextField, Button } from '@material-ui/core'
 import { Layout } from 'src/components/layout'
 import { Center } from 'src/components/sections/partials/Center'
 import styled from 'styled-components'
-import cfg from 'config/ui'
 import { API } from 'src/api-services'
 import Cookies from 'js-cookie'
 import Router from 'next/router'
@@ -125,7 +124,7 @@ const CallOfDutyLogin = () => {
       Cookies.set('jwt.callofduty', loginRes?.response?.jwt)
       Cookies.set('alert.oauth.callofduty', 'true')
     }
-    Router.push('/me')
+    Router.push('/start')
   }
   const ErrorMessage = () => {
     if (!formResponse?.errors?.length) {
@@ -181,7 +180,7 @@ const CallOfDutyLogin = () => {
         </Center>
       </Wrapper>
     </Layout>
-  );
+  )
 }
 
 export default CallOfDutyLogin

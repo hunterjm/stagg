@@ -1,5 +1,4 @@
-import Document, { Head, Main, NextScript } from 'next/document';
-import React from 'react';
+import Document, { Head, Main, NextScript } from 'next/document'
 
 class AppDocument extends Document {
   render() {
@@ -25,4 +24,4 @@ class AppDocument extends Document {
 }
 
 // eslint-disable-next-line import/no-default-export
-export default AppDocument;
+export default AppDocument

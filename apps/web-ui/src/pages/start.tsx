@@ -1,20 +1,22 @@
 import Cookies from 'js-cookie'
+import Router from 'next/router'
 import { Layout } from 'src/components/layout'
 import { notify } from 'src/hooks/notify'
 import { API } from 'src/api-services'
-import { AccountBoxes } from './Accounts'
+import { AccountBoxes } from 'src/components/sections/Accounts'
 import * as store from 'src/store'
+import dynamic from 'next/dynamic'
 
 const domainIdNames = {
   discord: 'Discord',
   callofduty: 'Call of Duty',
 }
 
-const Dashboard = () => {
+const GettingStarted = () => {
   const userState = store.useState(store.userState).get()
   const isLoggedIn = Boolean(userState.user?.userId)
   const isFormReady = Boolean(userState.oauth?.callofduty?.profiles?.length)
-  const buttonDisabled = isLoggedIn || !isFormReady
+  const buttonDisabled = !isFormReady
   const triggerLogin = async (domainId:string) => {
     const { response } = await API.login(domainId)
     if ( response?.jwt ) {
@@ -32,8 +34,9 @@ const Dashboard = () => {
   }
   const checkForAuth = () => {
     for(const domainId of Object.keys(userState.oauth)) {
-      if (userState.user?.userId) {
+      if (isLoggedIn) {
         loginAlert()
+        // Router.push('/me')
         return
       }
       if (userState.oauth[domainId]?.userId) {
@@ -71,4 +74,6 @@ const Dashboard = () => {
 }
 
 // eslint-disable-next-line import/no-default-export
-export default Dashboard
+export default dynamic(() => Promise.resolve(GettingStarted), {
+  ssr: false
+})

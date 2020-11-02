@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { CallOfDutyDbModule } from 'src/callofduty/module.db'
-import { CallOfDutyMatchService } from 'src/callofduty/match/services'
-import { CallOfDutyMatchController } from 'src/callofduty/match/controller'
+import { CallOfDutyDbModule } from '../module.db'
+import { CallOfDutyMatchService } from './services'
+import { CallOfDutyMatchController } from './controller'
 import {
   MwMpMatchRecord,
   MwWzMatchRecord,
@@ -13,7 +13,6 @@ import {
   MwMpMatchDetailsDAO,
   MwWzMatchDetailsDAO,
 } from 'src/callofduty/match/entity'
-import { Account } from 'src/callofduty/account/entity'
 import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
 
 @Module({
@@ -25,7 +24,7 @@ import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
       MwWzMatchDetails,
     ], 'callofduty'),
     CallOfDutyDbModule,
-    CallOfDutyAccountModule,
+    forwardRef(() => CallOfDutyAccountModule),
   ],
   exports: [],
   providers: [
