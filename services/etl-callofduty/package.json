@@ -13,8 +13,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stagg/callofduty": "^0.9.3",
     "axios": "^0.20.0",
+    "callofduty": "^0.9.5",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {

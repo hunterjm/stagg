@@ -4,7 +4,7 @@ import * as Schema from '../schema'
 import * as Routes from './routes'
 
 /** Call of Duty API */
-export class API {
+export default class {
     constructor(
         protected readonly tokens = <Schema.Tokens>{},
         protected readonly logger = <Function>console.log,
@@ -14,6 +14,7 @@ export class API {
         this.tokens.sso = sso
         this.tokens.atkn = atkn
         this.tokens.xsrf = xsrf
+        return this
     }
     /** Fetches primary identity for the authenticated account */
     public async Identity():Promise<Routes.Identity> {

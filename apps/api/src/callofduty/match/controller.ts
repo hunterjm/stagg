@@ -1,4 +1,4 @@
-import { Schema } from '@stagg/callofduty'
+import { Schema } from 'callofduty'
 import {
     Controller,
     Put,
@@ -40,7 +40,7 @@ export class CallOfDutyMatchController {
 
     @Put('/:gameId/:gameType/:matchId/:unoId')
     async SaveMatchRecordByUnoId(
-        @Body() payload:Schema.API.MW.Match,
+        @Body() payload:Schema.Match,
         @Param() { gameId, gameType, matchId, unoId }
     ):Promise<{ success: boolean }> {
         const { accountId } = await this.AccountDao.findByUnoId(unoId)
@@ -53,7 +53,7 @@ export class CallOfDutyMatchController {
 
     @Patch('/:gameId/:gameType/:matchId/:unoId')
     async UpdateMatchRecordByUnoId(
-        @Body() payload:Schema.API.MW.Match,
+        @Body() payload:Schema.Match,
         @Param() { gameId, gameType, matchId, unoId }
     ):Promise<{ success: boolean }> {
         const { accountId } = await this.AccountDao.findByUnoId(unoId)
@@ -66,7 +66,7 @@ export class CallOfDutyMatchController {
 
     @Put('/:gameId/:gameType/:matchId/:platform/:username')
     async SaveMatchRecordByProfileId(
-        @Body() payload:Schema.API.MW.Match,
+        @Body() payload:Schema.Match,
         @Param() { gameId, gameType, matchId, platform, username }
     ):Promise<{ success: boolean }> {
         const { accountId } = await this.AccountDao.findByProfile(username, platform)
@@ -79,7 +79,7 @@ export class CallOfDutyMatchController {
 
     @Patch('/:gameId/:gameType/:matchId/:platform/:username')
     async UpdateMatchRecordByProfileId(
-        @Body() payload:Schema.API.MW.Match,
+        @Body() payload:Schema.Match,
         @Param() { gameId, gameType, matchId, platform, username }
     ):Promise<{ success: boolean }> {
         const { accountId } = await this.AccountDao.findByProfile(username, platform)

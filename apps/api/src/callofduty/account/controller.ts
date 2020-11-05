@@ -1,5 +1,5 @@
 import * as JWT from 'jsonwebtoken'
-import { API, Schema } from '@stagg/callofduty'
+import { API, Schema } from 'callofduty'
 import {
     Controller,
     Put,
@@ -119,13 +119,13 @@ export class CallOfDutyAccountController {
             }
         }
         userId?:string
-        games?:Schema.API.Game[]
+        games?:Schema.Game[]
         profiles?:Account.Schema.ProfileId[]
     }> {
         let authTokens = null
         const CallOfDutyAPI = new API()
         try {
-            authTokens = await CallOfDutyAPI.Login(body.email, body.password)
+            authTokens = await CallOfDutyAPI.Authorize(body.email, body.password)
         } catch(e) {
             throw new UnauthorizedException(e)
         }
@@ -136,7 +136,7 @@ export class CallOfDutyAccountController {
         if (emailFound) {
             userId = emailFound.userId
         }
-        const { titleIdentities } = await CallOfDutyAPI.Tokens(authTokens).Identity()
+        const { titleIdentities } = await CallOfDutyAPI.UseTokens(authTokens).Identity()
         for(const identity of titleIdentities) {
             profiles.push({ platform: identity.platform, username: identity.username })
             if (!games.includes(identity.title)) {
@@ -153,17 +153,17 @@ export class CallOfDutyAccountController {
                 userId = searchByIdentity.userId
             }
         }
-        const platformIds = await CallOfDutyAPI.Platforms(username, platform)
-        for(const platform of Object.keys(platformIds) as Schema.API.Platform[]) {
+        const platformIds = await CallOfDutyAPI.Accounts({ username, platform })
+        for(const platform of Object.keys(platformIds)) {
             const { username } = platformIds[platform]
             profiles.push({ username, platform })
         }
         // get unique profiles
-        const mappedProfiles = {}
+        const mappedProfiles = <Record<Schema.Platform, string>>{}
         for(const { username, platform } of profiles) {
             mappedProfiles[platform] = username
         }
-        const uniqueProfiles = Object.keys(mappedProfiles).map(platform => ({ platform, username: mappedProfiles[platform] })) as any
+        const uniqueProfiles = <Schema.ProfileId.PlatformId[]>Object.keys(mappedProfiles).map(platform => ({ platform, username: mappedProfiles[platform] }))
         if (!userId) {
             for(const { username, platform } of uniqueProfiles) {
                 const found = await this.acctDao.findByProfile(username, platform)

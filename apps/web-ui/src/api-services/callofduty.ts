@@ -1,4 +1,4 @@
-import { Schema } from '@stagg/callofduty'
+import { Schema } from 'callofduty'
 import * as JWT from 'jsonwebtoken'
 import { API } from '.'
 

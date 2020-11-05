@@ -1,4 +1,4 @@
-import { API } from './api'
+import API from './api'
 import * as Assets from './assets'
 import * as Schema from './schema'
 

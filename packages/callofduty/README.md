@@ -1,3 +1,5 @@
+![Call of Duty Logo](https://i.imgur.com/kz6VDp9.png)
+
 # Call of Duty Integrations
 
 Provided by [Stagg.co](https://stagg.co)

@@ -1,4 +1,4 @@
-import * as COD from '@stagg/callofduty'
+import { Schema as CallOfDuty } from 'callofduty'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { InsertResult, Repository, UpdateResult } from 'typeorm'
@@ -30,7 +30,7 @@ export class Account {
   emails: string[]
 
   @Column('citext', { array: true })
-  games: COD.Schema.API.Game[]
+  games: CallOfDuty.Game[]
 
   @Column('jsonb', { array: true })
   profiles: Account.Schema.ProfileId[]
@@ -99,7 +99,7 @@ export class AccountDAO {
     const lookup = await this.acctRepo.findOne({ where: `'${email}' = ANY(emails)` })
     return Postgres.Denormalize.Model<Account>(lookup)
   }
-  public async findByProfile(username:string, platform:COD.Schema.API.Platform):Promise<Account> {
+  public async findByProfile(username:string, platform:CallOfDuty.Platform):Promise<Account> {
       const acct = await this.acctRepo.findOne({ where: `'${JSON.stringify({ username, platform })}' = ANY(profiles)` })
       if (!acct) {
           return null
@@ -113,7 +113,7 @@ export namespace Account {
     export type Access = 'public' | 'protected' | 'private'
     export type Origin = 'self' | 'kgp' | 'friend' | 'enemy' | 'inquiry'
     export type AuthTokens = { sso: string, xsrf: string, atkn: string }
-    export type ProfileId = { username: string, platform: COD.Schema.API.Platform }
+    export type ProfileId = { username: string, platform: CallOfDuty.Platform }
   }
 }
 
@@ -129,7 +129,7 @@ export class AccountAuth {
   email: string
 
   @Column('citext', { array: true })
-  games: COD.Schema.API.Game[]
+  games: CallOfDuty.Game[]
 
   @Column('jsonb', { array: true })
   profiles: Account.Schema.ProfileId[]

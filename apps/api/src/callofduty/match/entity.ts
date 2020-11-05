@@ -1,4 +1,4 @@
-import { Schema } from '@stagg/callofduty'
+import { Schema } from 'callofduty'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Entity, Column, Repository, PrimaryColumn, InsertResult, UpdateResult, Index } from 'typeorm'
@@ -14,7 +14,7 @@ export interface Loadout {
 }
 export namespace Loadout {
   export interface Weapon {
-      weapon: Schema.API.MW.Loadout.Weapon.Name
+      weapon: Schema.MW.Loadout.Weapon.Name
       variant: number
       attachments: string[]
   }
@@ -68,10 +68,10 @@ export class MwMpMatchDetails {
   matchId: string
 
   @Column('citext')
-  modeId: Schema.API.MW.Match.Mode
+  modeId: Schema.MW.Mode.MP
 
   @Column('citext')
-  mapId: Schema.API.MW.Map
+  mapId: Schema.MW.Map.MP
 
   @Column('integer')
   startTime: number
@@ -124,10 +124,10 @@ export class MwMpMatchRecord {
   accountId: string
 
   @Column('citext')
-  modeId: Schema.API.MW.Match.Mode
+  modeId: Schema.MW.Mode.MP
 
   @Column('citext')
-  mapId: Schema.API.MW.Map
+  mapId: Schema.MW.Map.MP
 
   @Column('citext')
   teamId: string
@@ -295,10 +295,10 @@ export class MwWzMatchDetails {
   matchId: string
 
   @Column('citext')
-  modeId: Schema.API.MW.Match.Mode
+  modeId: Schema.MW.Mode.WZ
 
   @Column('citext')
-  mapId: Schema.API.MW.Map
+  mapId: Schema.MW.Map.WZ
 
   @Column('integer')
   startTime: number
@@ -351,10 +351,10 @@ export class MwWzMatchRecord {
   accountId: string
 
   @Column('citext')
-  modeId: Schema.API.MW.Match.Mode
+  modeId: Schema.MW.Mode.WZ
 
   @Column('citext')
-  mapId: Schema.API.MW.Map
+  mapId: Schema.MW.Map.WZ
 
   @Column('citext')
   teamId: string

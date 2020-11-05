@@ -1,7 +1,7 @@
 import { Schema } from '../..'
 
 export interface KillstreakDetails {
-    id: Schema.MW.Killstreak.Name
+    id: Schema.MW.Killstreak
     name: string
     props: {
         kills: string
@@ -17,12 +17,12 @@ const snakeToPascal = (input:string) => (input + '').split('_').map(s => s.slice
 const KillstreakKillsProp = (killstreakId:string) => `objectiveMedalScoreSsKill${snakeToPascal(killstreakId)}`
 const KillstreakTakedownsProp = (killstreakId:string) => `objectiveMedalScoreKillSs${snakeToPascal(killstreakId)}`
 
-const Killstreak = (id:Schema.MW.Killstreak.Name):KillstreakDetails => Killstreaks[id]
-const KillstreakObjective = (objectiveProp:string):Schema.MW.Killstreak.Name => 
+const Killstreak = (id:Schema.MW.Killstreak):KillstreakDetails => Killstreaks[id]
+const KillstreakObjective = (objectiveProp:string):Schema.MW.Killstreak => 
     objectiveProp.replace('objectiveMedalScoreSsKill', '')
         .replace('objectiveMedalScoreKillSs', '')
         .match(/[A-Z]*[^A-Z]+/g)
-        .map(s => s.toLowerCase()).join('_') as Schema.MW.Killstreak.Name
+        .map(s => s.toLowerCase()).join('_') as Schema.MW.Killstreak
 const Killstreaks:{[key:string]: KillstreakDetails} = {
     radar_drone_overwatch: {
         id: 'radar_drone_overwatch',

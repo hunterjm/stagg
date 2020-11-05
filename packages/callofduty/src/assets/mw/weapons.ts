@@ -27,7 +27,7 @@ const WeaponsRaw = {
 }
 
 export interface WeaponDetails {
-    id: Schema.MW.Loadout.Weapon.Name
+    id: Schema.MW.Weapon.Name
     name: string
     image: string
     blueprints: string[]
@@ -43,8 +43,8 @@ export interface WeaponDetails {
         }
     }
 }
-const image = (weaponId:Schema.MW.Loadout.Weapon.Name) => `https://titles.trackercdn.com/modern-warfare/db/images/icon_cac_weapon_${weaponId.replace('iw8_', '')}.png`
-const Weapons:Record<Schema.MW.Loadout.Weapon.Name, WeaponDetails> = {
+const image = (weaponId:Schema.MW.Weapon.Name) => `https://titles.trackercdn.com/modern-warfare/db/images/icon_cac_weapon_${weaponId.replace('iw8_', '')}.png`
+const Weapons:Record<Schema.MW.Weapon.Name, WeaponDetails> = {
     iw8_pi_mike9: {
         id: 'iw8_pi_mike9',
         name: 'Renetti',
@@ -394,6 +394,6 @@ const Weapons:Record<Schema.MW.Loadout.Weapon.Name, WeaponDetails> = {
     },
 }
 
-const Weapon = (weaponId:Schema.MW.Loadout.Weapon.Name) => Weapons[weaponId]
+const Weapon = (weaponId:Schema.MW.Weapon.Name) => Weapons[weaponId]
 
 export { Weapons, Weapon }

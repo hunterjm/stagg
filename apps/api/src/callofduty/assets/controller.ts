@@ -1,4 +1,4 @@
-import { Schema, Normalize } from '@stagg/callofduty'
+import { Schema, Assets } from 'callofduty'
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common'
 
 @Controller('callofduty/assets/mw')
@@ -6,8 +6,8 @@ export class CallOfDutyAssetsController {
     constructor() {}
 
     @Get('maps/:mapId')
-    async MapDetails(@Param() { mapId }:{mapId:Schema.API.MW.Map}):Promise<Schema.Map> {
-        const map = Normalize.MW.Map(mapId)
+    async MapDetails(@Param() { mapId }:{mapId:Schema.MW.Map}) {
+        const map = Assets.MW.Map(mapId)
         if (!map) {
             throw new NotFoundException('map not found')
         }
@@ -15,8 +15,8 @@ export class CallOfDutyAssetsController {
     }
 
     @Get('modes/:modeId')
-    async ModeDetails(@Param() { modeId }:{modeId:Schema.API.MW.Match.Mode}):Promise<Schema.Mode> {
-        const mode = Normalize.MW.Mode(modeId)
+    async ModeDetails(@Param() { modeId }:{modeId:Schema.MW.Mode}) {
+        const mode = Assets.MW.Mode(modeId)
         if (!mode) {
             throw new NotFoundException('mode not found')
         }
@@ -24,8 +24,8 @@ export class CallOfDutyAssetsController {
     }
 
     @Get('weapons/:weaponId')
-    async WeaponDetails(@Param() { weaponId }:{weaponId:Schema.API.MW.Loadout.Weapon.Name}):Promise<Schema.Weapon> {
-        const weapon = Normalize.MW.Weapon(weaponId)
+    async WeaponDetails(@Param() { weaponId }:{weaponId:Schema.MW.Loadout.Weapon.Name}) {
+        const weapon = Assets.MW.Weapon(weaponId)
         if (!weapon) {
             throw new NotFoundException('weapon not found')
         }
@@ -33,8 +33,8 @@ export class CallOfDutyAssetsController {
     }
 
     @Get('killstreaks/:killstreakId')
-    async KillstreakDetails(@Param() { killstreakId }:{killstreakId:Schema.API.MW.Killstreak.Name}):Promise<Schema.Killstreak> {
-        const killstreak = Normalize.MW.Killstreak(killstreakId)
+    async KillstreakDetails(@Param() { killstreakId }:{killstreakId:Schema.MW.Killstreak.Name}) {
+        const killstreak = Assets.MW.Killstreak(killstreakId)
         if (!killstreak) {
             throw new NotFoundException('killstreak not found')
         }

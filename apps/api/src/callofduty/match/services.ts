@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, } from '@nestjs/common'
-import { Schema } from '@stagg/callofduty'
+import { Schema } from 'callofduty'
 import {
     BadRequestException,
 } from '@nestjs/common'
@@ -26,7 +26,7 @@ export class CallOfDutyMatchService {
     private readonly MwWzRecordDao: MwWzMatchRecordDAO,
     private readonly MwWzDetailsDao: MwWzMatchDetailsDAO,
   ) {}
-  private getResource(gameId:Schema.API.Game, gameType:Schema.API.GameType) {
+  private getResource(gameId:Schema.Game, gameType:Schema.GameType) {
     const gameKey = gameId.toLowerCase()
     const gameTypeKey = gameType.toLowerCase()
     const resources = {
@@ -57,11 +57,11 @@ export class CallOfDutyMatchService {
     }
     return resources[resourceKey]
   }
-  public async updateMatchRecord(matchId:string, accountId:string, gameId:Schema.API.Game, gameType:Schema.API.GameType, updates:any) {
+  public async updateMatchRecord(matchId:string, accountId:string, gameId:Schema.Game, gameType:Schema.GameType, updates:{ avgLifeTime: number }) {
     const resource = this.getResource(gameId, gameType)
     await resource.record.dao.update({ matchId, accountId, ...updates })
   }
-  public async insertMatchRecord(accountId:string, gameId:Schema.API.Game, gameType:Schema.API.GameType, match:Schema.API.MW.Match) {
+  public async insertMatchRecord(accountId:string, gameId:Schema.Game, gameType:Schema.GameType, match:Schema.Match) {
     const resource = this.getResource(gameId, gameType)
     try {
       const normalizedDetails = resource.details.normalizer(match)
