@@ -1,6 +1,6 @@
 {
   "name": "@stagg/etl-callofduty",
-  "version": "0.9.4",
+  "version": "0.9.6",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
-    "callofduty": "^0.9.5",
+    "callofduty": "^0.9.6",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
