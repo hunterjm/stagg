@@ -1,6 +1,6 @@
 {
   "name": "@stagg/render-chart",
-  "version": "0.9.1",
+  "version": "0.9.4",
   "private": true,
   "main": "index.js",
   "license": "GPL-3.0",
