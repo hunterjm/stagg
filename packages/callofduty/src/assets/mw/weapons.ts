@@ -1,7 +1,50 @@
 import { Schema } from '../..'
 
-const image = (weaponId:Schema.API.MW.Loadout.Weapon.Name) => `https://titles.trackercdn.com/modern-warfare/db/images/icon_cac_weapon_${weaponId.replace('iw8_', '')}.png`
-const Weapons:{[key:string]: Schema.Weapon} = {
+const WeaponsRaw = {
+    "arsenal:weapons_equip_gas_grenade:1": "Gas Grenade",
+    "arsenal:weapons_equip_snapshot_grenade:1": "Snapshot Grenade",
+    "arsenal:weapons_equip_decoy:1": "Decoy Grenade",
+    "arsenal:weapons_equip_smoke:1": "Smoke Grenade",
+    "arsenal:weapons_equip_concussion:1": "Stun Grenade",
+    "arsenal:weapons_equip_hb_sensor:1": "Heartbeat Sensor",
+    "arsenal:weapons_equip_flash:1": "Flash Grenade",
+    "arsenal:weapons_equip_adrenaline:1": "Stim",
+    "arsenal:weapons_equip_frag:1": "Frag Grenade",
+    "arsenal:weapons_equip_thermite:1": "Thermite",
+    "arsenal:weapons_equip_semtex:1": "Semtex",
+    "arsenal:weapons_equip_claymore:1": "Claymore",
+    "arsenal:weapons_equip_c4:1": "C4",
+    "arsenal:weapons_equip_at_mine:1": "Proximity Mine",
+    "arsenal:weapons_equip_throwing_knife:1": "Throwing Knife",
+    "arsenal:weapons_equip_molotov:1": "Molotov Cocktail",
+    "arsenal:weapons_iw8_knife:1": "Combat Knife",
+    "arsenal:weapon_other:1": "Primary Melee",
+    "arsenal:weapons_iw8_me_akimboblunt:1": "Kali Sticks",
+    "arsenal:weapons_iw8_ar_anovember94:1": "AN-94",
+    "arsenal:weapons_iw8_sm_charlie9:1": "ISO",
+    "arsenal:weapons_iw8_me_akimboblades:1": "Dual Kodachis",
+    "arsenal:weapons_iw8_lm_sierrax:1": "FiNN",
+}
+
+export interface WeaponDetails {
+    id: Schema.MW.Loadout.Weapon.Name
+    name: string
+    image: string
+    blueprints: string[]
+    season?: number
+    unlock?: {
+        rank?: number
+        battlepass?: number
+        challenge?: {
+            objective: string // LMG kills while enemy is close to smoke
+            requirement: number // 3 required per game
+            games: number // 10 games total required for unlock
+            consecutive?: boolean // true if games must be consecutive
+        }
+    }
+}
+const image = (weaponId:Schema.MW.Loadout.Weapon.Name) => `https://titles.trackercdn.com/modern-warfare/db/images/icon_cac_weapon_${weaponId.replace('iw8_', '')}.png`
+const Weapons:Record<Schema.MW.Loadout.Weapon.Name, WeaponDetails> = {
     iw8_pi_mike9: {
         id: 'iw8_pi_mike9',
         name: 'Renetti',
@@ -351,34 +394,6 @@ const Weapons:{[key:string]: Schema.Weapon} = {
     },
 }
 
-const Weapon = (weaponId:Schema.API.MW.Loadout.Weapon.Name) => Weapons[weaponId]
+const Weapon = (weaponId:Schema.MW.Loadout.Weapon.Name) => Weapons[weaponId]
 
 export { Weapons, Weapon }
-
-
-
-const WeaponsRaw = {
-    "arsenal:weapons_equip_gas_grenade:1": "Gas Grenade",
-    "arsenal:weapons_equip_snapshot_grenade:1": "Snapshot Grenade",
-    "arsenal:weapons_equip_decoy:1": "Decoy Grenade",
-    "arsenal:weapons_equip_smoke:1": "Smoke Grenade",
-    "arsenal:weapons_equip_concussion:1": "Stun Grenade",
-    "arsenal:weapons_equip_hb_sensor:1": "Heartbeat Sensor",
-    "arsenal:weapons_equip_flash:1": "Flash Grenade",
-    "arsenal:weapons_equip_adrenaline:1": "Stim",
-    "arsenal:weapons_equip_frag:1": "Frag Grenade",
-    "arsenal:weapons_equip_thermite:1": "Thermite",
-    "arsenal:weapons_equip_semtex:1": "Semtex",
-    "arsenal:weapons_equip_claymore:1": "Claymore",
-    "arsenal:weapons_equip_c4:1": "C4",
-    "arsenal:weapons_equip_at_mine:1": "Proximity Mine",
-    "arsenal:weapons_equip_throwing_knife:1": "Throwing Knife",
-    "arsenal:weapons_equip_molotov:1": "Molotov Cocktail",
-    "arsenal:weapons_iw8_knife:1": "Combat Knife",
-    "arsenal:weapon_other:1": "Primary Melee",
-    "arsenal:weapons_iw8_me_akimboblunt:1": "Kali Sticks",
-    "arsenal:weapons_iw8_ar_anovember94:1": "AN-94",
-    "arsenal:weapons_iw8_sm_charlie9:1": "ISO",
-    "arsenal:weapons_iw8_me_akimboblades:1": "Dual Kodachis",
-    "arsenal:weapons_iw8_lm_sierrax:1": "FiNN",
-}

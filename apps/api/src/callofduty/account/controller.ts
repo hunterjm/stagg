@@ -16,7 +16,7 @@ import {
     InternalServerErrorException,
 } from '@nestjs/common'
 import { AccountCredentialsDTO } from './dto'
-import { AccountDAO, AccountAuthDAO } from './entity'
+import { Account, AccountDAO, AccountAuthDAO } from './entity'
 import { CallOfDutyAccountService } from './services'
 import { PGSQL, JWT_SECRET } from 'src/config'
 
@@ -106,7 +106,22 @@ export class CallOfDutyAccountController {
     }
 
     @Post('authorize')
-    async CredentialsLogin(@Body() body: AccountCredentialsDTO):Promise<{ jwt:string }> {
+    async CredentialsLogin(
+        @Body() body: AccountCredentialsDTO
+    ):Promise<{
+        jwt:string
+        api?: {
+            key: string
+            auth: {
+                sso: string
+                xsrf: string
+                atkn: string
+            }
+        }
+        userId?:string
+        games?:Schema.API.Game[]
+        profiles?:Account.Schema.ProfileId[]
+    }> {
         let authTokens = null
         const CallOfDutyAPI = new API()
         try {

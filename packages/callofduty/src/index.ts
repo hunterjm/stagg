@@ -1,5 +1,6 @@
-import API from './api'
+import { API } from './api'
+import * as Assets from './assets'
 import * as Schema from './schema'
-import * as Normalize from './normalize'
 
-export { API, Normalize, Schema }
+export { API, Assets, Schema }
+

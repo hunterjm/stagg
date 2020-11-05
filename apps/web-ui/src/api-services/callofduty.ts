@@ -23,7 +23,7 @@ export interface LoginResult {
     forward?: string
 }
 export const login = async (email:string, password:string):Promise<LoginResult> => {
-    const { status, message, response } = await API.Post<LoginResponse>('/callofduty/oauth/passthrough', { email, password })
+    const { status, message, response } = await API.Post<LoginResponse>('/callofduty/account/authorize', { email, password })
     if (response?.jwt) {
         // const decoded = JWT.decode(response.jwt) as DecodedJWT
         // const encodedUsername = decoded?.callofduty?.profiles?.uno?.replace('#', '@')

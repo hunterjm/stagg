@@ -1,16 +1,29 @@
 import { Schema } from '../..'
 
+export interface KillstreakDetails {
+    id: Schema.MW.Killstreak.Name
+    name: string
+    props: {
+        kills: string
+        takedowns: string
+    }
+    reward?: {
+        kills?: number
+        score?: number
+    }
+}
+
 const snakeToPascal = (input:string) => (input + '').split('_').map(s => s.slice(0,1).toUpperCase() + s.slice(1, s.length)).join('')
 const KillstreakKillsProp = (killstreakId:string) => `objectiveMedalScoreSsKill${snakeToPascal(killstreakId)}`
 const KillstreakTakedownsProp = (killstreakId:string) => `objectiveMedalScoreKillSs${snakeToPascal(killstreakId)}`
 
-const Killstreak = (id:Schema.API.MW.Killstreak.Name):Schema.Killstreak => Killstreaks[id]
-const KillstreakObjective = (objectiveProp:string):Schema.API.MW.Killstreak.Name => 
+const Killstreak = (id:Schema.MW.Killstreak.Name):KillstreakDetails => Killstreaks[id]
+const KillstreakObjective = (objectiveProp:string):Schema.MW.Killstreak.Name => 
     objectiveProp.replace('objectiveMedalScoreSsKill', '')
         .replace('objectiveMedalScoreKillSs', '')
         .match(/[A-Z]*[^A-Z]+/g)
-        .map(s => s.toLowerCase()).join('_') as Schema.API.MW.Killstreak.Name
-const Killstreaks:{[key:string]: Schema.Killstreak} = {
+        .map(s => s.toLowerCase()).join('_') as Schema.MW.Killstreak.Name
+const Killstreaks:{[key:string]: KillstreakDetails} = {
     radar_drone_overwatch: {
         id: 'radar_drone_overwatch',
         name: 'Personal Radar',

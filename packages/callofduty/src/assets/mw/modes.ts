@@ -1,7 +1,22 @@
 import { Schema } from '../..'
 
-const Mode = (modeId:Schema.API.MW.Match.Mode) => Modes[modeId]
-const Modes = {} as { [key:string]: Schema.Mode }
+export interface ModeDetails {
+    id: Schema.MW.Mode
+    name: string
+    games: Schema.Game[]
+    teamSize: number
+    lobbySize: number
+    type: Schema.GameType
+    category?: 'br' | 'br_mini' | 'br_tdm' | 'plunder'
+    gulag?: boolean
+    realism?: boolean
+    hardcore?: boolean
+    respawns?: boolean
+    buybacks?: boolean
+}
+
+const Mode = (modeId:Schema.MW.Mode):ModeDetails => Modes[modeId]
+const Modes = {} as Record<Schema.MW.Mode, ModeDetails>
 
 // BR Solos
 Modes.br_87 = {
