@@ -57,7 +57,7 @@ export class CallOfDutyMatchService {
     }
     return resources[resourceKey]
   }
-  public async updateMatchRecord(matchId:string, accountId:string, gameId:Schema.Game, gameType:Schema.GameType, updates:{ avgLifeTime: number }) {
+  public async updateMatchRecord(matchId:string, accountId:string, gameId:Schema.Game, gameType:Schema.GameType, updates:any) {
     const resource = this.getResource(gameId, gameType)
     await resource.record.dao.update({ matchId, accountId, ...updates })
   }

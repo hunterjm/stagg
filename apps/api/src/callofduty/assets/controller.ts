@@ -24,7 +24,7 @@ export class CallOfDutyAssetsController {
     }
 
     @Get('weapons/:weaponId')
-    async WeaponDetails(@Param() { weaponId }:{weaponId:Schema.MW.Loadout.Weapon.Name}) {
+    async WeaponDetails(@Param() { weaponId }:{weaponId:Schema.MW.Weapon.Name}) {
         const weapon = Assets.MW.Weapon(weaponId)
         if (!weapon) {
             throw new NotFoundException('weapon not found')
@@ -33,7 +33,7 @@ export class CallOfDutyAssetsController {
     }
 
     @Get('killstreaks/:killstreakId')
-    async KillstreakDetails(@Param() { killstreakId }:{killstreakId:Schema.MW.Killstreak.Name}) {
+    async KillstreakDetails(@Param() { killstreakId }:{ killstreakId:Schema.MW.Killstreak }) {
         const killstreak = Assets.MW.Killstreak(killstreakId)
         if (!killstreak) {
             throw new NotFoundException('killstreak not found')

@@ -14,7 +14,7 @@ export interface Loadout {
 }
 export namespace Loadout {
   export interface Weapon {
-      weapon: Schema.MW.Loadout.Weapon.Name
+      weapon: Schema.MW.Weapon.Name
       variant: number
       attachments: string[]
   }
