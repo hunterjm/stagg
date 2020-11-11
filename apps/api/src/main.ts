@@ -1,3 +1,4 @@
+import * as requestIp from 'request-ip'
 import { NestFactory } from '@nestjs/core'
 import * as bodyParser from 'body-parser'
 import { ValidationPipe } from '@nestjs/common'
@@ -17,6 +18,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   app.use(bodyParser.json({ limit: '1mb' }))
   app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }))
+  app.use(requestIp.mw())
   await app.listen(PORT)
 }
 bootstrap()

@@ -20,7 +20,7 @@ export const SignUp: any = () => {
   return (
     <div className="center-content-mobile" id="footer-hero">
       <div className="featured-games hoverable">
-        <h4>Select a game below to get started</h4>
+        <h4>Full support for Call of Duty is live now with more games coming soon!</h4>
         {config.games.map((game) => (
           <Link key={game.id} href={`/${game.id}/login`}>
             <i

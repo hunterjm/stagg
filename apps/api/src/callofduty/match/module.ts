@@ -1,39 +1,62 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { CallOfDutyDbModule } from 'src/callofduty/module.db'
-import { CallOfDutyMatchService } from 'src/callofduty/match/services'
-import { CallOfDutyMatchController } from 'src/callofduty/match/controller'
+import { CallOfDutyDbModule } from '../module.db'
+import { CallOfDutyMatchService } from './services'
+import { CallOfDutyMatchController } from './controller'
 import {
-  MwMpMatchRecord,
-  MwWzMatchRecord,
   MwMpMatchDetails,
-  MwWzMatchDetails,
-  MwMpMatchRecordDAO,
-  MwWzMatchRecordDAO,
   MwMpMatchDetailsDAO,
+  MwMpMatchStats,
+  MwMpMatchStatsDAO,
+  MwMpMatchKillstreak,
+  MwMpMatchKillstreakDAO,
+  MwMpMatchLoadout,
+  MwMpMatchLoadoutDAO,
+  MwMpMatchObjective,
+  MwMpMatchObjectiveDAO,
+  MwMpMatchWeapon,
+  MwMpMatchWeaponDAO,
+  MwWzMatchDetails,
   MwWzMatchDetailsDAO,
+  MwWzMatchStats,
+  MwWzMatchStatsDAO,
+  MwWzMatchLoadout,
+  MwWzMatchLoadoutDAO,
+  MwWzMatchObjective,
+  MwWzMatchObjectiveDAO,
 } from 'src/callofduty/match/entity'
-import { Account } from 'src/callofduty/account/entity'
 import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      MwMpMatchRecord,
-      MwWzMatchRecord,
       MwMpMatchDetails,
+      MwMpMatchStats,
+      MwMpMatchKillstreak,
+      MwMpMatchLoadout,
+      MwMpMatchObjective,
+      MwMpMatchWeapon,
       MwWzMatchDetails,
+      MwWzMatchStats,
+      MwWzMatchLoadout,
+      MwWzMatchObjective,
     ], 'callofduty'),
     CallOfDutyDbModule,
-    CallOfDutyAccountModule,
+    forwardRef(() => CallOfDutyAccountModule),
   ],
   exports: [],
   providers: [
     CallOfDutyMatchService,
-    MwMpMatchRecordDAO,
-    MwWzMatchRecordDAO,
     MwMpMatchDetailsDAO,
+    MwMpMatchStatsDAO,
+    MwMpMatchKillstreakDAO,
+    MwMpMatchLoadoutDAO,
+    MwMpMatchObjectiveDAO,
+    MwMpMatchWeaponDAO,
     MwWzMatchDetailsDAO,
+    MwWzMatchStatsDAO,
+    MwWzMatchLoadoutDAO,
+    MwWzMatchObjectiveDAO,
   ],
   controllers: [CallOfDutyMatchController],
 })

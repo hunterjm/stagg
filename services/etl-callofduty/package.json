@@ -1,6 +1,6 @@
 {
   "name": "@stagg/etl-callofduty",
-  "version": "0.9.3",
+  "version": "0.9.7",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -8,16 +8,14 @@
     "dev": "ts-node-dev src/express.ts",
     "prod": "tsc && node dist/express.js",
     "build": "tsc",
-    "deploy": "yarn build && gcloud functions deploy etl-callofduty --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --timeout=540 --max-instances=12 --env-vars-file=.env.yaml",
+    "deploy": "yarn build && gcloud functions deploy etl-callofduty --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --timeout=540 --max-instances=128 --env-vars-file=.env.yaml",
     "start": "node dist/index.js",
     "test": "jest"
   },
   "dependencies": {
-    "@stagg/callofduty": "^0.9.3",
-    "@stagg/util": "^0.9.0",
     "axios": "^0.20.0",
-    "jsonwebtoken": "^8.5.1",
-    "mongodb": "^3.6.2"
+    "callofduty": "^0.9.7",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.13",

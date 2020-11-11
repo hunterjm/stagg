@@ -1,24 +1,16 @@
-import { useState } from 'react'
-import { Layout } from 'src/components/layout'
-import { API } from 'src/api-services'
+import cfg from 'config/ui'
 
-const DiscordServerPage = () => {
-  const [input, setInput] = useState('')
-  const [output, setOutput] = useState([])
-  const runCmd = async () => setOutput(await API.Discord.simCommand(...input.split(' ')))
-  return (
-    <Layout title="Discord Simulator">
-      <div style={{textAlign: 'center', paddingTop: '128px'}}>
-        <input type="text" onChange={e => setInput(e.target.value)} /> <button onClick={runCmd}>run</button>
-        <pre style={{textAlign: 'left'}}>
-          {
-            output.map(line => <p>{line}</p>)
-          }
-        </pre>
-      </div>
-    </Layout>
-  );
-};
+const JoinDiscordServer = () => {
+  return <></>
+}
+
+JoinDiscordServer.getInitialProps = ({ res }) => {
+  if (res) {
+    res.writeHead(302, { location: cfg.discord.url.join })
+    res.end()
+  }
+  return {}
+}
 
 // eslint-disable-next-line import/no-default-export
-export default DiscordServerPage
+export default JoinDiscordServer

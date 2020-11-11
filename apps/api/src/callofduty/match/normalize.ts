@@ -1,7 +1,7 @@
-import { Schema, Normalize } from '@stagg/callofduty'
+import { Schema, Assets } from 'callofduty'
 
 export const Stat = (stats: any, stat: string) => stats && !isNaN(Number(stats[stat])) ? Number(stats[stat]) : 0
-export const Loadout = (loadout: Schema.API.MW.Loadout):Schema.DB.MW.Loadout => ({
+export const Loadout = (loadout: Schema.MW.Loadout) => ({
     primary: {
         weapon: loadout.primaryWeapon.name,
         variant: Number(loadout.primaryWeapon.variant),
@@ -17,10 +17,10 @@ export const Loadout = (loadout: Schema.API.MW.Loadout):Schema.DB.MW.Loadout => 
     perks: loadout.perks.filter(p => p.name !== 'specialty_null').map(perk => perk.name),
     killstreaks: loadout.killstreaks.filter(ks => ks.name !== 'none').map(ks => ks.name),
 })
-export const Killstreaks = (player:Schema.API.MW.MP.Match.Player, playerStats:Schema.API.MW.MP.Match.PlayerStats):{[key:string]:Schema.DB.MW.MP.Match.Record.Stats.Killstreak} => {
+export const Killstreaks = (player, playerStats:Schema.MW.Match.Generic.PlayerStats) => {
     const killstreaks = {}
-    for(const killstreakId in Normalize.MW.Killstreaks) {
-        const { props } = Normalize.MW.Killstreak(killstreakId as Schema.API.MW.Killstreak.Name)
+    for(const killstreakId in Assets.MW.Killstreaks) {
+        const { props } = Assets.MW.Killstreak(killstreakId as Schema.Killstreak)
         killstreaks[killstreakId] = {
             uses: player.killstreakUsage[killstreakId] || 0,
             kills: playerStats[props.kills] || 0,
@@ -29,7 +29,7 @@ export const Killstreaks = (player:Schema.API.MW.MP.Match.Player, playerStats:Sc
     }
     return killstreaks
 }
-export const Weapons = (match:Schema.API.MW.MP.Match):{[key:string]:Schema.DB.MW.MP.Match.Record.Stats.Weapon} => {
+export const Weapons = (match:Schema.MW.Match.MP) => {
     const weapons = {}
     for (const weaponId in match.weaponStats) {
         weapons[weaponId] = {
@@ -50,14 +50,14 @@ export const Weapons = (match:Schema.API.MW.MP.Match):{[key:string]:Schema.DB.MW
     return weapons
 }
 
-export const MwWzDetails = (match:Schema.API.MW.WZ.Match) => ({
+export const MwWzDetails = (match:Schema.MW.Match.WZ) => ({
     matchId: match.matchID,
     modeId: match.mode,
     mapId: match.map,
     endTime: match.utcEndSeconds,
     startTime: match.utcStartSeconds,
 })
-export const MwWzRecord = (match:Schema.API.MW.WZ.Match) => {
+export const MwWzRecord = (match:Schema.MW.Match.WZ) => {
     // Count downs
     let downs = []
     const downKeys = Object.keys(match.playerStats).filter(key => key.includes('objectiveBrDownEnemyCircle'))
@@ -117,14 +117,14 @@ export const MwWzRecord = (match:Schema.API.MW.WZ.Match) => {
     }
 }
 
-export const MwMpDetails = (match:Schema.API.MW.MP.Match) => ({
+export const MwMpDetails = (match:Schema.MW.Match.MP) => ({
     matchId: match.matchID,
     modeId: match.mode,
     mapId: match.map,
     endTime: match.utcEndSeconds,
     startTime: match.utcStartSeconds,
 })
-export const MwMpRecord = (match:Schema.API.MW.MP.Match) => ({
+export const MwMpRecord = (match:Schema.MW.Match.MP) => ({
     matchId: match.matchID,
     modeId: match.mode,
     mapId: match.map,

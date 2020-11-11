@@ -1,6 +1,6 @@
-import { AppProps } from 'next/app';
-import React, { useEffect } from 'react';
-import 'public/scss/style.scss';
+import { useEffect } from 'react'
+import { AppProps } from 'next/app'
+import 'public/scss/style.scss'
 import 'react-notifications-component/dist/theme.css'
 import ReactNotification from 'react-notifications-component'
 
@@ -11,10 +11,10 @@ if (typeof window !== 'undefined') {
   ScrollReveal = require('scrollreveal').default;
 }
 
-function MyApp({ Component, pageProps }: AppProps) {
+const StaggWebUI = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
-    ScrollReveal({ useDelay: 'onload' });
-  }, []);
+    ScrollReveal({ useDelay: 'onload' })
+  }, [])
 
   return (
     <>
@@ -24,5 +24,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
+
 // eslint-disable-next-line import/no-default-export
-export default MyApp;
+export default StaggWebUI

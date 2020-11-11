@@ -1,5 +1,4 @@
-import Document, { Head, Main, NextScript } from 'next/document';
-import React from 'react';
+import Document, { Head, Main, NextScript } from 'next/document'
 
 class AppDocument extends Document {
   render() {
@@ -7,13 +6,13 @@ class AppDocument extends Document {
       <html lang="en">
         <Head>
           <meta charSet="utf-8" />
-          <link rel="stylesheet" href="/css/base.css" media="all" />
-          <link rel="stylesheet" href="/css/icomoon.css" media="all" />
+          <link rel="stylesheet" href="/cdn/core/style.css" media="all" />
+          <link rel="stylesheet" href="/cdn/icomoon/style.css" media="all" />
           <script
             async
             src="https://www.googletagmanager.com/gtag/js?id=UA-171798332-1"
           />
-          <script src="/assets/js/ga.js" />
+          <script src="/cdn/core/ga.js" />
         </Head>
         <body className="has-animations" data-gr-c-s-loaded="true">
           <Main />
@@ -25,4 +24,4 @@ class AppDocument extends Document {
 }
 
 // eslint-disable-next-line import/no-default-export
-export default AppDocument;
+export default AppDocument

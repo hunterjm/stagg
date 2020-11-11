@@ -20,15 +20,6 @@ steps:
       args: [ '-c', 'gcloud secrets versions access latest --secret=GMAIL_PASS > build/.env.GMAIL_PASS' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_HOST > build/.env.MONGO_HOST' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_USER > build/.env.MONGO_USER' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
-      args: [ '-c', 'gcloud secrets versions access latest --secret=MONGO_PASS > build/.env.MONGO_PASS' ]
-    - name: gcr.io/cloud-builders/gcloud
-      entrypoint: 'bash'
       args: [ '-c', 'gcloud secrets versions access latest --secret=PGSQL_USER > build/.env.PGSQL_USER' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
@@ -56,7 +47,13 @@ steps:
       args: [ '-c', 'gcloud secrets versions access latest --secret=FAAS_RENDER_CHART_HOST > build/.env.FAAS_RENDER_CHART_HOST' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
+      args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_CLIENT_ID > build/.env.DISCORD_CLIENT_ID' ]
+    - name: gcr.io/cloud-builders/gcloud
+      entrypoint: 'bash'
       args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_CLIENT_TOKEN > build/.env.DISCORD_CLIENT_TOKEN' ]
+    - name: gcr.io/cloud-builders/gcloud
+      entrypoint: 'bash'
+      args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_CLIENT_SECRET > build/.env.DISCORD_CLIENT_SECRET' ]
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
       args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_CHANNEL_NOTIFY_SYS > build/.env.DISCORD_CHANNEL_NOTIFY_SYS' ]
@@ -68,10 +65,10 @@ steps:
     - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'apps/web-ui', '--version=production']
     - name: gcr.io/cloud-builders/gcloud
-      args: ['functions', 'deploy', 'render-chart',     '--source=services/render-chart',       '--max-instances=12', '--memory=128MB', '--timeout=60',  '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1']
+      args: ['functions', 'deploy', 'render-chart',     '--source=services/render-chart',       '--max-instances=128', '--memory=128MB', '--timeout=60',  '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1']
     - name: gcr.io/cloud-builders/gcloud
-      args: ['functions', 'deploy', 'render-html',      '--source=services/render-html',        '--max-instances=12', '--memory=512MB', '--timeout=60',  '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1']
+      args: ['functions', 'deploy', 'render-html',      '--source=services/render-html',        '--max-instances=128', '--memory=512MB', '--timeout=60',  '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1']
     - name: gcr.io/cloud-builders/gcloud
-      args: ['functions', 'deploy', 'etl-callofduty',   '--source=services/etl-callofduty',     '--max-instances=12', '--memory=128MB', '--timeout=540', '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--env-vars-file=services/etl-callofduty/.env.yaml']
+      args: ['functions', 'deploy', 'etl-callofduty',   '--source=services/etl-callofduty',     '--max-instances=128', '--memory=128MB', '--timeout=540', '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1', '--env-vars-file=services/etl-callofduty/.env.yaml']
     - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'dispatch.yaml', '--version=production']

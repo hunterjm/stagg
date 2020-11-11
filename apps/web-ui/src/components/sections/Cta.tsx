@@ -1,10 +1,9 @@
-import classNames from 'classnames';
-import React from 'react';
-import { Input } from 'src/components/elements/Input';
-import { SectionSharedProps } from 'src/interfaces/SectionProps';
+import classNames from 'classnames'
+import { Input } from 'src/components/elements/Input'
+import { SectionSharedProps } from 'src/interfaces/SectionProps'
 
 interface CtaProps extends SectionSharedProps {
-  split?: boolean;
+  split?: boolean
 }
 
 export const Cta = ({
@@ -61,5 +60,5 @@ export const Cta = ({
         </div>
       </div>
     </section>
-  );
-};
+  )
+}

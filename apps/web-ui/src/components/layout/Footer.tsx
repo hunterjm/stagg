@@ -1,14 +1,9 @@
-import classNames from 'classnames';
-import React from 'react';
-
-import { FooterNav } from './partials/FooterNav';
-import { FooterSocial } from './partials/FooterSocial';
-import { Logo } from './partials/Logo';
+import classNames from 'classnames'
 
 interface FooterProps {
   className?: string;
-  topOuterDivider?: boolean;
-  topDivider?: boolean;
+  topOuterDivider?: boolean
+  topDivider?: boolean
 }
 
 export const Footer = ({
@@ -32,18 +27,11 @@ export const Footer = ({
             topDivider && 'has-top-divider'
           )}
         >
-          <div className="footer-top space-between text-xxs">
-            <Logo />
-            <FooterSocial />
-          </div>
-          <div className="footer-bottom space-between text-xxs invert-order-desktop">
-            <FooterNav />
-            <div className="footer-copyright">
-              &copy; {new Date().getFullYear()}
-            </div>
+          <div className="text-xxs" style={{textAlign: 'center'}}>
+            <a href="/terms" style={{color: 'inherit', textDecoration: 'none'}}>&copy; {new Date().getFullYear()}</a>
           </div>
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}

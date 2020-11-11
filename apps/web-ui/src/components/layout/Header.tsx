@@ -1,14 +1,18 @@
-import classNames from 'classnames';
-import Link from 'next/link';
-import React, { useState, useRef, useEffect } from 'react';
-
-import { Logo } from './partials/Logo';
+import classNames from 'classnames'
+import Link from 'next/link'
+import React, { useState, useRef, useEffect } from 'react'
+import Cookies from 'js-cookie'
+import { Logo } from './partials/Logo'
+import cfg from 'config/ui'
+import { UserMenu } from './UserMenu'
 
 interface HeaderProps {
   className?: string;
   navPosition?: string;
   hideNav?: boolean;
-  hideSignin?: boolean;
+  hideSignIn?: boolean;
+  hideHelp?: boolean
+  simpleSignIn?: boolean
   bottomOuterDivider?: boolean;
   bottomDivider?: boolean;
 }
@@ -23,7 +27,9 @@ export const Header = ({
   className,
   navPosition,
   hideNav,
-  hideSignin,
+  hideSignIn,
+  hideHelp,
+  simpleSignIn,
   bottomOuterDivider,
   bottomDivider,
   ...props
@@ -110,25 +116,27 @@ export const Header = ({
                 className={classNames('header-nav', isActive && 'is-active')}
               >
                 <div className="header-nav-inner">
-                  <ul
-                    className={classNames(
-                      'list-reset text-xs',
-                      navPosition && `header-nav-${navPosition}`
-                    )}
-                  >
-                    <li>
-                      <Link href="/help">
-                        <a onClick={closeMenu}>Need help?</a>
-                      </Link>
-                    </li>
-                  </ul>
-                  {!hideSignin && (
+                  {!hideHelp && (
+                    <ul
+                      className={classNames(
+                        'list-reset text-xs',
+                        navPosition && `header-nav-${navPosition}`
+                      )}
+                    >
+                      <li>
+                        <Link href="/help">
+                          <a onClick={closeMenu}>Need help?</a>
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
+                  {!hideSignIn && (
                     <ul className="list-reset header-nav-right">
                       <li>
-                        <Link href="/callofduty/login">
+                        <Link href="/login">
                           <a
                             onClick={closeMenu}
-                            className="button button-primary button-wide-mobile button-sm"
+                            className={simpleSignIn ? 'text-xs' : 'button button-primary button-wide-mobile button-sm'}
                           >
                             Sign In
                           </a>
@@ -136,6 +144,7 @@ export const Header = ({
                       </li>
                     </ul>
                   )}
+                  <UserMenu />
                 </div>
               </nav>
             </>

@@ -87,14 +87,14 @@ export const Hero = ({
               </p>
               <div id="hero-button">
                 <ButtonGroup>
-                  <Button as="a" color="primary" wideMobile href="/callofduty/login">
+                  <Button as="a" color="primary" wideMobile href="/start">
                     Get Started
                   </Button>
                   <Button
                     as="a"
                     color="dark"
                     wideMobile
-                    href={config.discord.url.join}
+                    href="/discord/join"
                   >
                     Join our Discord
                   </Button>

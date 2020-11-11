@@ -1,5 +1,5 @@
 import * as JWT from 'jsonwebtoken'
-import { API as CallOfDutyAPI, Schema } from '@stagg/callofduty'
+import { API, Schema } from 'callofduty'
 import axios from 'axios'
 import {
     FAAS_ETL_COD_TTL,
@@ -37,17 +37,15 @@ interface Headers {
     'x-integrity-jwt': string
 }
 interface IntegrityToken {
-    account: {
-        accountId: string
-        userId: string
-        unoId: string
-        profiles: ProfileId[]
-    }
+    accountId: string
+    userId: string
+    unoId: string
+    profiles: Schema.ProfileId[]
 }
 
 interface CompatibilityItem {
-    gameIds: Schema.API.Game[]
-    gameTypes: Schema.API.GameType[]
+    gameIds: Schema.Game[]
+    gameTypes: Schema.GameType[]
 }
 interface CompatibilityTable {
     unoId: CompatibilityItem
@@ -64,19 +62,19 @@ const compatibility:CompatibilityTable = {
     matchSummary: { gameIds: ['mw'], gameTypes: ['mp', 'wz'] },
 }
 
-interface ProfileId { username: string, platform: Schema.API.Platform }
-interface FriendId extends ProfileId { unoId: string }
+// interface ProfileId { username: string, platform: Schema.Platform }
+// interface FriendId extends ProfileId { unoId: string }
 
 const parseUrl = (url:string) => url.split('#').join('%23')
 
 export namespace Worker {
     interface Config {
-        gameId: Schema.API.Game
-        gameType: Schema.API.GameType
-        authTokens: Schema.API.Tokens
+        gameId: Schema.Game
+        gameType: Schema.GameType
+        authTokens: Schema.Tokens
         startTime?: number
         username?: string
-        platform?: Schema.API.Platform
+        platform?: Schema.Platform
     }
     interface Options {
         unoId: boolean
@@ -93,9 +91,9 @@ export namespace Worker {
     }
     export class Instance {
         private hardStopReached:boolean
+        private readonly API:API
         private readonly accountId:string
-        private readonly profiles:ProfileId[]
-        private readonly API:CallOfDutyAPI
+        private readonly profiles:Schema.ProfileId[]
         private readonly hrtimeStart:[number,number]
         private readonly originalCfg:Config
         constructor(
@@ -108,7 +106,7 @@ export namespace Worker {
             if (!this.cfg.startTime) {
                 this.cfg.startTime = 0
             }
-            this.API = new CallOfDutyAPI(this.cfg.authTokens)
+            this.API = new API(this.cfg.authTokens)
             this.options = {
                 unoId: true,
                 identity: true,
@@ -117,19 +115,19 @@ export namespace Worker {
                 profileData: false,
                 friendsList: false,
                 matchEvents: false,
-                matchSummary: false,
+                matchSummary: true,
                 matchDetails: false,
                 accountDiscovery: false,
                 deleteInvalidProfiles: true,
                 ...this.options,
             }
             this.originalCfg = cfg
-            const { account } = JWT.decode(this.jwt) as IntegrityToken
-            this.accountId = account.accountId
-            this.profiles = account.profiles
+            const { accountId, profiles } = JWT.decode(this.jwt) as IntegrityToken
+            this.accountId = accountId
+            this.profiles = profiles
         }
         private get HttpHeaders() {
-            return { headers: { 'X-Integrity-Token': this.jwt } }
+            return { headers: { 'x-integrity-jwt': this.jwt } }
         }
         public async Run() {
             await this.ExecuteOnce()
@@ -166,7 +164,7 @@ export namespace Worker {
                 if (!profilesByGame[this.cfg.gameId]) {
                     throw `No identity found for ${this.cfg.gameId} on account ${this.accountId}`
                 }
-                const { username, platform } = profilesByGame[this.cfg.gameId]
+                const { username, platform } = <Schema.ProfileId.PlatformId>profilesByGame[this.cfg.gameId]
                 this.cfg.username = username
                 this.cfg.platform = platform
                 await this.SaveAccountPlatformId(username, platform)
@@ -175,15 +173,15 @@ export namespace Worker {
             if (this.ShouldExecuteFeature('platformIds')) {
                 const invalidProfiles = [...this.profiles]
                 const profileIds = await this.FetchPlatformIds()
-                for(const { platform, username } of profileIds) {
+                for(const { platform, username } of <Schema.ProfileId.PlatformId[]>profileIds) {
                     await this.SaveAccountPlatformId(username, platform)
-                    invalidProfiles.forEach((p,i) => {
+                    invalidProfiles.forEach((p:any,i) => {
                         if (p.username === username && p.platform === platform) {
                             delete invalidProfiles[i]
                         }
                     })
                 }
-                for(const { platform, username } of invalidProfiles.filter(p => p)) {
+                for(const { platform, username } of <Schema.ProfileId.PlatformId[]>invalidProfiles.filter(p => p)) {
                     await this.DeleteInvalidProfile(username, platform)
                 }
             }
@@ -192,7 +190,7 @@ export namespace Worker {
                 const friends = await this.FetchFriendsList()
                 await this.SaveFriendsList(friends)
                 if (this.ShouldExecuteFeature('accountDiscovery')) {
-                    for(const { unoId, username, platform } of friends) {
+                    for(const { unoId, username, platform } of <(Schema.ProfileId.UnoId & Schema.ProfileId.PlatformId)[]>friends) {
                         await this.SaveDiscoveredAccount('friend', this.cfg.gameId, unoId, username, platform)
                     }
                 }
@@ -234,15 +232,15 @@ export namespace Worker {
                     continue // match already exists
                 }
                 if (this.ShouldExecuteFeature('matchSummary')) {
-                    const matchSummary = await this.API.MatchSummary(match)
+                    const matchSummary = await this.API.MatchSummary(match, this.cfg.gameId)
                     await this.UpdateMatchRecord(match.matchID, matchSummary.summary.all)
                 }
                 if (this.ShouldExecuteFeature('matchEvents')) {
-                    const matchEvents = await this.API.MatchEvents(match.matchID)
+                    const matchEvents = await this.API.MatchEvents(match.matchID, this.cfg.gameId)
                     await this.SaveMatchEvents(matchEvents)
                 }
                 if (this.ShouldExecuteFeature('matchDetails') && this.ShouldExecuteFeature('accountDiscovery')) {
-                    const matchDetails = await this.API.MatchDetails(match.matchID)
+                    const matchDetails = await this.API.MatchDetails(match.matchID, this.cfg.gameType, this.cfg.gameId)
                     for(const matchRecord of matchDetails.allPlayers) {
                         const { uno } = matchRecord.player
                         console.log('Saving unoId account', uno)
@@ -283,24 +281,25 @@ export namespace Worker {
             }
             return this.options[feature] && compatibility[feature] && compatibility[feature].gameIds.includes(this.cfg.gameId)
         }
-        private async FetchIdentities():Promise<{ [key:string]: ProfileId }> {
-            const profilesByGame:{ [key:string]: ProfileId } = {}
+        private async FetchIdentities():Promise<{ [key:string]: Schema.ProfileId }> {
+            const profilesByGame:{ [key:string]: Schema.ProfileId } = {}
             const { titleIdentities } = await this.API.Identity()
             for(const { title, username, platform } of titleIdentities) {
                 profilesByGame[title] = { username, platform }
             }
             return profilesByGame
         }
-        private async FetchPlatformIds():Promise<ProfileId[]> {
-            const profileIds:ProfileId[] = []
-            const platformsRes = await this.API.Platforms(this.cfg.username, this.cfg.platform)
-            for(const platform in platformsRes) {
-                profileIds.push({ platform: platform as Schema.API.Platform, username: platformsRes[platform].username })
+        private async FetchPlatformIds():Promise<Schema.ProfileId[]> {
+            const profileIds:Schema.ProfileId[] = []
+            const { username, platform } = this.cfg
+            const accountsRes = await this.API.Accounts({ username, platform })
+            for(const platform in accountsRes) {
+                profileIds.push({ platform: platform as Schema.Platform, username: accountsRes[platform].username })
             }
             return profileIds
         }
-        private async FetchFriendsList():Promise<FriendId[]> {
-            const friends:FriendId[] = []
+        private async FetchFriendsList():Promise<Schema.ProfileId[]> {
+            const friends:Schema.ProfileId[] = []
             const friendsRes = await this.API.Friends()
             for(const { username, platform, accountId } of friendsRes.uno) {
                 friends.push({ username, platform, unoId: accountId })
@@ -308,11 +307,12 @@ export namespace Worker {
             return friends
         }
         private async FetchProfileData() {
-            return this.API.Profile(this.cfg.username, this.cfg.platform, this.cfg.gameType, this.cfg.gameId)
+            const { username, platform } = this.cfg
+            return this.API.Profile({ username, platform }, this.cfg.gameType, this.cfg.gameId)
         }
         private async FetchMatchList() {
             const { username, platform, gameType, gameId, startTime } = this.cfg
-            const matchListRes = await this.API.MatchList(username, platform, gameType, gameId, startTime)
+            const matchListRes = await this.API.MatchHistory({ username, platform }, gameType, gameId, startTime)
             if (!matchListRes.matches || !matchListRes.matches.length) {
                 throw `no matches returned for ${this.cfg.gameId}/${this.cfg.gameType}/${this.cfg.platform}/${this.cfg.username}`
             }
@@ -327,7 +327,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async SaveAccountPlatformId(username:string, platform:Schema.API.Platform) {
+        private async SaveAccountPlatformId(username:string, platform:Schema.Platform) {
             try {
                 await this.HttpPut(`${API_HOST}/callofduty/account/${this.accountId}/profile/${platform}/${username}`)
                 return true
@@ -336,7 +336,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async SaveDiscoveredAccount(origin:Schema.DB.Account.Origin, gameId:Schema.API.Game, unoId:string, username?:string, platform?:Schema.API.Platform) {
+        private async SaveDiscoveredAccount(origin:'friend'|'enemy', gameId:Schema.Game, unoId:string, username?:string, platform?:Schema.Platform) {
             try {
                 const suffix = username && platform ? `/${platform}/${username}` : ''
                 await this.HttpPut(`${API_HOST}/callofduty/account/${origin}/${gameId}/${unoId}${suffix}`)
@@ -346,7 +346,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async SaveFriendsList(friendsList:FriendId[]) {
+        private async SaveFriendsList(friendsList:Schema.ProfileId[]) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg
                 await this.HttpPut(`${API_HOST}/callofduty/friends/${gameId}/${gameType}/${platform}/${username}`, friendsList)
@@ -356,7 +356,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async SaveProfileData(profileRes:Schema.API.MW.Routes.Profile) {
+        private async SaveProfileData(profileRes:Schema.Routes.Profile) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg
                 await this.HttpPut(`${API_HOST}/callofduty/profile/${gameId}/${gameType}/${platform}/${username}`, profileRes)
@@ -366,7 +366,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async DeleteInvalidProfile(username:string, platform:Schema.API.Platform) {
+        private async DeleteInvalidProfile(username:string, platform:Schema.Platform) {
             try {
                 await this.HttpDelete(`${API_HOST}/callofduty/account/${this.accountId}/profile/${platform}/${username}`)
                 return true
@@ -375,7 +375,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async SaveMatchEvents(matchMapEventsRes:Schema.API.MW.Routes.MatchMapEvents) {
+        private async SaveMatchEvents(matchMapEventsRes:Schema.Routes.MatchEvents) {
             try {
                 await this.HttpPut(`${API_HOST}/callofduty/match/${this.cfg.gameId}/${this.cfg.gameType}/${matchMapEventsRes.matchId}/events`, matchMapEventsRes)
                 return true
@@ -384,7 +384,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async SaveMatchRecord(match:Schema.API.MW.Match, isForeignAcct?:boolean) {
+        private async SaveMatchRecord(match:Schema.Match, isForeignAcct?:boolean) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg
                 const url = this.ShouldExecuteFeature('unoId') ? match.player.uno : `${platform}/${username}`
@@ -398,7 +398,7 @@ export namespace Worker {
                 return false
             }
         }
-        private async UpdateMatchRecord(matchId:string, summary:Schema.API.MW.Summary) {
+        private async UpdateMatchRecord(matchId:string, summary:Schema.Summary) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg
                 await this.HttpPatch(`${API_HOST}/callofduty/match/${gameId}/${gameType}/${matchId}/${platform}/${username}`, { avgLifeTime: summary.avgLifeTime })

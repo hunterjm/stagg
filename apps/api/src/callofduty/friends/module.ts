@@ -1,11 +1,8 @@
 import { Module } from '@nestjs/common'
-import { CallOfDutyAccountModule } from 'src/callofduty/account/module'
-import { CallOfDutyFriendsController } from 'src/callofduty/friends/controller'
+import { CallOfDutyFriendsController } from './controller'
 
 @Module({
-  imports: [
-    CallOfDutyAccountModule,
-  ],
+  imports: [],
   exports: [],
   providers: [],
   controllers: [CallOfDutyFriendsController],
