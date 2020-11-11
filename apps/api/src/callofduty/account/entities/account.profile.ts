@@ -7,7 +7,7 @@ import { Entity, Column, PrimaryColumn } from 'typeorm'
 export type AuthTokens = { sso: string, xsrf: string, atkn: string }
 export type ProfileId = { username: string, platform: CallOfDuty.Platform }
 
-@Entity({ name: 'accountsnew/profiles', database: 'callofduty' })
+@Entity({ name: 'accounts/profiles', database: 'callofduty' })
 export class AccountProfile {
   @PrimaryColumn('uuid', { unique: true })
   profileId: string
