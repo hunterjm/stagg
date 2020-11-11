@@ -1,7 +1,7 @@
 import { Layout } from 'src/components/layout'
 import styled from 'styled-components'
 import { Button, ButtonGroup } from '@material-ui/core'
-import { ModeCard } from './components/ModeCard'
+import { ModeCard } from 'src/components/mw/components/ModeCard'
 import { API } from 'src/api-services'
 import humanTime from 'human-time'
 
