@@ -1,16 +1,16 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
-import Cookies from 'js-cookie'
 import { Logo } from './partials/Logo'
-import cfg from 'config/ui'
-import { UserMenu } from './UserMenu'
+import { UserMenu } from './partials/UserMenu'
+import { LoginMenu } from './partials/LoginMenu'
 
 interface HeaderProps {
   className?: string;
   navPosition?: string;
   hideNav?: boolean;
   hideSignIn?: boolean;
+  hideUserMenu?: boolean;
   hideHelp?: boolean
   simpleSignIn?: boolean
   bottomOuterDivider?: boolean;
@@ -30,6 +30,7 @@ export const Header = ({
   hideSignIn,
   hideHelp,
   simpleSignIn,
+  hideUserMenu,
   bottomOuterDivider,
   bottomDivider,
   ...props
@@ -130,21 +131,8 @@ export const Header = ({
                       </li>
                     </ul>
                   )}
-                  {!hideSignIn && (
-                    <ul className="list-reset header-nav-right">
-                      <li>
-                        <Link href="/login">
-                          <a
-                            onClick={closeMenu}
-                            className={simpleSignIn ? 'text-xs' : 'button button-primary button-wide-mobile button-sm'}
-                          >
-                            Sign In
-                          </a>
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-                  <UserMenu />
+                  { !hideSignIn && <LoginMenu simpleSignIn={simpleSignIn} closeMenu={closeMenu} /> }
+                  { !hideUserMenu && <UserMenu /> }
                 </div>
               </nav>
             </>
@@ -152,5 +140,5 @@ export const Header = ({
         </div>
       </div>
     </header>
-  );
-};
+  )
+}
