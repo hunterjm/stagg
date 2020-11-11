@@ -8,5 +8,5 @@ export namespace Map {
         'mp_vacant' | 'mp_shipment' | 'mp_m_cargo' | 'mp_m_cage' | 'mp_m_overwinter' | 'mp_m_stadium' | 'mp_emporium' |
         'mp_rust' | 'mp_boneyard_gw' | 'mp_m_fork' | 'mp_hideout' | 'mp_aniyah_tac' | 'mp_backlot2' | 'mp_village2' |
         'mp_hardhat' | 'mp_m_wallco2' | 'mp_scrapyard' | 'mp_m_trench' | 'mp_promenade_gw' | 'mp_garden' | 'mp_oilrig' |
-        'mp_harbor' | 'mp_layover_gw' | 'mp_m_cornfield'
+        'mp_harbor' | 'mp_layover_gw' | 'mp_m_cornfield' | 'mp_malyshev' | 'mp_m_train' | 'mp_broadcast2'
 }

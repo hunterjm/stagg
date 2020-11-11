@@ -33,6 +33,24 @@ const Maps:Record<Schema.MW.Map, MapDetails> = {
             thumbnail: thumbnail('mp_hackney_yard'),
         }
     },
+    mp_m_train: {
+        id: 'mp_m_train',
+        name: 'Station',
+        type: 'mp',
+        images: {
+            minimap: minimap('mp_m_train'),
+            thumbnail: thumbnail('mp_m_train'),
+        }
+    },
+    mp_malyshev: {
+        id: 'mp_malyshev',
+        name: 'Mialstor Tank Factory',
+        type: 'mp',
+        images: {
+            minimap: minimap('mp_malyshev'),
+            thumbnail: thumbnail('mp_malyshev'),
+        }
+    },
     mp_aniyah: {
         id: 'mp_aniyah',
         name: 'Aniyah Palace',
@@ -40,6 +58,15 @@ const Maps:Record<Schema.MW.Map, MapDetails> = {
         images: {
             minimap: minimap('mp_aniyah'),
             thumbnail: thumbnail('mp_aniyah'),
+        }
+    },
+    mp_broadcast2: {
+        id: 'mp_broadcast2',
+        name: 'Broadcast',
+        type: 'mp',
+        images: {
+            minimap: minimap('mp_broadcast2'),
+            thumbnail: thumbnail('mp_broadcast2'),
         }
     },
     mp_euphrates: {
