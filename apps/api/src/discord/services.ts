@@ -33,14 +33,18 @@ export class DiscordService {
       client_id: DISCORD.CLIENT.ID,
       client_secret: DISCORD.CLIENT.SECRET,
     }
-    const { data: { access_token, refresh_token } } = await axios.post(DISCORD.OAUTH.HOST.EXCHANGE, qs.stringify(payload))
-    const { data: { id, username, discriminator, avatar } } = await axios.get(DISCORD.OAUTH.HOST.IDENTIFY, { headers: { 'Authorization': `Bearer ${access_token}` } })
-    return {
-      id,
-      avatar,
-      accessToken: access_token,
-      refreshToken: refresh_token,
-      tag: `${username}#${discriminator}`,
+    try {
+      const { data: { access_token, refresh_token } } = await axios.post(DISCORD.OAUTH.HOST.EXCHANGE, qs.stringify(payload))
+      const { data: { id, username, discriminator, avatar } } = await axios.get(DISCORD.OAUTH.HOST.IDENTIFY, { headers: { 'Authorization': `Bearer ${access_token}` } })
+      return {
+        id,
+        avatar,
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        tag: `${username}#${discriminator}`,
+      }
+    } catch(e) {
+      console.log('failed', e)
     }
   }
 }
