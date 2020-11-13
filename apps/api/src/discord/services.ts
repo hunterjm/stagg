@@ -34,8 +34,14 @@ export class DiscordService {
       client_secret: DISCORD.CLIENT.SECRET,
     }
     try {
+      console.log('[>] Exchanging Discord token...')
+      console.log('    POST', DISCORD.OAUTH.HOST.EXCHANGE)
+      console.log('    PAYLOAD', payload)
+      console.log('    QUERYSTRING', qs.stringify(payload))
       const { data: { access_token, refresh_token } } = await axios.post(DISCORD.OAUTH.HOST.EXCHANGE, qs.stringify(payload))
+      console.log('    Got access token', access_token)
       const { data: { id, username, discriminator, avatar } } = await axios.get(DISCORD.OAUTH.HOST.IDENTIFY, { headers: { 'Authorization': `Bearer ${access_token}` } })
+      console.log('    Got id', id)
       return {
         id,
         avatar,
