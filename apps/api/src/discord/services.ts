@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as qs from 'querystring'
-import { Injectable } from '@nestjs/common'
+import { BadGatewayException, Injectable } from '@nestjs/common'
 import { Account, AccountDAO } from 'src/discord/entity'
 import { DISCORD } from 'src/config'
 
@@ -24,9 +24,10 @@ export class DiscordService {
   public async findById(discordId:string) {
     return this.acctDao.findById(discordId)
   }
-  public async exchangeAccessToken(accessToken:string):Promise<DiscordAuthorizationJWT> {
+  public async exchangeAccessCode(accessCode:string):Promise<DiscordAuthorizationJWT> {
+    let id:string, tag:string, avatar:string, username:string, accessToken:string, refreshToken:string
     const payload = {
-      code: accessToken,
+      code: accessCode,
       scope: DISCORD.OAUTH.SCOPE,
       grant_type: 'authorization_code',
       redirect_uri: DISCORD.OAUTH.REDIRECT,
@@ -34,23 +35,27 @@ export class DiscordService {
       client_secret: DISCORD.CLIENT.SECRET,
     }
     try {
-      console.log('[>] Exchanging Discord token...')
-      console.log('    POST', DISCORD.OAUTH.HOST.EXCHANGE)
-      console.log('    PAYLOAD', payload)
-      console.log('    QUERYSTRING', qs.stringify(payload))
-      const { data: { access_token, refresh_token } } = await axios.post(DISCORD.OAUTH.HOST.EXCHANGE, qs.stringify(payload))
-      console.log('    Got access token', access_token)
-      const { data: { id, username, discriminator, avatar } } = await axios.get(DISCORD.OAUTH.HOST.IDENTIFY, { headers: { 'Authorization': `Bearer ${access_token}` } })
-      console.log('    Got id', id)
-      return {
-        id,
-        avatar,
-        accessToken: access_token,
-        refreshToken: refresh_token,
-        tag: `${username}#${discriminator}`,
-      }
+      const { data } = await axios.post(DISCORD.OAUTH.HOST.EXCHANGE, qs.stringify(payload))
+      accessToken = data.access_token
+      refreshToken = data.refresh_token
     } catch(e) {
-      console.log('failed', e)
+      throw new BadGatewayException(`Discord access code exchange failure ${e}`)
+    }
+    try {
+      const { data } = await axios.get(DISCORD.OAUTH.HOST.IDENTIFY, { headers: { 'Authorization': `Bearer ${accessToken}` } })
+      id = data.id
+      avatar = data.avatar
+      username = data.username
+      tag = `${data.username}#${data.discriminator}`
+    } catch(e) {
+      throw new BadGatewayException(`Discord access token exchange failure ${e}`)
+    }
+    return {
+      id,
+      tag,
+      avatar,
+      accessToken,
+      refreshToken,
     }
   }
 }
