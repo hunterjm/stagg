@@ -11,7 +11,7 @@ export default {
         },
         url: {
             join: 'https://discord.gg/WhWrbY8',
-            bot: 'https://discord.com/oauth2/authorize?client_id=${discordClientId}&scope=bot&permissions=67584',
+            bot: `https://discord.com/oauth2/authorize?client_id=${discordClientId}&scope=bot&permissions=67584`,
             oauth: `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${encodeURIComponent(selfUrl + '/oauth/discord')}&response_type=code&scope=identify`,
         },
         sim: {

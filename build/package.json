@@ -28,6 +28,8 @@
           "FAAS_ETL_COD_HOST",
           "FAAS_RENDER_HTML_HOST",
           "FAAS_RENDER_CHART_HOST",
+          "DISCORD_CLIENT_ID",
+          "DISCORD_CLIENT_SECRET",
           "DISCORD_CLIENT_TOKEN",
           "DISCORD_CHANNEL_NOTIFY_SYS"
         ]
