@@ -39,7 +39,12 @@ export class DiscordService {
       accessToken = data.access_token
       refreshToken = data.refresh_token
     } catch(e) {
-      throw new BadGatewayException(`Discord access code exchange failure ${e}`)
+      console.log('[!] Discord access code exchange failure:')
+      console.log('    HOST', DISCORD.OAUTH.HOST.EXCHANGE)
+      console.log('    PAYLOAD', payload)
+      console.log('    QUERYSTRING', qs.stringify(payload))
+      console.log('    ORIGINAL ERROR', e)
+      throw new BadGatewayException(`Discord access code exchange failure`)
     }
     try {
       const { data } = await axios.get(DISCORD.OAUTH.HOST.IDENTIFY, { headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -48,7 +53,8 @@ export class DiscordService {
       username = data.username
       tag = `${data.username}#${data.discriminator}`
     } catch(e) {
-      throw new BadGatewayException(`Discord access token exchange failure ${e}`)
+      console.log('[!] Discord access token exchange failure:', e)
+      throw new BadGatewayException(`Discord access token exchange failure`)
     }
     return {
       id,
