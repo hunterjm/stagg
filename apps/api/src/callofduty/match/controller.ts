@@ -34,6 +34,12 @@ export class CallOfDutyMatchController {
     async GetAccountMatchHistory(@Param() { gameId, gameType, accountId }) {
         return this.MatchService.getHistoryByAccountId(accountId, gameId, gameType)
     }
+    
+    @Get('/history/:gameId/:gameType/:platform/:username')
+    async GetProfileMatchHistory(@Param() { gameId, gameType, platform, username }) {
+        const { accountId } = await this.AccountSvcs.buildModelForProfile(username, platform)
+        return this.MatchService.getHistoryByAccountId(accountId, gameId, gameType)
+    }
 
     @Put('/:gameId/:gameType/:matchId/events')
     async SaveMatchEvents(@Param() { gameId, gameType, matchId }):Promise<{ success: boolean }> {

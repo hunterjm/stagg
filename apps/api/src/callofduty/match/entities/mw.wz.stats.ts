@@ -242,7 +242,7 @@ export class MwWzMatchStatsDAO {
       return this.repo.createQueryBuilder()
         .select('*')
         .where({ accountId })
-        .addOrderBy('created', 'DESC')
+        .addOrderBy('"startTime"', 'DESC')
         .offset(offset || 0)
         .limit(limit || 0)
         .execute()

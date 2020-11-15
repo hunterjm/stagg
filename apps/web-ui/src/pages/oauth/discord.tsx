@@ -1,5 +1,4 @@
 import Router from 'next/router'
-import { GetServerSideProps } from 'next'
 import { API } from 'src/api-services'
 import * as JWT from 'jsonwebtoken'
 import * as store from 'src/store'
@@ -7,11 +6,13 @@ import { getUser } from 'src/hooks/getUser'
 import { notify } from 'src/hooks/notify'
 import { Layout } from 'src/components/layout'
 import { useEffect } from 'react'
+import { profileUrlFromUserStateModel } from 'src/components/mw/hooks'
 
 const DiscordOAuth = ({ jwt, forward }) => {
   const userState = store.useState(store.userState)
   store.cookies.jwtDiscord = jwt
   const payload:any = JWT.decode(jwt)
+  const userModel = userState.get()
 
   const attemptLogin = async () => { // Define separately for async
     const { response } = await API.login('discord')
@@ -24,7 +25,7 @@ const DiscordOAuth = ({ jwt, forward }) => {
         type: 'success',
         duration: 2500,
       })
-      Router.push(`/mw/@${payload.userId}`)
+      Router.push(profileUrlFromUserStateModel(userModel))
     } else {
       Router.push('/start?')
     }

@@ -26,7 +26,7 @@ export const Games:Record<Schema.Game, GameDetails> = {
     wwii: { id: 'wwii', label: 'WWII',  name: 'World War II'        },
     bo4:  { id: 'wwii', label: 'BO4',   name: 'Black Ops 4'         },
     mw:   { id: 'mw',   label: 'MW',    name: 'Modern Warfare'      },
-    // bocw: { id: 'bocw', label: 'BO:CW', name: 'Black Ops: Cold War' },
+    cw:   { id: 'cw',   label: 'CW',    name: 'Black Ops: Cold War' },
 }
 
 
@@ -39,4 +39,5 @@ export const GameType = (id:Schema.GameType):GameTypeDetails => GameTypes[id]
 export const GameTypes:Record<Schema.GameType, GameTypeDetails> = {
     mp: { id: 'mp', label: 'MP',  name: 'Multiplayer' },
     wz: { id: 'wz', label: 'WZ',  name: 'Warzone'     },
+    zm: { id: 'zm', label: 'ZOM', name: 'Zombies'     }, // only in cw
 }

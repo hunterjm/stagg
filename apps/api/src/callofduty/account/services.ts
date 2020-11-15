@@ -21,14 +21,9 @@ export class CallOfDutyAccountService {
     private readonly authDao: AccountAuthDAO,
     private readonly profileDao: AccountProfileDAO,
   ) {}
-  public async exchangeDatasourceCredentials(email:string, password:string):Promise<Schema.Tokens> {
-    const DataSource = new API()
-    return DataSource.Authorize(email, password) // will throw if fail
+  public async fetchAll() {
+    return this.acctDao.findAll()
   }
-  public async exchangeDatasourceIdentity(tokens:Schema.Tokens) {
-
-  }
-
   public async findAllByUserId(userId:string) {
     return this.acctDao.findAllByUserId(userId)
   }
@@ -126,6 +121,12 @@ export class CallOfDutyAccountService {
     }
     return { email, tokens, games, profiles, unoId }
   }
+  public sanitizeModel(model:AccountModel) {
+    delete model.tokens
+    delete model.email
+    delete model.authId
+    return model
+  }
   public async buildModelForUnoId(unoId:string):Promise<AccountModel> {
     const acct = await this.acctDao.findByUnoId(unoId)
     if (!acct) {
@@ -147,7 +148,7 @@ export class CallOfDutyAccountService {
   }
   public async insertProfileForAccountId(accountId:string, username:string, platform:Schema.Platform, games:Schema.Game[]) {
     const profileParmas = { accountId, username, platform, games }
-    const hashId = objHash(profileParmas)
+    const hashId = `${accountId}.${objHash(profileParmas)}`
     await this.profileDao.insert({ hashId, ...profileParmas })
   }
   public async deleteProfileForAccountId(accountId:string, username:string, platform:Schema.Platform) {
@@ -189,8 +190,8 @@ export class CallOfDutyAccountService {
               authTokens,
               startTime: 0,
           }
-          console.log(`[>] Kicking off ETL for ${gameId}/${gameType}/${username}/${platform}`, FAAS.ETL_COD, payload, { headers: { 'x-integrity-jwt': integrityJwt } })
-          axios.post(FAAS.ETL_COD, payload, { headers: { 'x-integrity-jwt': integrityJwt } })
+          console.log(`[>] Kicking off ETL for ${gameId}/${gameType}/${username}/${platform}`)//, FAAS.ETL_COD, payload, { headers: { 'x-integrity-jwt': integrityJwt } })
+          axios.post(FAAS.ETL_COD, payload, { headers: { 'x-integrity-jwt': integrityJwt } }).catch(e => console.log('[!] ETL Failure:', e?.response?.data?.error || e))
       }
     }
   }
@@ -205,7 +206,7 @@ export class CallOfDutyAccountService {
     const { accountId } = acct
     await this.authDao.update({ ...authRecord, accountId })
     for(const { username, platform } of profiles) {
-      await this.profileDao.insert({ accountId, username, platform, games })
+      await this.insertProfileForAccountId(accountId, username, platform, games)
     }
     if (etl) {
       await this.triggerETL(accountId)

@@ -24,6 +24,9 @@ export class DiscordService {
   public async findById(discordId:string) {
     return this.acctDao.findById(discordId)
   }
+  public async findByUserId(userId:string) {
+    return this.acctDao.findByUserId(userId)
+  }
   public async exchangeAccessCode(accessCode:string):Promise<DiscordAuthorizationJWT> {
     let id:string, tag:string, avatar:string, username:string, accessToken:string, refreshToken:string
     const payload = {
