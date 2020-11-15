@@ -57,11 +57,22 @@ steps:
     - name: gcr.io/cloud-builders/gcloud
       entrypoint: 'bash'
       args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_CHANNEL_NOTIFY_SYS > build/.env.DISCORD_CHANNEL_NOTIFY_SYS' ]
+    - name: gcr.io/cloud-builders/gcloud
+      entrypoint: 'bash'
+      args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_MONGO_HOST > build/.env.DISCORD_MONGO_HOST' ]
+    - name: gcr.io/cloud-builders/gcloud
+      entrypoint: 'bash'
+      args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_MONGO_USER > build/.env.DISCORD_MONGO_USER' ]
+    - name: gcr.io/cloud-builders/gcloud
+      entrypoint: 'bash'
+      args: [ '-c', 'gcloud secrets versions access latest --secret=DISCORD_MONGO_PASS > build/.env.DISCORD_MONGO_PASS' ]
     - name: node:12.13.0
       entrypoint: yarn
       args: ['gcp:build']
     - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'apps/api',    '--version=production']
+    - name: gcr.io/cloud-builders/gcloud
+      args: ['app', 'deploy', 'apps/bot',    '--version=production']
     - name: gcr.io/cloud-builders/gcloud
       args: ['app', 'deploy', 'apps/web-ui', '--version=production']
     - name: gcr.io/cloud-builders/gcloud

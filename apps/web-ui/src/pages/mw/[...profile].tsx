@@ -1,7 +1,7 @@
 import { Layout } from 'src/components/layout'
 import styled from 'styled-components'
 import { Button, ButtonGroup } from '@material-ui/core'
-import { ModeCard } from './components/ModeCard'
+import { ModeCard } from 'src/components/mw/components/ModeCard'
 import { API } from 'src/api-services'
 import humanTime from 'human-time'
 
@@ -96,8 +96,7 @@ const Profile = ({ games, profiles, matchHistory }) => {
   const [username, slug] = uno.username.split('#')
   const [latestMpMatch] = matchHistory.mp.sort((a,b) => b.endTime - a.endTime)
   const [latestWzMatch] = matchHistory.wz.sort((a,b) => b.endTime - a.endTime)
-  const latestEndTime = Math.max(latestMpMatch.endTime, latestWzMatch.endTime)
-  const { seasonRank } = latestMpMatch
+  const latestEndTime = Math.max(latestMpMatch?.endTime, latestWzMatch?.endTime)
   return (
     <Layout title={`${username} Call of Duty Modern Warfare Profile`} hideSignIn>
       <div className="illustration-section-01" />
@@ -106,7 +105,7 @@ const Profile = ({ games, profiles, matchHistory }) => {
             <LeftWrapper>
                 <div className="rank">
                     <img src="https://www.callofduty.com/cdn/app/icons/mw/ranks/mp/icon_rank_151.png" alt="Rank 151" />
-                    <h5>{seasonRank}</h5>
+                    <h5>{latestMpMatch?.seasonRank}</h5>
                 </div>
                 <div className="player">
                     <h2>{username}<small>#{slug}</small></h2>
@@ -144,7 +143,7 @@ const Profile = ({ games, profiles, matchHistory }) => {
 
 Profile.getInitialProps = async (ctx) => {
     const [gameId, playerIdentifier] = ctx.asPath.replace(/^\//, '').replace(/\/$/, '').split('/')
-    const userIdParam = playerIdentifier.replace('@', '')
+    const userIdParam = playerIdentifier?.replace('@', '')
     const acctDetails = await API.CallOfDuty.profilesByUserId(userIdParam)
     const matchHistoryMP = await API.CallOfDuty.matchHistoryByUserId(userIdParam, gameId, 'mp')
     const matchHistoryWZ = await API.CallOfDuty.matchHistoryByUserId(userIdParam, gameId, 'wz')

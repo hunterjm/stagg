@@ -104,11 +104,11 @@ const DimOverlay = styled.div`
     background: rgba(0,0,0,0.6);
 `
 
-const OutcomeIndicator = styled.div(({ outcome }:any) => `
+const OutcomeIndicator = styled.div(({ color }:any) => `
     position: absolute;
     z-index: 1;
     left: 0; top: 8px; bottom: 8px;
-    border-left: 4px solid ${outcome ? 'green' : 'red'};
+    border-left: 4px solid ${color};
 `) as any
 
 export interface ModeCardProps {
@@ -132,6 +132,9 @@ export const MatchPreview = ({
         score,
         timePlayed,
         teamPlacement,
+        teamId,
+        scoreAxis,
+        scoreAllies,
     }
 }:ModeCardProps) => {
     if (!Assets.MW.Maps[mapId]) {
@@ -146,10 +149,42 @@ export const MatchPreview = ({
     const readableElapsedTime = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`
     const optionalClassValue = gameType === 'wz' ? ordinal(teamPlacement) : readableElapsedTime
     const optionalClassname = gameType === 'wz' ? 'rank' : 'time-total'
+    let color = 'gray'
+    if (gameType === 'wz') {
+        color = 'red'
+        if (teamPlacement <= 10) {
+            color = 'yellow'
+        }
+        if (teamPlacement === 1) {
+            color = 'green'
+        }
+    } else {
+        if (teamId === 'allies') {
+            if (scoreAllies < scoreAxis) {
+                color = 'red'
+            }
+            if (scoreAllies > scoreAxis) {
+                color = 'green'
+            }
+            if (scoreAllies === scoreAxis) {
+                color = 'yellow'
+            }
+        } else {
+            if (scoreAllies > scoreAxis) {
+                color = 'red'
+            }
+            if (scoreAllies < scoreAxis) {
+                color = 'green'
+            }
+            if (scoreAllies === scoreAxis) {
+                color = 'yellow'
+            }
+        }
+    }
     return (
         <Wrapper mapId={mapId}>
             <DimOverlay />
-            <OutcomeIndicator outcome={Math.random() >= 0.5} />
+            <OutcomeIndicator color={color} />
             <div className="map-mode-info">
                 <p>{Assets.MW.Modes[modeId].name}</p>
                 <p><small>{Assets.MW.Maps[mapId].name}</small></p>

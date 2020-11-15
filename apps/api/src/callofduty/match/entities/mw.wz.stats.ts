@@ -238,7 +238,13 @@ export class MwWzMatchStatsDAO {
     public async findById(matchId:string, accountId:string):Promise<MwWzMatchStats> {
         return this.repo.findOne({ where: { accountId, matchId } })
     }
-    public async findByAccountId(accountId:string):Promise<MwWzMatchStats[]> {
-        return this.repo.find({ where: { accountId } })
+    public async findByAccountId(accountId:string, limit?:number, offset?:number):Promise<MwWzMatchStats[]> {
+      return this.repo.createQueryBuilder()
+        .select('*')
+        .where({ accountId })
+        .addOrderBy('created', 'DESC')
+        .offset(offset || 0)
+        .limit(limit || 0)
+        .execute()
     }
 }

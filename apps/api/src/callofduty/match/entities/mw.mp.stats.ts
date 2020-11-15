@@ -209,7 +209,13 @@ export class MwMpMatchStatsDAO {
     public async findById(matchId:string, accountId:string):Promise<MwMpMatchStats> {
         return this.repo.findOne({ where: { accountId, matchId } })
     }
-    public async findByAccountId(accountId:string):Promise<MwMpMatchStats[]> {
-        return this.repo.find({ where: { accountId } })
+    public async findByAccountId(accountId:string, limit?:number, offset?:number):Promise<MwMpMatchStats[]> {
+        return this.repo.createQueryBuilder()
+          .select('*')
+          .where({ accountId })
+          .addOrderBy('created', 'DESC')
+          .offset(offset || 0)
+          .limit(limit || 0)
+          .execute()
     }
 }

@@ -74,7 +74,7 @@ export const CallOfDutyAccount = () => {
                         <h6>GAMES</h6>
                         {
                             games?.map((gameId:string) => (
-                                <i key={gameId} className={`icon-callofduty-${gameInfo[gameId].icon}`} title={gameInfo[gameId].name} />
+                                <i key={gameId} className={`icon-callofduty-${gameInfo[gameId]?.icon}`} title={gameInfo[gameId]?.name} />
                             ))
                         }
                     </div>

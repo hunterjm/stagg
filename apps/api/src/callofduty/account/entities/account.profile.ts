@@ -7,10 +7,10 @@ import { Entity, Column, PrimaryColumn } from 'typeorm'
 export type AuthTokens = { sso: string, xsrf: string, atkn: string }
 export type ProfileId = { username: string, platform: CallOfDuty.Platform }
 
-@Entity({ name: 'accountsnew/profiles', database: 'callofduty' })
+@Entity({ name: 'accounts/profiles', database: 'callofduty' })
 export class AccountProfile {
-  @PrimaryColumn('uuid', { unique: true })
-  profileId: string
+  @PrimaryColumn('text', { unique: true })
+  hashId: string
 
   @Column('uuid', { nullable: true })
   accountId: string
@@ -60,8 +60,6 @@ export class AccountProfileDAO {
       .into(AccountProfile)
       .values(this.normalizeModel(model))
       .execute()
-    const { username, platform, accountId } = model
-    const { profileId } = await this.repo.findOne({ where: { username, platform, accountId }, order: { created: -1 } })
-    return profileId
+    return model.hashId
   }
 }

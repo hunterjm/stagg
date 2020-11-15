@@ -5,7 +5,7 @@ import { Repository, UpdateResult } from 'typeorm'
 import { Entity, Column, PrimaryColumn } from 'typeorm'
 import { Postgres } from 'src/util'
 
-@Entity({ name: 'accountsnew/auth', database: 'callofduty' })
+@Entity({ name: 'accounts/auth', database: 'callofduty' })
 export class AccountAuth {
   @PrimaryColumn('uuid', { unique: true })
   authId: string

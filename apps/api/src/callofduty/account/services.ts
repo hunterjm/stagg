@@ -1,3 +1,4 @@
+const objHash = require('object-hash')
 import axios from 'axios'
 import * as JWT from 'jsonwebtoken'
 import { Assets, Schema, API } from 'callofduty'
@@ -20,6 +21,14 @@ export class CallOfDutyAccountService {
     private readonly authDao: AccountAuthDAO,
     private readonly profileDao: AccountProfileDAO,
   ) {}
+  public async exchangeDatasourceCredentials(email:string, password:string):Promise<Schema.Tokens> {
+    const DataSource = new API()
+    return DataSource.Authorize(email, password) // will throw if fail
+  }
+  public async exchangeDatasourceIdentity(tokens:Schema.Tokens) {
+
+  }
+
   public async findAllByUserId(userId:string) {
     return this.acctDao.findAllByUserId(userId)
   }
@@ -137,14 +146,16 @@ export class CallOfDutyAccountService {
     return { userId, unoId, authId, profiles, games, email, tokens, accountId }
   }
   public async insertProfileForAccountId(accountId:string, username:string, platform:Schema.Platform, games:Schema.Game[]) {
-    await this.profileDao.insert({ accountId, username, platform, games })
+    const profileParmas = { accountId, username, platform, games }
+    const hashId = objHash(profileParmas)
+    await this.profileDao.insert({ hashId, ...profileParmas })
   }
   public async deleteProfileForAccountId(accountId:string, username:string, platform:Schema.Platform) {
     const profile = await this.profileDao.findByUsername(username, platform)
     if (!profile || profile.accountId !== accountId) {
       throw 'invalid account'
     }
-    await this.profileDao.deleteById(profile.profileId)
+    await this.profileDao.deleteById(profile.hashId)
   }
   public async saveUnoIdProfile(unoId:string, game:Schema.Game, username?:string, platform?:Schema.Platform) {
     let account = await this.acctDao.findByUnoId(unoId)

@@ -14,7 +14,7 @@ export class DiscordController {
     }
     @Get('/oauth/exchange/:accessToken')
     async ExchangeAccessToken(@Param() { accessToken }) {
-        const discordInfo = await this.discordService.exchangeAccessToken(accessToken)
+        const discordInfo = await this.discordService.exchangeAccessCode(accessToken)
         const acct = await this.discordService.findById(discordInfo.id)
         const payload = acct ? {...discordInfo, userId: acct.userId} : discordInfo
         return { jwt: JWT.sign(payload, JWT_SECRET) }

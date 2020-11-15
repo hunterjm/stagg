@@ -26,9 +26,24 @@ export class CallOfDutyAccountController {
         private readonly acctDao: AccountDAO,
         private readonly acctSvcs: CallOfDutyAccountService,
     ) {}
+
+    @Post('authorize')
+    async ExchangeCredentials(
+        @Ip() ip:string,
+        @Body() body: AccountCredentialsDTO
+    ) {
+        try {
+            const { email, tokens, games, profiles, unoId } = await this.acctSvcs.authorizationExchange(body.email, body.password)
+            const accountModel = await this.acctSvcs.newSignIn(ip, email, tokens, games, profiles, unoId)
+            const jwt = JWT.sign(accountModel, JWT_SECRET)
+            return { jwt }
+        } catch(e) {
+            throw new BadGatewayException(e)
+        }
+    }
     
     @Get('/user/:userId')
-    async GetAccountProfiles(@Param() { userId }) {
+    async GetAccountModel(@Param() { userId }) {
         const [account] = await this.acctSvcs.findAllByUserId(userId)
         if (!account) {
             throw new BadRequestException('invalid user id')
@@ -38,16 +53,6 @@ export class CallOfDutyAccountController {
         delete model.email
         delete model.authId
         return model
-    }
-
-    @Get('/etl/:accountId')
-    async AccountETL(@Param() { accountId }):Promise<{ success: boolean }> {
-        const acct = await this.acctSvcs.buildModelForAccountId(accountId)
-        if (!acct) {
-            throw new BadRequestException('invalid account id')
-        }
-        this.acctSvcs.triggerETL(accountId)
-        return { success: true }
     }
 
     @Put('/:accountId/unoId/:unoId')
@@ -104,21 +109,6 @@ export class CallOfDutyAccountController {
                 throw new ConflictException(`duplicate profile for unoId ${unoId}`)
             }
             throw new InternalServerErrorException('something went wrong, please try again')
-        }
-    }
-
-    @Post('authorize')
-    async CredentialsLogin(
-        @Ip() ip:string,
-        @Body() body: AccountCredentialsDTO
-    ) {
-        try {
-            const { email, tokens, games, profiles, unoId } = await this.acctSvcs.authorizationExchange(body.email, body.password)
-            const accountModel = await this.acctSvcs.newSignIn(ip, email, tokens, games, profiles, unoId)
-            const jwt = JWT.sign(accountModel, JWT_SECRET)
-            return { jwt }
-        } catch(e) {
-            throw new BadGatewayException(e)
         }
     }
 }

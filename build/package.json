@@ -28,8 +28,23 @@
           "FAAS_ETL_COD_HOST",
           "FAAS_RENDER_HTML_HOST",
           "FAAS_RENDER_CHART_HOST",
+          "DISCORD_CLIENT_ID",
+          "DISCORD_CLIENT_SECRET",
           "DISCORD_CLIENT_TOKEN",
           "DISCORD_CHANNEL_NOTIFY_SYS"
+        ]
+      },
+      "bot": {
+        "port": 8080,
+        "service": "bot",
+        "runtime": "nodejs12",
+        "instance": "F1",
+        "secrets": [
+          "JWT_SECRET",
+          "DISCORD_MONGO_HOST",
+          "DISCORD_MONGO_USER",
+          "DISCORD_MONGO_PASS",
+          "DISCORD_CLIENT_TOKEN"
         ]
       },
       "web-ui": {

@@ -47,6 +47,7 @@ Modes.br_88 = {
 }
 Modes.br_brduos = { ...Modes.br_88, id: 'br_brduos' }
 Modes.br_brduostim_name2 = { ...Modes.br_88, id: 'br_brduostim_name2', name: 'BR Stimulus Duos' }  // auto respawn if >$4500
+Modes.br_brduohwn = { ...Modes.br_88, id: 'br_brduohwn', name: 'BR Duos (Night)' }  // night map
 
 // BR Trios
 Modes.br_74 = {
@@ -65,6 +66,9 @@ Modes.br_25 = { ...Modes.br_74, id: 'br_25' }
 Modes.br_brtrios = { ...Modes.br_74, id: 'br_brtrios' }
 Modes.br_jugg_brtriojugr = { ...Modes.br_74, id: 'br_jugg_brtriojugr', name: 'BR Juggernaut Trios' } // juggernaut drops in trios
 Modes.br_brtriostim_name2 = { ...Modes.br_74, id: 'br_brtriostim_name2', name: 'BR Stimulus Trios' } // auto respawn if >$4500
+Modes.br_zxp_zmbroy = { ...Modes.br_74, id: 'br_zxp_zmbroy', name: 'Zombie Royale', respawns: true, gulag: false } // respawn as zombie if die as human
+Modes.br_brhwntrios = { ...Modes.br_74, id: 'br_brhwntrios', name: 'BR Trios (Night)' }  // night map
+Modes.br_kingslayer_kingsltrios = { ...Modes.br_74, id: 'br_kingslayer_kingsltrios', name: 'King Slayer Trios' }  // kingslayer
 
 // BR Quads
 Modes.br_89 = {
@@ -108,7 +112,8 @@ Modes.br_dmz_104 = { ...Modes.br_dmz_76, id: 'br_dmz_104' }
 Modes.br_dmz_38 = { ...Modes.br_dmz_76, id: 'br_dmz_38', lobbySize: 150, teamSize: 3, name: 'Plunder Trios' }
 Modes.br_dmz_plndtrios = { ...Modes.br_dmz_38, id: 'br_dmz_plndtrios' }
 Modes.br_dmz_plunquad = { ...Modes.br_dmz_76, id: 'br_dmz_plunquad', lobbySize: 152, teamSize: 4, name: 'Plunder Quads' }
-Modes.br_dmz_plnbld = { ...Modes.br_dmz_76, id: 'br_dmz_plnbld', lobbySize: 152, teamSize: 4, name: 'Plunder Blood Money' }
+Modes.br_dmz_plnbld = { ...Modes.br_dmz_76, id: 'br_dmz_plnbld', lobbySize: 152, teamSize: 4, name: 'Plunder: Blood Money' }
+Modes.br_dmz_plndcndy = { ...Modes.br_dmz_76, id: 'br_dmz_plndcndy', lobbySize: 152, teamSize: 4, name: 'Plunder: Candy Collector' }
 
 // Multiplayer
 Modes.grind = {
@@ -175,6 +180,15 @@ Modes.koth = {
     teamSize: 6,
     respawns: true,
 }
+Modes.ctf = {
+    id: 'ctf',
+    games: ['mw'],
+    name: 'Capture the Flag',
+    type: 'mp',
+    lobbySize: 12,
+    teamSize: 6,
+    respawns: true,
+}
 Modes.hq = {
     id: 'hq',
     games: ['mw'],
@@ -236,6 +250,15 @@ Modes.arena = {
     type: 'mp',
     lobbySize: 4,
     teamSize: 2,
+    respawns: false,
+}
+Modes.infect = {
+    id: 'infect',
+    games: ['mw'],
+    name: 'Infected',
+    type: 'mp',
+    lobbySize: 32,
+    teamSize: 4,
     respawns: false,
 }
 Modes.hc_dm = { ...Modes.dm, id: 'hc_dm', hardcore: true, name: 'Hardcore Free-for-all' }

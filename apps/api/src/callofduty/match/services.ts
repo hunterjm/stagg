@@ -109,9 +109,9 @@ export class CallOfDutyMatchService {
     }
     return resources[resourceKey]
   }
-  public async getHistoryByAccountId(accountId:string, gameId:Schema.Game, gameType:Schema.GameType) {
+  public async getHistoryByAccountId(accountId:string, gameId:Schema.Game, gameType:Schema.GameType, limit?:number, offset?:number) {
     const resource = this.getResource(gameId, gameType)
-    return resource.stats.dao.findByAccountId(accountId)
+    return resource.stats.dao.findByAccountId(accountId, limit, offset)
   }
   public async updateMatchRecord(matchId:string, accountId:string, gameId:Schema.Game, gameType:Schema.GameType, updates:any) {
     const resource = this.getResource(gameId, gameType)

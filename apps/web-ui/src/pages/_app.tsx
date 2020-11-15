@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { useEffect } from 'react'
 import { AppProps } from 'next/app'
 import 'public/scss/style.scss'
@@ -18,6 +19,15 @@ const StaggWebUI = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
+      <Head>
+        <link rel="stylesheet" href="/cdn/core/style.css" media="all" />
+        <link rel="stylesheet" href="/cdn/icomoon/style.css" media="all" />
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=UA-171798332-1"
+          />
+        <script src="/cdn/core/ga.js" />
+      </Head>
       <ReactNotification />
       <Component {...pageProps} />
     </>

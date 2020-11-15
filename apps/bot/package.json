@@ -1,0 +1,32 @@
+{
+  "name": "stagg-discord-bot",
+  "version": "0.9.10",
+  "author": "Dan Lindsey",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "ts-node-dev src/index.ts",
+    "start": "node dist/index.js",
+    "test": "exit 0"
+  },
+  "dependencies": {
+    "@types/express": "4.17.8",
+    "axios": "^0.21.0",
+    "cors": "^2.8.5",
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.6",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/mongodb": "^3.5.33",
+    "@types/node": "^14.0.13",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.49",
+    "typescript": "^3.9.5"
+  }
+}

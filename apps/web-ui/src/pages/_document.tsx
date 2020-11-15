@@ -1,9 +1,17 @@
-import Document, { Head, Main, NextScript } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from 'next/document'
+import { ServerStyleSheet } from 'styled-components'
 
 class AppDocument extends Document {
+  public props:any
+  static getInitialProps ({ renderPage }) {
+    const sheet = new ServerStyleSheet()
+    const page = renderPage(App => props => sheet.collectStyles(<App {...props} />))
+    const styleTags = sheet.getStyleElement()
+    return { ...page, styleTags }
+  }
   render() {
     return (
-      <html lang="en">
+      <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
           <link rel="stylesheet" href="/cdn/core/style.css" media="all" />
@@ -13,12 +21,13 @@ class AppDocument extends Document {
             src="https://www.googletagmanager.com/gtag/js?id=UA-171798332-1"
           />
           <script src="/cdn/core/ga.js" />
+          {this.props.styleTags}
         </Head>
         <body className="has-animations" data-gr-c-s-loaded="true">
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }

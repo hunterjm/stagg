@@ -4,6 +4,7 @@ import {
     Get,
     Put,
     Patch,
+    Query,
     Param,
     Body,
     BadRequestException,
@@ -20,16 +21,16 @@ export class CallOfDutyMatchController {
         private readonly MatchService: CallOfDutyMatchService,
     ) {}
     
-    @Get('/:gameId/:gameType/user/:userId/history')
-    async GetUserMatchHistory(@Param() { gameId, gameType, userId }) {
+    @Get('/history/:gameId/:gameType/user/:userId')
+    async GetUserMatchHistory(@Param() { gameId, gameType, userId }, @Query() { limit, offset }) {
         const [account] = await this.AccountSvcs.findAllByUserId(userId)
         if (!account) {
             throw new BadRequestException('invalid user id')
         }
-        return this.MatchService.getHistoryByAccountId(account.accountId, gameId, gameType)
+        return this.MatchService.getHistoryByAccountId(account.accountId, gameId, gameType, limit, offset)
     }
     
-    @Get('/:gameId/:gameType/account/:accountId/history')
+    @Get('/history/:gameId/:gameType/account/:accountId')
     async GetAccountMatchHistory(@Param() { gameId, gameType, accountId }) {
         return this.MatchService.getHistoryByAccountId(accountId, gameId, gameType)
     }

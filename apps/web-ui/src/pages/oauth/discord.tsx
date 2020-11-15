@@ -1,66 +1,62 @@
 import Router from 'next/router'
+import { GetServerSideProps } from 'next'
 import { API } from 'src/api-services'
 import * as JWT from 'jsonwebtoken'
 import * as store from 'src/store'
 import { getUser } from 'src/hooks/getUser'
 import { notify } from 'src/hooks/notify'
+import { Layout } from 'src/components/layout'
 import { useEffect } from 'react'
 
 const DiscordOAuth = ({ jwt, forward }) => {
-  try {
-    window
-  } catch(e) {
-    return null
-  }
-  if (!jwt) {
-    return null
-  }
-
   const userState = store.useState(store.userState)
+  store.cookies.jwtDiscord = jwt
+  const payload:any = JWT.decode(jwt)
 
-  useEffect(() => {
-    store.cookies.jwtDiscord = jwt
-    const payload:any = JWT.decode(jwt)
-  
-    const attemptLogin = async () => {
-      const { response } = await API.login('discord')
-      if (response?.jwt) {
-        store.cookies.jwtUser = response.jwt
-        userState.set(getUser())
-        notify({
-          title: 'All clear for take off',
-          message: 'You have been logged in',
-          type: 'success',
-          duration: 2500,
-        })
-        Router.push(`/mw/@${payload.userId}`)
-      } else {
-        Router.push('/start?')
-      }
-    }
-  
-    if (!payload?.userId) {
+  const attemptLogin = async () => { // Define separately for async
+    const { response } = await API.login('discord')
+    if (response?.jwt) {
+      store.cookies.jwtUser = response.jwt
+      userState.set(getUser())
       notify({
-        title: 'Woohoo!',
-        message: `Discord account linked`,
+        title: 'All clear for take off',
+        message: 'You have been logged in',
         type: 'success',
         duration: 2500,
       })
-      userState.set(getUser())
-      Router.push('/start')
+      Router.push(`/mw/@${payload.userId}`)
+    } else {
+      Router.push('/start?')
+    }
+  }
+
+  useEffect(() => { // useEffect so we only use Router on client
+    if (payload?.userId) {
+      attemptLogin()
       return
     }
-  
-    attemptLogin()
-  })
+    notify({
+      title: 'Woohoo!',
+      message: `Discord account linked`,
+      type: 'success',
+      duration: 2500,
+    })
+    userState.set(getUser())
+    Router.push('/start')
+  }, [])
 
-  return null
+  return (
+    <Layout hideSignIn title="One moment...">
+      <h2 style={{marginTop: 128, textAlign: 'center'}}>One moment...</h2>
+    </Layout>
+  )
 }
 
 DiscordOAuth.getInitialProps = async (ctx) => {
   let forward = ctx.query.state
-  const { response } = await API.Discord.exchangeToken(ctx.query.code)
-  return { jwt: response?.jwt, forward }
+  const res = await API.Discord.exchangeToken(ctx.query.code)
+  return { jwt: res?.response?.jwt, forward }
 }
+
 // eslint-disable-next-line import/no-default-export
 export default DiscordOAuth

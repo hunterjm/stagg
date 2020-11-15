@@ -4,7 +4,7 @@ import { InsertResult, Repository, UpdateResult } from 'typeorm'
 import { Entity, Column, PrimaryColumn } from 'typeorm'
 import { Postgres } from 'src/util'
 
-@Entity({ name: 'accountsnew', database: 'callofduty' })
+@Entity({ name: 'accounts', database: 'callofduty' })
 export class Account {
   @PrimaryColumn('uuid', { unique: true })
   accountId: string

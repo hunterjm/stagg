@@ -45,6 +45,6 @@ export const profilesByUserId = async (userId:string) => {
     return response
 }
 export const matchHistoryByUserId = async (userId:string, gameId:Schema.Game, gameType:Schema.GameType):Promise<any> => {
-    const { response } = await API.Get<any>(`/callofduty/match/${gameId}/${gameType}/user/${userId}/history`)
+    const { response } = await API.Get<any>(`/callofduty/match/history/${gameId}/${gameType}/user/${userId}`)
     return response
 }
