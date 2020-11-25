@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm'
-import { BaseEntity } from '../base.entity'
+import { AbstractRepository, Entity, EntityRepository, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity } from '../abstract'
 
 @Entity({ name: 'users', database: 'stagg' })
 export class User extends BaseEntity {
@@ -23,29 +23,19 @@ export class User extends BaseEntity {
 //     BigMoneyTier = 'supernotfree'
 // }
 
-import { Repository } from 'typeorm'
-
-// @Injectable()
-// export class UserDAO {
-//     constructor(
-//         @InjectRepository(User, 'stagg') private userRepo: Repository<User>,
-//     ) {}
-
-//     public async insert(user: Partial<User>): Promise<User> {
-//         return await this.userRepo.save(user);
-//     }
-
-//     public async find(userId: string): Promise<User> {
-//         return await this.userRepo.findOne(userId);
-//     }
-// }
-
-export class UserRepository extends Repository<User> {
-    public async insertUser(user: Partial<User>): Promise<User> {
-        return await this.save(user)
+@EntityRepository(User)
+export class UserRepository extends AbstractRepository<User> {
+    private normailze({ }: Partial<User>) {
+        // TODO: add normalization for secondary fields
+        return { }
     }
 
-    public async findOneUser(userId: string): Promise<User> {
-        return await this.findOne(userId)
+    public async insertUser(user: Partial<User>): Promise<User> {
+        return await this.repository.save(this.normailze(user))
+    }
+
+    public async updateUser(user: User): Promise<User> {
+        const existing = await this.repository.findOneOrFail(user.userId)
+        return await this.repository.save({ ...existing, ...this.normailze(user) })
     }
 }

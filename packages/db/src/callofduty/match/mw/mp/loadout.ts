@@ -1,8 +1,9 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
-import { Account } from '../../../account'
+const objHash = require('object-hash')
+import { AbstractRepository, Column, Entity, EntityRepository, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
+import { Account } from '../../../account/account'
 import { Detail } from './detail'
 import { Schema as CallOfDuty } from 'callofduty'
-import { BaseEntity } from '../../../../base.entity'
+import { BaseEntity } from '../../../../abstract'
 
 @Entity({ name: 'mw/mp/match/loadouts', database: 'callofduty' })
 @Index('idx_mwmp_loadout_matchaccount', ['match', 'account'])
@@ -47,4 +48,21 @@ export class Loadout extends BaseEntity {
 
     @Column('citext', { array: true, nullable: true })
     killstreaks: CallOfDuty.MW.Killstreak[]
+}
+
+@EntityRepository(Loadout)
+export class LoadoutRepository extends AbstractRepository<Loadout> {
+    private normalize({ match, account, pwId, pwVariant, pwAttachments, swId, swVariant, swAttachments, lethal, tactical, perks, killstreaks }: Partial<Loadout>): Partial<Loadout> {
+        const hash = objHash({ pwId, pwVariant, pwAttachments, swId, swVariant, swAttachments, lethal, tactical, perks, killstreaks })
+        return { hashId: `${hash}.${account.accountId}`, match, account, pwId, pwVariant, pwAttachments, swId, swVariant, swAttachments, lethal, tactical, perks, killstreaks }
+    }
+
+    public async insertLoadout(loadout: Partial<Loadout>): Promise<Loadout> {
+        return await this.repository.save(this.normalize(loadout))
+    }
+
+    public async updateLoadout(loadout: Loadout): Promise<Loadout> {
+        const existing = await this.repository.findOneOrFail(loadout.hashId)
+        return await this.repository.save({ ...existing, ...this.normalize(loadout) })
+    }
 }

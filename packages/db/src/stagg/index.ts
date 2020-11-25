@@ -1,5 +1,8 @@
-import { User } from './user'
+import { User, UserRepository } from './user'
 
-export {
-    User
+export const Stagg = {
+    User: {
+        Entity: User,
+        Repository: UserRepository
+    }
 }

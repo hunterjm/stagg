@@ -1,15 +1,36 @@
-import { Detail } from './detail'
-import { Killstreak } from './killstreak'
-import { Loadout } from './loadout'
-import { Objective } from './objective'
-import { Stats } from './stats'
-import { Weapon } from './weapon'
+import { Detail as DetailEntity, DetailRepository } from './detail'
+import { Killstreak as KillstreakEntity, KillstreakRepository } from './killstreak'
+import { Loadout as LoadoutEntity, LoadoutRepository } from './loadout'
+import { Objective as ObjectiveEntity, ObjectiveRepository } from './objective'
+import { Stats as StatsEntity, StatsRepository } from './stats'
+import { Weapon as WeaponEntity, WeaponRepository } from './weapon'
 
-export {
-    Detail,
-    Killstreak,
-    Loadout,
-    Objective,
-    Stats,
-    Weapon
+export const Detail = {
+    Entity: DetailEntity,
+    Repository: DetailRepository
+}
+
+export const Killstreak = {
+    Entity: KillstreakEntity,
+    Repository: KillstreakRepository
+}
+
+export const Loadout = {
+    Entity: LoadoutEntity,
+    Repository: LoadoutRepository
+}
+
+export const Objective = {
+    Entity: ObjectiveEntity,
+    Repository: ObjectiveRepository
+}
+
+export const Stats = {
+    Entity: StatsEntity,
+    Repository: StatsRepository
+}
+
+export const Weapon = {
+    Entity: WeaponEntity,
+    Repository: WeaponRepository
 }

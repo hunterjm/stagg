@@ -1,5 +1,8 @@
-import { Account } from './account'
+import { Account, AccountRepository } from './account'
 
-export {
-    Account
+export const Discord = {
+    Account: {
+        Entity: Account,
+        Repository: AccountRepository
+    }
 }

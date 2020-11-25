@@ -1,5 +1,5 @@
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm'
-import { BaseEntity } from '../../../../base.entity'
+import { AbstractRepository, Column, Entity, EntityRepository, Index, PrimaryColumn } from 'typeorm'
+import { BaseEntity } from '../../../../abstract'
 import { Schema as CallOfDuty } from 'callofduty'
 
 @Entity({ name: 'mw/mp/match/stats', database: 'callofduty' })
@@ -143,4 +143,21 @@ export class Stats extends BaseEntity {
 
     @Column('integer')
     totalXp: number
+}
+
+@EntityRepository(Stats)
+export class StatsRepository extends AbstractRepository<Stats> {
+    private normalize({ matchId, accountId, modeId, mapId, startTime, endTime, teamId, unoId, username, clantag, quit, score, scoreAxis, scoreAllies, timePlayed, avgLifeTime, teamPlacement, damageDone, damageTaken, kills, deaths, suicides, assists, executions, headshots, shotsHit, shotsMiss, wallBangs, nearMisses, longestStreak, distanceTraveled, percentTimeMoving, avgSpeed, seasonRank, scoreXp, matchXp, bonusXp, medalXp, miscXp, challengeXp, totalXp }: Partial<Stats>): Partial<Stats> {
+        const combinedId = `${matchId}.${accountId}`
+        return { combinedId, matchId, accountId, modeId, mapId, startTime, endTime, teamId, unoId, username, clantag, quit, score, scoreAxis, scoreAllies, timePlayed, avgLifeTime, teamPlacement, damageDone, damageTaken, kills, deaths, suicides, assists, executions, headshots, shotsHit, shotsMiss, wallBangs, nearMisses, longestStreak, distanceTraveled, percentTimeMoving, avgSpeed, seasonRank, scoreXp, matchXp, bonusXp, medalXp, miscXp, challengeXp, totalXp }
+    }
+
+    public async insertStats(stats: Partial<Stats>): Promise<Stats> {
+        return await this.repository.save(this.normalize(stats))
+    }
+
+    public async updateStats(stats: Stats): Promise<Stats> {
+        const existing = await this.repository.findOneOrFail(stats.combinedId)
+        return await this.repository.save({ ...existing, ...this.normalize(stats) })
+    }
 }

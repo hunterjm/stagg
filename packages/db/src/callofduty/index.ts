@@ -1,7 +1,7 @@
 import * as Account from './account'
 import * as Match from './match'
 
-export {
+export const CallOfDuty = {
     Account,
     Match
 }
