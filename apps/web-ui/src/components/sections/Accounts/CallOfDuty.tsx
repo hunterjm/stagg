@@ -52,7 +52,7 @@ export const CallOfDutyAccount = () => {
               callofduty: null
           }
       }))
-      Cookies.remove('jwt.callofduty')
+      store.cookies.deleteCallOfDutyJWT()
     }
     return (
         <AccountBox>

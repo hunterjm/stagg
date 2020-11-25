@@ -2,14 +2,16 @@ import * as JWT from 'jsonwebtoken'
 import { v4 as uuidv4 } from 'uuid'
 import { Injectable } from '@nestjs/common'
 import { User, UserDAO } from 'src/user/entity'
-import { AccountDAO } from 'src/callofduty/account/entity'
+import { CallOfDutyAccountService } from 'src/callofduty/account/services'
+import { DiscordService } from 'src/discord/services'
 import { JWT_SECRET } from 'src/config'
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userDao: UserDAO,
-    private readonly codAcctDao: AccountDAO,
+    private readonly discordSvcs: DiscordService,
+    private readonly codAcctSvcs: CallOfDutyAccountService,
   ) {}
   public verifyJwt<T>(jwt:string) {
     const payload:any = JWT.verify(jwt, JWT_SECRET)
@@ -54,11 +56,18 @@ export class UserService {
   }
   public async fetchDomainAccounts(userId:string): Promise<User.Schema.Domain[]> {
     const domainAccts:User.Schema.Domain[] = []
-    const codAccts = await this.codAcctDao.findAllByUserId(userId)
+    // Check CallOfDuty
+    const codAccts = await this.codAcctSvcs.findAllByUserId(userId)
     for(const { accountId } of codAccts) {
-      domainAccts.push({ domainId: 'callofduty', accountId })
+      const model = await this.codAcctSvcs.buildModelForAccountId(accountId)
+      const sanitizedModel = this.codAcctSvcs.sanitizeModel(model)
+      domainAccts.push({ domainId: 'callofduty', accountId, model: sanitizedModel })
     }
     // Check Discord
+    const discordAccount = await this.discordSvcs.findByUserId(userId)
+    if (discordAccount) {
+      domainAccts.push({ domainId: 'discord', accountId: discordAccount.discordId, model: discordAccount })
+    }
     return domainAccts
   }
 }

@@ -5,8 +5,8 @@ import * as Routes from '../api/routes'
 
 export { MW, Routes }
 
-export type Game = 'mw' | 'bo4' | 'wwii'
-export type GameType = 'mp' | 'wz'
+export type Game = 'cw' | 'mw' | 'bo4' | 'wwii'
+export type GameType = 'mp' | 'wz' | 'zm'
 export type Tokens = { sso: string, atkn: string, xsrf: string }
 
 export type Map = MW.Map

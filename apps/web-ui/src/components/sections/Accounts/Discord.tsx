@@ -15,7 +15,7 @@ export const DiscordAccount = () => {
             discord: null
         }
     }))
-    Cookies.remove('jwt.discord')
+    store.cookies.deleteDiscordJWT()
   }
   return (
       <AccountBox>
