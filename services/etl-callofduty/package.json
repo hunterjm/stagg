@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "dev": "ts-node-dev src/express.ts",
+    "dev": "NODE_ENV=development ts-node-dev src/express.ts",
+    "dev:win": "set NODE_ENV=development && ts-node-dev src/express.ts",
     "prod": "tsc && node dist/express.js",
     "build": "tsc",
     "deploy": "yarn build && gcloud functions deploy etl-callofduty --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=128MB --timeout=540 --max-instances=128 --env-vars-file=.env.yaml",
