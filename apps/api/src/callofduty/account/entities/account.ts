@@ -41,6 +41,13 @@ export class AccountDAO {
       .where({ accountId: acct.accountId })
       .execute()
   }
+  public async findAll():Promise<Account[]> {
+      const accts = await this.acctRepo.find()
+      for(const i in accts) {
+        accts[i] = Postgres.Denormalize.Model<Account>(accts[i])
+      }
+      return accts
+  }
   public async findById(accountId:string):Promise<Account> {
       const acct = await this.acctRepo.findOne(accountId)
       if (!acct) {

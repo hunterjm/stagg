@@ -1,6 +1,6 @@
 {
   "name": "@stagg/etl-callofduty",
-  "version": "0.9.9",
+  "version": "1.0.1",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,

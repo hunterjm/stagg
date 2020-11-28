@@ -22,7 +22,7 @@ export const SignUp: any = () => {
       <div className="featured-games hoverable">
         <h4>Full support for Call of Duty is live now with more games coming soon!</h4>
         {config.games.map((game) => (
-          <Link key={game.id} href={`/${game.id}/login`}>
+          <Link key={game.id} href="/start">
             <i
               className={[game.icon, game.supported ? 'supported' : ''].join(
                 ' '

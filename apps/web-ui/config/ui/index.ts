@@ -5,6 +5,9 @@ export default {
     api: {
         host: isDev ? 'http://localhost:8081' : 'https://api.stagg.co'
     },
+    profile: {
+        refresh: 10000
+    },
     discord: {
         client: {
             id: discordClientId

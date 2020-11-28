@@ -1,9 +1,13 @@
+import { useRouter } from 'next/router'
 import { Layout } from 'src/components/layout'
 import styled from 'styled-components'
 import { Button, ButtonGroup } from '@material-ui/core'
 import { ModeCard } from 'src/components/mw/components/ModeCard'
+import { translateProfileUrlToAPI, translateProfileUrlToGameId } from 'src/components/mw/hooks'
 import { API } from 'src/api-services'
 import humanTime from 'human-time'
+import { useState, useEffect } from 'react'
+import cfg from 'config/ui'
 
 const ProfileHeader = styled.div`
     > :last-child {
@@ -65,8 +69,10 @@ const ProfileHeader = styled.div`
     i+i {
         position: relative;
         font-size: 1.025em;
-        bottom: -1px;
         margin-left: 3px;
+    }
+    i+i.icon-callofduty-bo4 {
+        bottom: -1px;
     }
     @media screen and (max-width: 768px) {
         > :last-child,
@@ -84,7 +90,18 @@ const RightWrapper = styled.div`
     text-align: right;
 `
 
-const Profile = ({ games, profiles, matchHistory }) => {
+const loadMatchHistory = async (url:string) => {
+  const gameId = translateProfileUrlToGameId(url)
+  const identifierUrl = translateProfileUrlToAPI(url)
+  const matchHistoryMP = await API.Get<any>(`/callofduty/match/history/${gameId}/mp/${identifierUrl}?limit=100`)
+  const matchHistoryWZ = await API.Get<any>(`/callofduty/match/history/${gameId}/wz/${identifierUrl}?limit=100`)
+  return {
+    mp: matchHistoryMP?.response?.sort((a,b) => b.startTime - a.startTime),
+    wz: matchHistoryWZ?.response?.sort((a,b) => b.startTime - a.startTime),
+  }
+}
+
+const Profile = ({ games, profiles, matchHistory:initialMatchHistory }) => {
   if (!profiles || !games) {
     return (
         <Layout title={`User Not Found - Call of Duty Modern Warfare Profile`} hideSignIn>
@@ -92,19 +109,35 @@ const Profile = ({ games, profiles, matchHistory }) => {
         </Layout>
     )
   }
+  const router = useRouter()
   const [uno] = profiles.filter(({ platform }) => platform === 'uno')
   const [username, slug] = uno.username.split('#')
+  const [reloading, setReloading] = useState(null)
+  const [matchHistory, setMatchHistory] = useState(initialMatchHistory)
   const [latestMpMatch] = matchHistory.mp.sort((a,b) => b.endTime - a.endTime)
   const [latestWzMatch] = matchHistory.wz.sort((a,b) => b.endTime - a.endTime)
   const latestEndTime = Math.max(latestMpMatch?.endTime, latestWzMatch?.endTime)
+  const rankValue = latestMpMatch?.seasonRank || 1
+  const rankValueStr = rankValue < 10 ? `0${rankValue}` : `${rankValue}`
+  const refreshProfile = async () => {
+    console.log('refreshing profile')
+    setReloading(true)
+    const newMatchHistory = await loadMatchHistory(router.asPath)
+    setMatchHistory(newMatchHistory)
+    setReloading(false)
+    setTimeout(refreshProfile, cfg.profile.refresh)
+  }
+  useEffect(() => {
+    setTimeout(refreshProfile, cfg.profile.refresh)
+  }, [])
   return (
-    <Layout title={`${username} Call of Duty Modern Warfare Profile`} hideSignIn>
+    <Layout title={`${username} Call of Duty Modern Warfare Profile`}>
       <div className="illustration-section-01" />
       <div className="container" style={{textAlign: 'center'}}>
         <ProfileHeader>
             <LeftWrapper>
                 <div className="rank">
-                    <img src="https://www.callofduty.com/cdn/app/icons/mw/ranks/mp/icon_rank_151.png" alt="Rank 151" />
+                    <img src={`https://www.callofduty.com/cdn/app/icons/mw/ranks/mp/icon_rank_${rankValueStr}.png`} alt={`Rank ${rankValueStr}`} />
                     <h5>{latestMpMatch?.seasonRank}</h5>
                 </div>
                 <div className="player">
@@ -114,6 +147,11 @@ const Profile = ({ games, profiles, matchHistory }) => {
             </LeftWrapper>
             <RightWrapper>
                 <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
+                    {
+                        games.includes('cw') && (
+                            <Button title="Black Ops: Cold War"><i className="icon-callofduty-bo" /><i className="icon-poo" /></Button>
+                        )
+                    }
                     {
                         games.includes('mw') && (
                             <Button variant="contained" title="Modern Warfare (2019)"><i className="icon-callofduty-mw" /></Button>
@@ -142,19 +180,23 @@ const Profile = ({ games, profiles, matchHistory }) => {
 }
 
 Profile.getInitialProps = async (ctx) => {
-    const [gameId, playerIdentifier] = ctx.asPath.replace(/^\//, '').replace(/\/$/, '').split('/')
-    const userIdParam = playerIdentifier?.replace('@', '')
-    const acctDetails = await API.CallOfDuty.profilesByUserId(userIdParam)
-    const matchHistoryMP = await API.CallOfDuty.matchHistoryByUserId(userIdParam, gameId, 'mp')
-    const matchHistoryWZ = await API.CallOfDuty.matchHistoryByUserId(userIdParam, gameId, 'wz')
-    // { profiles, accountId, games, unoId, userId } = acctDetails
-    return {
-        games: acctDetails?.games,
-        profiles: acctDetails?.profiles,
-        matchHistory: {
-            mp: matchHistoryMP?.sort((a,b) => b.startTime - a.startTime),
-            wz: matchHistoryWZ?.sort((a,b) => b.startTime - a.startTime),
+    const identifierUrl = translateProfileUrlToAPI(ctx.asPath)
+    console.log(identifierUrl)
+    const accountModel = await API.Get<any>(`/callofduty/account/${identifierUrl}`)
+    if (!accountModel?.response?.games || !accountModel?.response?.profiles) {
+        return {}
+    }
+    const { games, profiles } = accountModel?.response
+    try {
+        const matchHistory = await loadMatchHistory(ctx.asPath)
+        return {
+            games,
+            profiles,
+            matchHistory
         }
+    } catch(e) {
+        console.log(e)
+        return { games, profiles }
     }
   }
 

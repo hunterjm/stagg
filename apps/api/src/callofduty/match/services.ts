@@ -36,13 +36,11 @@ import {
   MwWzMatchObjectiveDAO,
   MwWzMatchObjectiveNormalizer,
 } from 'src/callofduty/match/entity'
-import { Account, AccountDAO } from 'src/callofduty/account/entity'
 import { PGSQL } from 'src/config'
 
 @Injectable()
 export class CallOfDutyMatchService {
   constructor(
-    private readonly AccountDao: AccountDAO,
     private readonly MwMpMatchDetailsDAO: MwMpMatchDetailsDAO,
     private readonly MwMpMatchStatsDAO: MwMpMatchStatsDAO,
     private readonly MwMpMatchKillstreakDAO: MwMpMatchKillstreakDAO,
@@ -149,7 +147,7 @@ export class CallOfDutyMatchService {
         } else {
           await resource.weapons.dao.insert({...normalized, accountId})
         }
-      } catch(e) { console.log('Normalizing weapon failed', e) }
+      } catch(e) { }
     }
     if (resource.loadouts) {
       try {
@@ -161,7 +159,7 @@ export class CallOfDutyMatchService {
         } else {
           await resource.loadouts.dao.insert({...normalized, accountId})
         }
-      } catch(e) { console.log('Normalizing loadouts failed', e) }
+      } catch(e) { }
     }
     if (resource.killstreaks) {
       try {
@@ -173,7 +171,7 @@ export class CallOfDutyMatchService {
         } else {
           await resource.killstreaks.dao.insert({...normalized, accountId})
         }
-      } catch(e) { console.log('Normalizing killstreaks failed', e) }
+      } catch(e) { }
     }
     if (resource.objectives) {
       try {
@@ -185,10 +183,7 @@ export class CallOfDutyMatchService {
         } else {
           await resource.objectives.dao.insert({...normalized, accountId})
         }
-      } catch(e) { console.log('Normalizing objectives failed', e) }
+      } catch(e) { }
     }
   }
-  // public async getAggregatedStats(accountId:string, gameId:Schema.API.Game, gameType:Schema.API.GameType) {
-
-  // }
 }

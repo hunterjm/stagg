@@ -30,6 +30,9 @@ export class AccountDAO {
   public async findById(discordId:string):Promise<Account> {
     return this.acctRepo.findOne({ where: { discordId } })
   }
+  public async findByUserId(userId:string):Promise<Account> {
+    return this.acctRepo.findOne({ where: { userId } })
+  }
   public async insert(acct:Partial<Account>):Promise<InsertResult> {
     return this.acctRepo.createQueryBuilder()
       .insert()

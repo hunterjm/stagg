@@ -14,6 +14,10 @@ export class CallOfDutyController {
     @Get('/etl')
     async ETL() {
         // etl all accts
+        const allAccts = await this.acctSvcs.fetchAll()
+        for(const acct of allAccts) {
+            await this.acctSvcs.triggerETL(acct.accountId)
+        }
     }
 
 }
