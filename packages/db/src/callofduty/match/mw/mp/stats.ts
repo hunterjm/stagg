@@ -3,7 +3,7 @@ import { BaseEntity } from '../../../../abstract'
 import { Schema as CallOfDuty } from 'callofduty'
 
 @Entity({ name: 'mw/mp/match/stats', database: 'callofduty' })
-export class Stats extends BaseEntity {
+class Stats extends BaseEntity {
     @PrimaryColumn('text') // search by match.account
     combinedId: string // <matchId>.<accountId>
 
@@ -40,7 +40,7 @@ export class Stats extends BaseEntity {
     endTime: number // match.detail
 
     @Column('citext')
-    teamId: CallOfDuty.MW.Team
+    teamId: string
 
     @Column('text')
     unoId: string // account
@@ -146,7 +146,7 @@ export class Stats extends BaseEntity {
 }
 
 @EntityRepository(Stats)
-export class StatsRepository extends AbstractRepository<Stats> {
+class StatsRepository extends AbstractRepository<Stats> {
     private normalize({ matchId, accountId, modeId, mapId, startTime, endTime, teamId, unoId, username, clantag, quit, score, scoreAxis, scoreAllies, timePlayed, avgLifeTime, teamPlacement, damageDone, damageTaken, kills, deaths, suicides, assists, executions, headshots, shotsHit, shotsMiss, wallBangs, nearMisses, longestStreak, distanceTraveled, percentTimeMoving, avgSpeed, seasonRank, scoreXp, matchXp, bonusXp, medalXp, miscXp, challengeXp, totalXp }: Partial<Stats>): Partial<Stats> {
         const combinedId = `${matchId}.${accountId}`
         return { combinedId, matchId, accountId, modeId, mapId, startTime, endTime, teamId, unoId, username, clantag, quit, score, scoreAxis, scoreAllies, timePlayed, avgLifeTime, teamPlacement, damageDone, damageTaken, kills, deaths, suicides, assists, executions, headshots, shotsHit, shotsMiss, wallBangs, nearMisses, longestStreak, distanceTraveled, percentTimeMoving, avgSpeed, seasonRank, scoreXp, matchXp, bonusXp, medalXp, miscXp, challengeXp, totalXp }
@@ -160,4 +160,9 @@ export class StatsRepository extends AbstractRepository<Stats> {
         const existing = await this.repository.findOneOrFail(stats.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(stats) })
     }
+}
+
+export {
+    Stats as Entity,
+    StatsRepository as Repository
 }

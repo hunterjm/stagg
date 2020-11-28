@@ -1,10 +1,10 @@
 import { AbstractRepository, Column, Entity, EntityRepository, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Schema as CallOfDuty } from 'callofduty'
-import { Account } from './account'
+import { Entity as Account } from './account'
 import { BaseEntity } from '../../abstract'
 
 @Entity({ name: 'accounts/auth', database: 'callofduty' })
-export class AccountAuth extends BaseEntity {
+class AccountAuth extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     authId: string
 
@@ -29,7 +29,7 @@ export class AccountAuth extends BaseEntity {
 }
 
 @EntityRepository(AccountAuth)
-export class AuthRepository extends AbstractRepository<AccountAuth> {
+class AuthRepository extends AbstractRepository<AccountAuth> {
     private normalize({ account, ip, email, games, profiles, tokens }: Partial<AccountAuth>): Partial<AccountAuth> {
         const indexedProfiles: { [key: string]: CallOfDuty.ProfileId.PlatformId } = {}
         for (const { platform, username } of profiles) {
@@ -46,4 +46,13 @@ export class AuthRepository extends AbstractRepository<AccountAuth> {
         const existing = await this.repository.findOneOrFail(auth.authId)
         return await this.repository.save({ ...existing, ...this.normalize(auth) })
     }
+
+    public async findByAccountId(accountId: string): Promise<AccountAuth> {
+        return await this.repository.findOne({ account: { accountId } })
+    }
+}
+
+export {
+    AccountAuth as Entity,
+    AuthRepository as Repository
 }

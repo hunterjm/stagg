@@ -2,7 +2,7 @@ import { AbstractRepository, Column, Entity, EntityRepository, PrimaryGeneratedC
 import { BaseEntity } from '../../abstract'
 
 @Entity({ name: 'accounts', database: 'callofduty' })
-export class Account extends BaseEntity {
+class Account extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     accountId: string
 
@@ -14,7 +14,7 @@ export class Account extends BaseEntity {
 }
 
 @EntityRepository(Account)
-export class AccountRepository extends AbstractRepository<Account> {
+class AccountRepository extends AbstractRepository<Account> {
     private normailze({ userId, unoId }: Partial<Account>) {
         return { userId, unoId }
     }
@@ -28,9 +28,23 @@ export class AccountRepository extends AbstractRepository<Account> {
         return await this.repository.save({ ...existing, ...this.normailze(account) })
     }
 
+    public async updateAccountUnoId(accountId: string, unoId: string): Promise<Account> {
+        const existing = await this.repository.findOneOrFail(accountId)
+        return await this.repository.save({ ...existing, unoId })
+    }
+
+    public async findOneOrFail(accountId: string): Promise<Account> {
+        return await this.repository.findOneOrFail(accountId)
+    }
+
     public async findAllByUserId(userId: string): Promise<Account[]> {
         const accts = await this.repository.find({ userId })
         if (!accts || !accts.length) return []
         return accts
     }
+}
+
+export {
+    Account as Entity,
+    AccountRepository as Repository
 }

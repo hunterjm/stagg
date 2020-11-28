@@ -3,7 +3,7 @@ import { Schema as CallOfDuty } from 'callofduty'
 import { BaseEntity } from '../../../../abstract'
 
 @Entity({ name: 'mw/mp/match/details', database: 'callofduty' })
-export class Detail extends BaseEntity {
+class Detail extends BaseEntity {
     @PrimaryColumn('text')
     matchId: string
 
@@ -21,7 +21,7 @@ export class Detail extends BaseEntity {
 }
 
 @EntityRepository(Detail)
-export class DetailRepository extends AbstractRepository<Detail> {
+class DetailRepository extends AbstractRepository<Detail> {
     private normalize({ matchId, modeId, mapId, startTime, endTime }: Partial<Detail>): Partial<Detail> {
         return { matchId, modeId, mapId, startTime, endTime }
     }
@@ -34,4 +34,9 @@ export class DetailRepository extends AbstractRepository<Detail> {
         const existing = await this.repository.findOneOrFail(detail.matchId)
         return await this.repository.save({ ...existing, ...this.normalize(detail) })
     }
+}
+
+export {
+    Detail as Entity,
+    DetailRepository as Repository
 }

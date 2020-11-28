@@ -1,10 +1,11 @@
-import { AbstractRepository, Column, DeleteDateColumn, Entity, EntityRepository, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
+const objHash = require('object-hash')
+import { AbstractRepository, Column, DeleteDateColumn, Entity, EntityRepository, JoinColumn, ManyToOne, PrimaryColumn, UpdateResult } from 'typeorm'
 import { Schema as CallOfDuty } from 'callofduty'
-import { Account } from './account'
+import { Entity as Account } from './account'
 import { BaseEntity } from '../../abstract'
 
 @Entity({ name: 'accounts/profiles', database: 'callofduty' })
-export class AccountProfile extends BaseEntity {
+class AccountProfile extends BaseEntity {
     @PrimaryColumn('text')
     hashId: string
 
@@ -26,8 +27,11 @@ export class AccountProfile extends BaseEntity {
 }
 
 @EntityRepository(AccountProfile)
-export class ProfileRepository extends AbstractRepository<AccountProfile> {
+class ProfileRepository extends AbstractRepository<AccountProfile> {
     private normailze({ hashId, account, platform, username, games, deleted }: Partial<AccountProfile>): Partial<AccountProfile> {
+        if (!hashId) {
+            hashId = objHash({ accountId: account.accountId, username, platform, games })
+        }
         return { hashId, account, platform, username, games, deleted }
     }
 
@@ -39,4 +43,17 @@ export class ProfileRepository extends AbstractRepository<AccountProfile> {
         const existing = await this.repository.findOneOrFail(profile.hashId)
         return await this.repository.save({ ...existing, ...profile })
     }
+
+    public async deleteForAccountId(accountId: string, username: string, platform: CallOfDuty.Platform): Promise<UpdateResult> {
+        const existing = await this.repository.findOneOrFail({ username, platform })
+        if (existing.account.accountId !== accountId) {
+            throw 'invalid account'
+        }
+        return await this.repository.softDelete(existing.hashId)
+    }
+}
+
+export {
+    AccountProfile as Entity,
+    ProfileRepository as Repository
 }

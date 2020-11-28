@@ -2,7 +2,7 @@ import { AbstractRepository, Column, Entity, EntityRepository, PrimaryColumn } f
 import { BaseEntity } from '../abstract'
 
 @Entity({ name: 'accounts', database: 'discord' })
-export class Account extends BaseEntity {
+class Account extends BaseEntity {
     @PrimaryColumn('text')
     discordId: string
 
@@ -17,7 +17,7 @@ export class Account extends BaseEntity {
 }
 
 @EntityRepository(Account)
-export class AccountRepository extends AbstractRepository<Account> {
+class AccountRepository extends AbstractRepository<Account> {
     private normailze({ discordId, userId, tag, avatar }: Partial<Account>) {
         return { discordId, userId, tag, avatar }
     }
@@ -35,4 +35,9 @@ export class AccountRepository extends AbstractRepository<Account> {
         const existing = await this.repository.findOneOrFail({ where: { userId: account.userId }})
         return await this.repository.save({ ...existing, ...this.normailze(account)})
     }
+}
+
+export {
+    Account as Entity,
+    AccountRepository as Repository
 }

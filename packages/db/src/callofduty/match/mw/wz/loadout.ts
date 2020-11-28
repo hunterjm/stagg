@@ -1,23 +1,23 @@
 const objHash = require('object-hash')
 import { AbstractRepository, Column, Entity, EntityRepository, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
-import { Account } from '../../../account/account'
-import { Detail } from './detail'
+import * as Account from '../../../account'
+import * as Detail from './detail'
 import { Schema as CallOfDuty } from 'callofduty'
 import { BaseEntity } from '../../../../abstract'
 
 @Entity({ name: 'mw/wz/match/loadouts', database: 'callofduty' })
 @Index('idx_mwwz_loadout_matchaccount', ['match', 'account'])
-export class Loadout extends BaseEntity {
+class Loadout extends BaseEntity {
     @PrimaryColumn('text')
     hashId: string // objHash(loadout)
 
-    @ManyToOne(() => Detail)
+    @ManyToOne(() => Detail.Entity)
     @JoinColumn({ name: 'matchId' })
-    match: Detail
+    match: Detail.Entity
 
-    @ManyToOne(() => Account)
+    @ManyToOne(() => Account.Base.Entity)
     @JoinColumn({ name: 'accountId' })
-    account: Account
+    account: Account.Base.Entity
 
     @Column('citext', { nullable: true })
     pwId: CallOfDuty.MW.Weapon.Name
@@ -48,7 +48,7 @@ export class Loadout extends BaseEntity {
 }
 
 @EntityRepository(Loadout)
-export class LoadoutRepository extends AbstractRepository<Loadout> {
+class LoadoutRepository extends AbstractRepository<Loadout> {
     private normalize({ match, account, pwId, pwVariant, pwAttachments, swId, swVariant, swAttachments, lethal, tactical, perks }: Partial<Loadout>): Partial<Loadout> {
         const hash = objHash({ pwId, pwVariant, pwAttachments, swId, swVariant, swAttachments, lethal, tactical, perks })
         return { hashId: `${hash}.${account.accountId}`, match, account, pwId, pwVariant, pwAttachments, swId, swVariant, swAttachments, lethal, tactical, perks }
@@ -62,4 +62,9 @@ export class LoadoutRepository extends AbstractRepository<Loadout> {
         const existing = await this.repository.findOneOrFail(loadout.hashId)
         return await this.repository.save({ ...existing, ...this.normalize(loadout) })
     }
+}
+
+export {
+    Loadout as Entity,
+    LoadoutRepository as Repository
 }

@@ -1,7 +1,2 @@
-import * as MP from './mp'
-import * as WZ from './wz'
-
-export {
-    MP,
-    WZ
-}
+export * as MP from './mp'
+export * as WZ from './wz'

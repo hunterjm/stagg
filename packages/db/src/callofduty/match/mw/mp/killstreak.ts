@@ -1,22 +1,22 @@
 import { AbstractRepository, Column, Entity, EntityRepository, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
-import { Detail } from './detail'
-import { Account } from '../../../account/account'
+import * as Detail from './detail'
+import * as Account from '../../../account'
 import { Schema as CallOfDuty } from 'callofduty'
 import { BaseEntity } from '../../../../abstract'
 
 @Entity({ name: 'mw/mp/match/killstreaks', database: 'callofduty' })
 @Index('idx_mwmp_killstreak_matchaccount', ['match', 'account'])
-export class Killstreak extends BaseEntity {
+class Killstreak extends BaseEntity {
     @PrimaryColumn('text')
     combinedId: string // <matchId>.<accountId>.<killstreakId>
 
-    @ManyToOne(() => Detail, { nullable: false })
+    @ManyToOne(() => Detail.Entity, { nullable: false })
     @JoinColumn({ name: 'matchId' })
-    match: Detail
+    match: Detail.Entity
     
-    @ManyToOne(() => Account, { nullable: false })
+    @ManyToOne(() => Account.Base.Entity, { nullable: false })
     @JoinColumn({ name: 'accountId' })
-    account: Account
+    account: Account.Base.Entity
 
     @Column('citext')
     killstreakId: CallOfDuty.MW.Killstreak
@@ -32,7 +32,7 @@ export class Killstreak extends BaseEntity {
 }
 
 @EntityRepository(Killstreak)
-export class KillstreakRepository extends AbstractRepository<Killstreak> {
+class KillstreakRepository extends AbstractRepository<Killstreak> {
     private normalize({ match, account, killstreakId, uses, kills, takedowns }: Partial<Killstreak>): Partial<Killstreak> {
         const combinedId = `${match.matchId}.${account.accountId}.${killstreakId}`
         return { combinedId, match, account, killstreakId, uses, kills, takedowns }
@@ -46,4 +46,9 @@ export class KillstreakRepository extends AbstractRepository<Killstreak> {
         const existing = await this.repository.findOneOrFail(killstreak.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(killstreak) })
     }
+}
+
+export {
+    Killstreak as Entity,
+    KillstreakRepository as Repository
 }

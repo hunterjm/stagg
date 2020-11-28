@@ -1,22 +1,22 @@
 import { AbstractRepository, Column, Entity, EntityRepository, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
-import { Account } from '../../../account/account'
-import { Detail } from './detail'
+import * as Account from '../../../account'
+import * as Detail from './detail'
 import { Schema as CallOfDuty } from 'callofduty'
 import { BaseEntity } from '../../../../abstract'
 
 @Entity({ name: 'mw/mp/match/weapons', database: 'callofduty' })
 @Index('idx_mwmp_weapon_matchaccount', ['match', 'account'])
-export class Weapon extends BaseEntity {
+class Weapon extends BaseEntity {
     @PrimaryColumn('text')
     combinedId: string // <matchId>.<accountId>.<weaponId>
     
-    @ManyToOne(() => Detail, { nullable: false })
+    @ManyToOne(() => Detail.Entity, { nullable: false })
     @JoinColumn({ name: 'matchId' })
-    match: Detail
+    match: Detail.Entity
 
-    @ManyToOne(() => Account, { nullable: false })
+    @ManyToOne(() => Account.Base.Entity, { nullable: false })
     @JoinColumn({ name: 'accountId' })
-    account: Account
+    account: Account.Base.Entity
 
     @Column('citext')
     weaponId: CallOfDuty.MW.Weapon.Name
@@ -47,7 +47,7 @@ export class Weapon extends BaseEntity {
 }
 
 @EntityRepository(Weapon)
-export class WeaponRepository extends AbstractRepository<Weapon> {
+class WeaponRepository extends AbstractRepository<Weapon> {
     private normalize({ match, account, weaponId, loadoutIndex, kills, deaths, headshots, shotsHit, shotsMiss, xpStart, xpEarned }: Partial<Weapon>): Partial<Weapon> {
         const combinedId = `${match.matchId}.${account.accountId}.${weaponId}`
         return { combinedId, match, account, weaponId, loadoutIndex, kills, deaths, headshots, shotsHit, shotsMiss, xpStart, xpEarned }
@@ -61,4 +61,9 @@ export class WeaponRepository extends AbstractRepository<Weapon> {
         const existing = await this.repository.findOneOrFail(weapon.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(weapon) })
     }
+}
+
+export {
+    Weapon as Entity,
+    WeaponRepository as Repository
 }
