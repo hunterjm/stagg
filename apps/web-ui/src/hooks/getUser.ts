@@ -3,6 +3,7 @@ import * as JWT from 'jsonwebtoken'
 
 export interface UserStateModel {
     user?: UserModel
+    accounts: any[]
     oauth?: OAuthModel
 }
 export interface UserModel {

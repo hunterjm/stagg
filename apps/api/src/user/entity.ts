@@ -57,6 +57,6 @@ export class UserDAO {
 export namespace User {
   export namespace Schema {
     export type DomainId = 'discord' | 'callofduty' | 'pubg'
-    export type Domain = { domainId: DomainId, accountId: string }
+    export type Domain = { domainId: DomainId, accountId: string, model?:any }
   }
 }

@@ -42,17 +42,29 @@ export class CallOfDutyAccountController {
         }
     }
     
+    @Get('/:accountId')
+    async GetAccountModelByAccountId(@Param() { accountId }) {
+        const model = await this.acctSvcs.buildModelForAccountId(accountId)
+        delete model.tokens
+        delete model.email
+        delete model.authId
+        return model
+    }
+    
     @Get('/user/:userId')
-    async GetAccountModel(@Param() { userId }) {
+    async GetAccountModelByUserId(@Param() { userId }) {
         const [account] = await this.acctSvcs.findAllByUserId(userId)
         if (!account) {
             throw new BadRequestException('invalid user id')
         }
         const model = await this.acctSvcs.buildModelForAccountId(account.accountId)
-        delete model.tokens
-        delete model.email
-        delete model.authId
-        return model
+        return this.acctSvcs.sanitizeModel(model)
+    }
+    
+    @Get('/:platform/:username')
+    async GetAccountModelByProfileId(@Param() { platform, username }) {
+        const model = await this.acctSvcs.buildModelForProfile(username, platform)
+        return this.acctSvcs.sanitizeModel(model)
     }
 
     @Put('/:accountId/unoId/:unoId')
@@ -72,8 +84,12 @@ export class CallOfDutyAccountController {
         if (!acct) {
             throw new NotFoundException('invalid account id')
         }
-        await this.acctSvcs.insertProfileForAccountId(accountId, username, platform, acct.games)
-        return { success: true }
+        try {
+            await this.acctSvcs.insertProfileForAccountId(accountId, username, platform, acct.games)
+            return { success: true }
+        } catch(e) {
+            throw new ConflictException(`profile "${platform}/${username}" already exists for accountId ${accountId}`)
+        }
     }
 
     @Delete('/:accountId/profile/:platform/:username')

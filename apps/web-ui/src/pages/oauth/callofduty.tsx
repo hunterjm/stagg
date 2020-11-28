@@ -9,6 +9,7 @@ import { notify } from 'src/hooks/notify'
 import * as store from 'src/store'
 import * as JWT from 'jsonwebtoken'
 import { getUser } from 'src/hooks/getUser'
+import { profileUrlFromUserStateModel } from 'src/components/mw/hooks'
 
 const Wrapper = styled.div`
   * {
@@ -111,6 +112,7 @@ const Spacer = styled.div`
 
 const CallOfDutyLogin = () => {
   const userState = store.useState(store.userState)
+  const userModel = userState.get()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [btnDisabled, setBtnDisabled] = useState(false)
@@ -138,7 +140,7 @@ const CallOfDutyLogin = () => {
           type: 'success',
           duration: 2500,
         })
-        Router.push(`/mw/@${payload.userId}`)
+        Router.push(profileUrlFromUserStateModel(userModel))
         return
       }
     }

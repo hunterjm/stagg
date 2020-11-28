@@ -6,26 +6,31 @@ import { AccountBoxes } from 'src/components/sections/Accounts'
 import * as store from 'src/store'
 import dynamic from 'next/dynamic'
 import { getUser } from 'src/hooks/getUser'
+import { useState } from 'react'
+import { profileUrlFromUserStateModel } from 'src/components/mw/hooks'
 
 
 const GettingStarted = () => {
+  const [loading, setLoading] = useState(false)
   const userState = store.useState(store.userState)
   const userModel = userState.get()
   if (userModel.user?.userId) {
-    Router.push(`/mw/@${userModel.user.userId}`)
+    Router.push(profileUrlFromUserStateModel(userModel))
   }
   const isFormReady = Boolean(userModel.oauth?.callofduty?.profiles?.length)
-  const buttonDisabled = !isFormReady
+  const buttonDisabled = !isFormReady || loading
   const completeSignUp = async () => {
+    setLoading(true)
     const { response } = await API.signup(Object.keys(userModel.oauth))
-    if (response?.jwt) {
-      store.cookies.jwtUser = response.jwt
-      for(const domainId of Object.keys(userModel.oauth)) {
-        Cookies.remove(`jwt.${domainId}`)
-      }
-      userState.set(getUser())
-      Router.push(`/mw/@${userModel.user.userId}`)
+    if (!response?.jwt) {
+      setLoading(false)
+      alert('Something went wrong')
+      return
     }
+    store.cookies.jwtUser = response.jwt
+    userState.set(getUser())
+    Router.push(profileUrlFromUserStateModel(userModel))
+    userState.set(getUser())
   }
   return (
     <Layout title="Dashboard" hideSignIn>

@@ -5,7 +5,7 @@ export const stat = (stats: any, stat: string) => stats && !isNaN(Number(stats[s
 export const loadouts = ({ player: { loadout }, matchID }:Schema.MW.Match.MP, accountId:string) => loadout.map(loadout => ({
     accountId,
     matchId: matchID,
-    hashId: `${objHash(loadout)}.${accountId}`,
+    hashId: `${matchID}.${accountId}.${objHash(loadout)}`,
     pwId: loadout.primaryWeapon.name,
     pwVariant: Number(loadout.primaryWeapon.variant),
     pwAttachments: loadout.primaryWeapon.attachments.filter(a => a.name !== 'none').map(a => a.name),

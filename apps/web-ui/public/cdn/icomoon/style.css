@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?zeblyx');
-  src:  url('fonts/icomoon.eot?zeblyx#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?zeblyx') format('truetype'),
-    url('fonts/icomoon.woff?zeblyx') format('woff'),
-    url('fonts/icomoon.svg?zeblyx#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?evobgo');
+  src:  url('fonts/icomoon.eot?evobgo#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?evobgo') format('truetype'),
+    url('fonts/icomoon.woff?evobgo') format('woff'),
+    url('fonts/icomoon.svg?evobgo#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-poo:before {
+  content: "\e919";
+}
 .icon-callofduty-wwii:before {
   content: "\e918";
 }
