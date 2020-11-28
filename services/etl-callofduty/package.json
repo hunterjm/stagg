@@ -14,9 +14,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "@stagg/db": "^1.0.2",
     "axios": "^0.20.0",
     "callofduty": "^0.9.9",
-    "@stagg/db": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "typeorm": "^0.2.29"
   },
