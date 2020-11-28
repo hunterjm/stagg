@@ -5,8 +5,10 @@ import {
     FAAS_ETL_COD_TTL,
     FAAS_ETL_COD_HOST,
     USER_NOT_FOUND_ERR,
-    API_HOST,
 } from './config'
+import { getCustomRepository } from 'typeorm'
+import { CallOfDuty } from '@stagg/db'
+import { CallOfDutyMatchService } from './match'
 
 /************************************************************************************************************
  * ETL PROCESS:
@@ -54,7 +56,7 @@ interface CompatibilityTable {
     matchDetails: CompatibilityItem
     matchSummary: CompatibilityItem
 }
-const compatibility:CompatibilityTable = {
+const compatibility: CompatibilityTable = {
     unoId: { gameIds: ['mw'], gameTypes: ['mp', 'wz'] },
     friends: { gameIds: ['mw'], gameTypes: ['mp', 'wz'] },
     matchEvents: { gameIds: ['mw'], gameTypes: ['mp'] },
@@ -65,7 +67,7 @@ const compatibility:CompatibilityTable = {
 // interface ProfileId { username: string, platform: Schema.Platform }
 // interface FriendId extends ProfileId { unoId: string }
 
-const parseUrl = (url:string) => url.split('#').join('%23')
+const parseUrl = (url: string) => url.split('#').join('%23')
 
 export namespace Worker {
     interface Config {
@@ -90,16 +92,20 @@ export namespace Worker {
         deleteInvalidProfiles: boolean
     }
     export class Instance {
-        private hardStopReached:boolean
-        private readonly API:API
-        private readonly accountId:string
-        private readonly profiles:Schema.ProfileId[]
-        private readonly hrtimeStart:[number,number]
-        private readonly originalCfg:Config
+        private hardStopReached: boolean
+        private readonly API: API
+        private readonly accountId: string
+        private readonly profiles: Schema.ProfileId[]
+        private readonly hrtimeStart: [number, number]
+        private readonly originalCfg: Config
+        private readonly accountRepo: CallOfDuty.Account.Base.Repository
+        private readonly authRepo: CallOfDuty.Account.Auth.Repository
+        private readonly profileRepo: CallOfDuty.Account.Profile.Repository
+        private readonly callofdutyMatchService: CallOfDutyMatchService
         constructor(
-            private readonly jwt:string,
-            private readonly cfg:Config,
-            private readonly options?:Partial<Options>,
+            private readonly jwt: string,
+            private readonly cfg: Config,
+            private readonly options?: Partial<Options>,
         ) {
             this.hardStopReached = false
             this.hrtimeStart = process.hrtime()
@@ -125,34 +131,26 @@ export namespace Worker {
             const { accountId, profiles } = JWT.decode(this.jwt) as IntegrityToken
             this.accountId = accountId
             this.profiles = profiles
+            this.accountRepo = getCustomRepository(CallOfDuty.Account.Base.Repository)
+            this.authRepo = getCustomRepository(CallOfDuty.Account.Auth.Repository)
+            this.profileRepo = getCustomRepository(CallOfDuty.Account.Profile.Repository)
+            this.callofdutyMatchService = new CallOfDutyMatchService();
         }
         private get HttpHeaders() {
             return { headers: { 'x-integrity-jwt': this.jwt } }
         }
         public async Run() {
             await this.ExecuteOnce()
-            while(!this.hardStopReached) {
+            while (!this.hardStopReached) {
                 await this.ExecuteCycle()
             }
         }
         // private HttpGet(url:string) {
         //     return axios.get(parseUrl(url), this.Headers)
         // }
-        private HttpPut(url:string, payload?:any) {
-            console.log('[^] PUT', url)
-            return axios.put(parseUrl(url), payload, this.HttpHeaders)
-        }
         private HttpPost(url:string, payload?:any) {
             console.log('[^] POST', url)
             return axios.post(parseUrl(url), payload, this.HttpHeaders)
-        }
-        private HttpPatch(url:string, payload?:any) {
-            console.log('[^] PATCH', url)
-            return axios.patch(parseUrl(url), payload, this.HttpHeaders)
-        }
-        private HttpDelete(url:string) {
-            console.log('[^] DELETE', url)
-            return axios.delete(parseUrl(url), this.HttpHeaders)
         }
         private HardStop() {
             this.hardStopReached = true
@@ -173,15 +171,15 @@ export namespace Worker {
             if (this.ShouldExecuteFeature('platformIds')) {
                 const invalidProfiles = [...this.profiles]
                 const profileIds = await this.FetchPlatformIds()
-                for(const { platform, username } of <Schema.ProfileId.PlatformId[]>profileIds) {
+                for (const { platform, username } of <Schema.ProfileId.PlatformId[]>profileIds) {
                     await this.SaveAccountPlatformId(username, platform)
-                    invalidProfiles.forEach((p:any,i) => {
+                    invalidProfiles.forEach((p: any, i) => {
                         if (p.username === username && p.platform === platform) {
                             delete invalidProfiles[i]
                         }
                     })
                 }
-                for(const { platform, username } of <Schema.ProfileId.PlatformId[]>invalidProfiles.filter(p => p)) {
+                for (const { platform, username } of <Schema.ProfileId.PlatformId[]>invalidProfiles.filter(p => p)) {
                     await this.DeleteInvalidProfile(username, platform)
                 }
             }
@@ -190,7 +188,7 @@ export namespace Worker {
                 const friends = await this.FetchFriendsList()
                 await this.SaveFriendsList(friends)
                 if (this.ShouldExecuteFeature('accountDiscovery')) {
-                    for(const { unoId, username, platform } of <(Schema.ProfileId.UnoId & Schema.ProfileId.PlatformId)[]>friends) {
+                    for (const { unoId, username, platform } of <(Schema.ProfileId.UnoId & Schema.ProfileId.PlatformId)[]>friends) {
                         await this.SaveDiscoveredAccount('friend', this.cfg.gameId, unoId, username, platform)
                     }
                 }
@@ -199,7 +197,7 @@ export namespace Worker {
             try {
                 const profileData = await this.FetchProfileData()
                 await this.SaveProfileData(profileData)
-            } catch(e) {
+            } catch (e) {
                 if (e === USER_NOT_FOUND_ERR && this.ShouldExecuteFeature('deleteInvalidProfiles')) {
                     await this.DeleteInvalidProfile(this.cfg.username, this.cfg.platform)
                     throw `invalid profile for "${this.cfg.username}" on platform "${this.cfg.platform}"`
@@ -215,7 +213,7 @@ export namespace Worker {
             // Match data
             let existingMatches = 0
             const matchListRes = await this.FetchMatchList()
-            for(const match of matchListRes.matches) {
+            for (const match of matchListRes.matches) {
                 // check if we need to increase next startTime
                 const normalizedStartTime = (match.utcStartSeconds - 5) * 1000
                 if (!this.cfg.startTime || this.cfg.startTime > normalizedStartTime) {
@@ -227,7 +225,7 @@ export namespace Worker {
                 }
                 try {
                     await this.SaveMatchRecord(match)
-                } catch(e) {
+                } catch (e) {
                     existingMatches++
                     continue // match already exists
                 }
@@ -241,7 +239,7 @@ export namespace Worker {
                 }
                 if (this.ShouldExecuteFeature('matchDetails') && this.ShouldExecuteFeature('accountDiscovery')) {
                     const matchDetails = await this.API.MatchDetails(match.matchID, this.cfg.gameType, this.cfg.gameId)
-                    for(const matchRecord of matchDetails.allPlayers) {
+                    for (const matchRecord of matchDetails.allPlayers) {
                         const { uno } = matchRecord.player
                         console.log('Saving unoId account', uno)
                         await this.SaveDiscoveredAccount('enemy', this.cfg.gameId, uno)
@@ -258,15 +256,15 @@ export namespace Worker {
         private async SpawnSiblingInstance() {
             return this.HttpPost(FAAS_ETL_COD_HOST, this.cfg)
         }
-        private ShouldSpawnSibling():boolean {
+        private ShouldSpawnSibling(): boolean {
             const [execTimeSec] = process.hrtime(this.hrtimeStart)
             return execTimeSec >= FAAS_ETL_COD_TTL
         }
         private ShouldExecuteFeature(
             feature: 'unoId' | 'identity' | 'platformIds' | 'profileData' | 'friendsList' |
-                     'matchEvents' | 'matchDetails' | 'matchSummary' |
-                     'deleteInvalidProfiles' | 'accountDiscovery'
-        ):boolean {
+                'matchEvents' | 'matchDetails' | 'matchSummary' |
+                'deleteInvalidProfiles' | 'accountDiscovery'
+        ): boolean {
             if (feature === 'identity') {
                 return this.options.identity && Boolean(this.originalCfg.username && this.originalCfg.platform)
             }
@@ -281,27 +279,27 @@ export namespace Worker {
             }
             return this.options[feature] && compatibility[feature] && compatibility[feature].gameIds.includes(this.cfg.gameId)
         }
-        private async FetchIdentities():Promise<{ [key:string]: Schema.ProfileId }> {
-            const profilesByGame:{ [key:string]: Schema.ProfileId } = {}
+        private async FetchIdentities(): Promise<{ [key: string]: Schema.ProfileId }> {
+            const profilesByGame: { [key: string]: Schema.ProfileId } = {}
             const { titleIdentities } = await this.API.Identity()
-            for(const { title, username, platform } of titleIdentities) {
+            for (const { title, username, platform } of titleIdentities) {
                 profilesByGame[title] = { username, platform }
             }
             return profilesByGame
         }
-        private async FetchPlatformIds():Promise<Schema.ProfileId[]> {
-            const profileIds:Schema.ProfileId[] = []
+        private async FetchPlatformIds(): Promise<Schema.ProfileId[]> {
+            const profileIds: Schema.ProfileId[] = []
             const { username, platform } = this.cfg
             const accountsRes = await this.API.Accounts({ username, platform })
-            for(const platform in accountsRes) {
+            for (const platform in accountsRes) {
                 profileIds.push({ platform: platform as Schema.Platform, username: accountsRes[platform].username })
             }
             return profileIds
         }
-        private async FetchFriendsList():Promise<Schema.ProfileId[]> {
-            const friends:Schema.ProfileId[] = []
+        private async FetchFriendsList(): Promise<Schema.ProfileId[]> {
+            const friends: Schema.ProfileId[] = []
             const friendsRes = await this.API.Friends()
-            for(const { username, platform, accountId } of friendsRes.uno) {
+            for (const { username, platform, accountId } of friendsRes.uno) {
                 friends.push({ username, platform, unoId: accountId })
             }
             return friends
@@ -318,98 +316,127 @@ export namespace Worker {
             }
             return matchListRes
         }
-        private async SaveAccountUnoId(unoId:string) {
+        private async SaveAccountUnoId(unoId: string) {
             try {
-                await this.HttpPut(`${API_HOST}/callofduty/account/${this.accountId}/unoId/${unoId}`)
+                await this.accountRepo.updateAccountUnoId(this.accountId, unoId)
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] SaveAccountUnoId Error consumed', e.message)
                 return false
             }
         }
-        private async SaveAccountPlatformId(username:string, platform:Schema.Platform) {
+        private async SaveAccountPlatformId(username: string, platform: Schema.Platform) {
             try {
-                await this.HttpPut(`${API_HOST}/callofduty/account/${this.accountId}/profile/${platform}/${username}`)
+                const account = await this.accountRepo.findOneOrFail(this.accountId)
+                const auth = await this.authRepo.findByAccountId(this.accountId)
+                const profile = await this.profileRepo.findByUsernamePlatform(username, platform)
+                if (!profile) {
+                    await this.profileRepo.insertProfile({ account, platform, username, games: auth?.games })
+                }
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] SaveAccountPlatformId Error consumed', e.message)
                 return false
             }
         }
-        private async SaveDiscoveredAccount(origin:'friend'|'enemy', gameId:Schema.Game, unoId:string, username?:string, platform?:Schema.Platform) {
+        private async SaveDiscoveredAccount(origin: 'friend' | 'enemy', gameId: Schema.Game, unoId: string, username?: string, platform?: Schema.Platform) {
             try {
-                const suffix = username && platform ? `/${platform}/${username}` : ''
-                await this.HttpPut(`${API_HOST}/callofduty/account/${origin}/${gameId}/${unoId}${suffix}`)
+                // const suffix = username && platform ? `/${platform}/${username}` : ''
+                // await this.HttpPut(`${API_HOST}/callofduty/account/${origin}/${gameId}/${unoId}${suffix}`)
+                // TODO: check if this is implemented or not
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] SaveDiscoveredAccount Error consumed', e.message)
                 return false
             }
         }
-        private async SaveFriendsList(friendsList:Schema.ProfileId[]) {
+        // callofduty.friends.controller line 12
+        private async SaveFriendsList(friendsList: Schema.ProfileId[]) {
             try {
-                const { gameId, gameType, platform, username } = this.cfg
-                await this.HttpPut(`${API_HOST}/callofduty/friends/${gameId}/${gameType}/${platform}/${username}`, friendsList)
+                // const { gameId, gameType, platform, username } = this.cfg
+                // await this.HttpPut(`${API_HOST}/callofduty/friends/${gameId}/${gameType}/${platform}/${username}`, friendsList)
+                // not implemented
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] SaveFriendsList Error consumed', e.message)
                 return false
             }
         }
-        private async SaveProfileData(profileRes:Schema.Routes.Profile) {
+        // callofduty.profile.controller line 18
+        private async SaveProfileData(profileRes: Schema.Routes.Profile) {
             try {
-                const { gameId, gameType, platform, username } = this.cfg
-                await this.HttpPut(`${API_HOST}/callofduty/profile/${gameId}/${gameType}/${platform}/${username}`, profileRes)
+                // const { gameId, gameType, platform, username } = this.cfg
+                // await this.HttpPut(`${API_HOST}/callofduty/profile/${gameId}/${gameType}/${platform}/${username}`, profileRes)
+                // not implemented
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] SaveProfileData Error consumed', e.message)
                 return false
             }
         }
-        private async DeleteInvalidProfile(username:string, platform:Schema.Platform) {
+        private async DeleteInvalidProfile(username: string, platform: Schema.Platform) {
             try {
-                await this.HttpDelete(`${API_HOST}/callofduty/account/${this.accountId}/profile/${platform}/${username}`)
+                await this.accountRepo.findOneOrFail(this.accountId)
+                await this.profileRepo.deleteForAccountId(this.accountId, username, platform)
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] DeleteInvalidProfile Error consumed', e.message)
                 return false
             }
         }
-        private async SaveMatchEvents(matchMapEventsRes:Schema.Routes.MatchEvents) {
+        // callofduty.match.controller line 39
+        private async SaveMatchEvents(matchMapEventsRes: Schema.Routes.MatchEvents) {
             try {
-                await this.HttpPut(`${API_HOST}/callofduty/match/${this.cfg.gameId}/${this.cfg.gameType}/${matchMapEventsRes.matchId}/events`, matchMapEventsRes)
+                // await this.HttpPut(`${API_HOST}/callofduty/match/${this.cfg.gameId}/${this.cfg.gameType}/${matchMapEventsRes.matchId}/events`, matchMapEventsRes)
+                // not implemented
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] SaveMatchEvents Error consumed', e.message)
                 return false
             }
         }
-        private async SaveMatchRecord(match:Schema.Match, isForeignAcct?:boolean) {
+        // callofduty.match.controller line 43 and line 69
+        private async SaveMatchRecord(match: Schema.Match, isForeignAcct?: boolean) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg
-                const url = this.ShouldExecuteFeature('unoId') ? match.player.uno : `${platform}/${username}`
                 if (isForeignAcct && !this.ShouldExecuteFeature('unoId')) {
                     throw `cannot save match record on foreign account without unoId for ${gameId}/${gameType}/${match.matchID}`
                 }
-                await this.HttpPut(`${API_HOST}/callofduty/match/${gameId}/${gameType}/${match.matchID}/${url}`, match)
+                // pull account by unoId OR username/platform
+                let account: CallOfDuty.Account.Base.Entity
+                if (this.ShouldExecuteFeature('unoId')) {
+                    account = await this.accountRepo.findOneOrFailByUnoId(match.player.uno)
+                } else {
+                    const profile = await this.profileRepo.findByUsernamePlatform(username, platform)
+                    if (!profile) {
+                        throw `user profile not found`
+                    }
+                    account = profile.account
+                }
+                await this.callofdutyMatchService.insertMatchRecord(account, gameId, gameType, match)
+                // inserting match recrod into match table
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] SaveMatchRecord Error consumed', e.response.request.data.message)
                 return false
             }
         }
-        private async UpdateMatchRecord(matchId:string, summary:Schema.Summary) {
+        // callofduty.match.controller line 82
+        private async UpdateMatchRecord(matchId: string, summary: Schema.Summary) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg
-                await this.HttpPatch(`${API_HOST}/callofduty/match/${gameId}/${gameType}/${matchId}/${platform}/${username}`, { avgLifeTime: summary.avgLifeTime })
+                const profile = await this.profileRepo.findByUsernamePlatform(username, platform)
+                if (!profile) {
+                    throw `user profile not found`
+                }
+                await this.callofdutyMatchService.updateMatchRecord(matchId, profile.account.accountId, gameId, gameType, { avgLifeTime: summary.avgLifeTime })
                 return true
-            } catch(e) {
+            } catch (e) {
                 console.log('[>] UpdateMatchRecord Error consumed', e.message)
                 return false
             }
         }
     }
-    
 }
 
 

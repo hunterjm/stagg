@@ -16,7 +16,9 @@
   "dependencies": {
     "axios": "^0.20.0",
     "callofduty": "^0.9.9",
-    "jsonwebtoken": "^8.5.1"
+    "@stagg/db": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "typeorm": "^0.2.29"
   },
   "devDependencies": {
     "@types/jest": "^26.0.13",

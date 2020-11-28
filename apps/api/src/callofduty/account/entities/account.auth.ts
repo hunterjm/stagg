@@ -22,14 +22,17 @@ export class AccountAuth {
   @Column('citext', { array: true })
   games: CallOfDuty.Game[]
 
-  @Column('jsonb', { array: true })
+  @Column('jsonb')
   profiles: CallOfDuty.ProfileId.PlatformId[]
 
   @Column('jsonb')
   tokens: CallOfDuty.Tokens
 
   @Column()
-  created: number
+  createdAt: Date
+
+  @Column()
+  updatedAt: Date
 }
 
 @Injectable()
@@ -48,7 +51,7 @@ export class AccountAuthDAO {
       accountId,
       games: () => `array[${[...new Set(games)].map(game => `'${game}'`).join(',')}]::citext[]`,
       tokens: () => `'${JSON.stringify(tokens)}'::jsonb`,
-      profiles: () => `array[${Object.values(indexedProfiles).map(p => `'{"platform":"${p.platform}","username":"${p.username}"}'`)}]::jsonb[]`,
+      profiles: () => `'${JSON.stringify(Object.values(indexedProfiles))}'::jsonb`,
     }
   }
   private async _findOne(criteria:any) {
@@ -59,10 +62,10 @@ export class AccountAuthDAO {
     return this._findOne({ where: { authId } })
   }
   public async findByEmail(email:string):Promise<AccountAuth> {
-    return this._findOne({ where: { email }, order: { created: -1 } })
+    return this._findOne({ where: { email }, order: { createdAt: -1 } })
   }
   public async findByAccountId(accountId:string):Promise<AccountAuth> {
-    return this._findOne({ where: { accountId }, order: { created: -1 } })
+    return this._findOne({ where: { accountId }, order: { createdAt: -1 } })
   }
   public async insert(model:Partial<AccountAuth>):Promise<string> {
     await this.repo.createQueryBuilder()

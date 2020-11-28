@@ -14,7 +14,10 @@ export class User {
   apiKey: string
 
   @Column()
-  created: number
+  createdAt: Date
+
+  @Column()
+  updatedAt: Date
 }
 
 @Injectable()

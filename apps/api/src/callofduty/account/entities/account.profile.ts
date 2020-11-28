@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Entity, Column, PrimaryColumn } from 'typeorm'
+const objHash = require('object-hash')
 
 export type AuthTokens = { sso: string, xsrf: string, atkn: string }
 export type ProfileId = { username: string, platform: CallOfDuty.Platform }
@@ -24,8 +25,11 @@ export class AccountProfile {
   @Column('citext', { array: true })
   games: CallOfDuty.Game[]
 
-  @Column('timestamp without time zone')
-  created: number
+  @Column()
+  createdAt: Date
+
+  @Column()
+  updatedAt: Date
 
   @Column('timestamp without time zone', { nullable: true })
   deleted: number
@@ -37,6 +41,9 @@ export class AccountProfileDAO {
     @InjectRepository(AccountProfile, 'callofduty') private repo: Repository<AccountProfile>,
   ) {}
   private normalizeModel(model:Partial<AccountProfile>) {
+    if (!model.hashId) {
+      model.hashId = objHash(model)
+    }
     return {
       ...model,
       games: () => `array[${[...new Set(model.games)].map(game => `'${game}'`).join(',')}]::citext[]`,
@@ -49,7 +56,7 @@ export class AccountProfileDAO {
     await this.repo.delete(profileId)
   }
   public async findByUsername(username:string, platform:Schema.Platform):Promise<AccountProfile> {
-    return this.repo.findOne({ where: { username, platform }, order: { created: -1 } })
+    return this.repo.findOne({ where: { username, platform }, order: { createdAt: -1 } })
   }
   public async findAllByAccountId(accountId:string):Promise<AccountProfile[]> {
     return this.repo.find({ where: { accountId } })

@@ -16,7 +16,10 @@ export class Account {
   unoId: string
 
   @Column()
-  created: number
+  createdAt: Date
+
+  @Column()
+  updatedAt: Date
 }
 
 @Injectable()
