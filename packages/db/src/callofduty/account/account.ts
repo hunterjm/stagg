@@ -37,6 +37,10 @@ class AccountRepository extends AbstractRepository<Account> {
         return await this.repository.findOneOrFail(accountId)
     }
 
+    public async findOneOrFailByUnoId(unoId: string): Promise<Account> {
+        return await this.repository.findOneOrFail({ unoId })
+    }
+
     public async findAllByUserId(userId: string): Promise<Account[]> {
         const accts = await this.repository.find({ userId })
         if (!accts || !accts.length) return []

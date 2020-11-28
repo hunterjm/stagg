@@ -28,11 +28,11 @@ class AccountProfile extends BaseEntity {
 
 @EntityRepository(AccountProfile)
 class ProfileRepository extends AbstractRepository<AccountProfile> {
-    private normailze({ hashId, account, platform, username, games, deleted }: Partial<AccountProfile>): Partial<AccountProfile> {
+    private normailze({ hashId, account, platform, username, games }: Partial<AccountProfile>): Partial<AccountProfile> {
         if (!hashId) {
             hashId = objHash({ accountId: account.accountId, username, platform, games })
         }
-        return { hashId, account, platform, username, games, deleted }
+        return { hashId, account, platform, username, games }
     }
 
     public async insertProfile(profile: Partial<AccountProfile>): Promise<AccountProfile> {
@@ -41,7 +41,7 @@ class ProfileRepository extends AbstractRepository<AccountProfile> {
 
     public async updateProfile(profile: AccountProfile): Promise<AccountProfile> {
         const existing = await this.repository.findOneOrFail(profile.hashId)
-        return await this.repository.save({ ...existing, ...profile })
+        return await this.repository.save({ ...existing, ...this.normailze(profile) })
     }
 
     public async deleteForAccountId(accountId: string, username: string, platform: CallOfDuty.Platform): Promise<UpdateResult> {
@@ -50,6 +50,10 @@ class ProfileRepository extends AbstractRepository<AccountProfile> {
             throw 'invalid account'
         }
         return await this.repository.softDelete(existing.hashId)
+    }
+
+    public async findByUsernamePlatform(username:string, platform:CallOfDuty.Platform): Promise<AccountProfile> {
+        return await this.repository.findOne({ where: {username, platform}, relations: [ 'account' ] })
     }
 }
 
