@@ -9,10 +9,10 @@ class Account extends BaseEntity {
     @Column('uuid', { unique: true })
     userId: string
 
-    @Column('citext')
+    @Column('citext', { nullable: true })
     tag: string
 
-    @Column('citext')
+    @Column('citext', { nullable: true })
     avatar: string
 }
 

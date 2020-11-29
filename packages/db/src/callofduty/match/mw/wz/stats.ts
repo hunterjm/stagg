@@ -1,4 +1,4 @@
-import { AbstractRepository, Column, Entity, EntityRepository, Index, PrimaryColumn } from 'typeorm'
+import { AbstractRepository, Column, Entity, EntityRepository, FindManyOptions, Index, PrimaryColumn } from 'typeorm'
 import { BaseEntity } from '../../../../abstract'
 import { Schema as CallOfDuty } from 'callofduty'
 
@@ -174,6 +174,16 @@ class StatsRepository extends AbstractRepository<Stats> {
     public async updateStats(stats: Stats): Promise<Stats> {
         const existing = await this.repository.findOneOrFail(stats.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(stats) })
+    }
+
+    public async findByAccountId(accountId: string, limit?: number, offset?: number): Promise<Stats[]> {
+        const options = {
+            where: { accountId },
+            order: { startTime: 'DESC' },
+        } as FindManyOptions
+        if (limit) options.take = limit
+        if (offset) options.skip = offset
+        return await this.repository.find(options)
     }
 }
 

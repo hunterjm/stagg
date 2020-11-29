@@ -59,6 +59,7 @@ export class UserController {
             try {
                 await this.discordSvcs.createAccount(userId, id, tag, avatar)
             } catch(e) {
+                console.log(`[!] discord error consumed: ${e}`)
                 // discord acct already exists
             }
         }

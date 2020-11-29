@@ -51,7 +51,7 @@ export class CallOfDutyAccountService {
         account = findByUnoId
       }
     }
-    const authId = await this.authRepo.insertAuth({ ip, account, email, tokens, games, profiles })
+    const { authId } = await this.authRepo.insertAuth({ ip, account, email, tokens, games, profiles })
     if (!account) {
       return { authId, unoId, email, tokens, games, profiles }
     }
