@@ -35,6 +35,14 @@ class AccountRepository extends AbstractRepository<Account> {
         const existing = await this.repository.findOneOrFail({ where: { userId: account.userId }})
         return await this.repository.save({ ...existing, ...this.normailze(account)})
     }
+
+    public async findOne(discordId:string): Promise<Account> {
+        return await this.repository.findOne(discordId)
+    }
+
+    public async findOneByUserId(userId: string): Promise<Account> {
+        return await this.repository.findOne({ userId })
+    }
 }
 
 export {

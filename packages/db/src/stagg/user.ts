@@ -30,13 +30,18 @@ class UserRepository extends AbstractRepository<User> {
         return { }
     }
 
-    public async insertUser(user: Partial<User>): Promise<User> {
-        return await this.repository.save(this.normailze(user))
+    public async insertUser(user?: Partial<User>): Promise<User> {
+        if (!user) user = new User();
+        return this.repository.save(user)
     }
 
     public async updateUser(user: User): Promise<User> {
         const existing = await this.repository.findOneOrFail(user.userId)
-        return await this.repository.save({ ...existing, ...this.normailze(user) })
+        return this.repository.save({ ...existing, ...this.normailze(user) })
+    }
+
+    public async findOne(userId: string): Promise<User> {
+        return this.repository.findOne(userId)
     }
 }
 

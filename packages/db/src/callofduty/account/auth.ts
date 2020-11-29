@@ -39,16 +39,24 @@ class AuthRepository extends AbstractRepository<AccountAuth> {
     }
 
     public async insertAuth(auth: Partial<AccountAuth>): Promise<AccountAuth> {
-        return await this.repository.save(this.normalize(auth))
+        return this.repository.save(this.normalize(auth))
     }
 
     public async updateAuth(auth: AccountAuth): Promise<AccountAuth> {
         const existing = await this.repository.findOneOrFail(auth.authId)
-        return await this.repository.save({ ...existing, ...this.normalize(auth) })
+        return this.repository.save({ ...existing, ...this.normalize(auth) })
+    }
+
+    public async findOne(authId: string): Promise<AccountAuth> {
+        return this.repository.findOne(authId)
     }
 
     public async findByAccountId(accountId: string): Promise<AccountAuth> {
-        return await this.repository.findOne({ account: { accountId } })
+        return this.repository.findOne({ account: { accountId } })
+    }
+
+    public async findByEmail(email: string): Promise<AccountAuth> {
+        return this.repository.findOne({ where: { email }, order: { createdAt: 'DESC' } })
     }
 }
 

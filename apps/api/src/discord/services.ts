@@ -1,8 +1,9 @@
 import axios from 'axios'
 import * as qs from 'querystring'
 import { BadGatewayException, Injectable } from '@nestjs/common'
-import { Account, AccountDAO } from 'src/discord/entity'
 import { DISCORD } from 'src/config'
+import { Discord } from '@stagg/db'
+import { InjectRepository } from '@nestjs/typeorm'
 
 export interface DiscordAuthorizationJWT {
   id:string
@@ -15,17 +16,17 @@ export interface DiscordAuthorizationJWT {
 @Injectable()
 export class DiscordService {
   constructor(
-    private readonly acctDao: AccountDAO,
+    @InjectRepository(Discord.Account.Repository, 'discord')
+    private readonly acctRepo: Discord.Account.Repository
   ) {}
-  public async createAccount(userId:string, discordId:string, tag:string, avatar:string):Promise<Account> {
-    await this.acctDao.insert({ userId, discordId, tag, avatar })
-    return this.acctDao.findById(discordId)
+  public async createAccount(userId:string, discordId:string, tag:string, avatar:string) {
+    return await this.acctRepo.insertAccount({ userId, discordId, tag, avatar })
   }
   public async findById(discordId:string) {
-    return this.acctDao.findById(discordId)
+    return this.acctRepo.findOne(discordId)
   }
   public async findByUserId(userId:string) {
-    return this.acctDao.findByUserId(userId)
+    return this.acctRepo.findOneByUserId(userId)
   }
   public async exchangeAccessCode(accessCode:string):Promise<DiscordAuthorizationJWT> {
     let id:string, tag:string, avatar:string, username:string, accessToken:string, refreshToken:string

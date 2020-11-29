@@ -3,29 +3,26 @@ import axios from 'axios'
 import * as JWT from 'jsonwebtoken'
 import { Assets, Schema, API } from 'callofduty'
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
-import {
-  Account,
-  AccountDAO,
-  AccountAuth,
-  AccountAuthDAO,
-  AccountProfile,
-  AccountProfileDAO,
-  AccountModel,
-} from './entity'
 import { JWT_SECRET, FAAS } from 'src/config'
+import { CallOfDuty } from '@stagg/db'
+import { AccountModel } from './dto'
+import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()
 export class CallOfDutyAccountService {
   constructor(
-    private readonly acctDao: AccountDAO,
-    private readonly authDao: AccountAuthDAO,
-    private readonly profileDao: AccountProfileDAO,
+    @InjectRepository(CallOfDuty.Account.Base.Repository, 'callofduty') 
+    private readonly acctRepo: CallOfDuty.Account.Base.Repository,
+    @InjectRepository(CallOfDuty.Account.Auth.Repository, 'callofduty') 
+    private readonly authRepo: CallOfDuty.Account.Auth.Repository,
+    @InjectRepository(CallOfDuty.Account.Profile.Repository, 'callofduty') 
+    private readonly profileRepo: CallOfDuty.Account.Profile.Repository,
   ) {}
   public async fetchAll() {
-    return this.acctDao.findAll()
+    return this.acctRepo.findAll()
   }
   public async findAllByUserId(userId:string) {
-    return this.acctDao.findAllByUserId(userId)
+    return this.acctRepo.findAllByUserId(userId)
   }
   public async newSignIn(
     ip:string,
@@ -35,30 +32,30 @@ export class CallOfDutyAccountService {
     profiles?:Schema.ProfileId.PlatformId[],
     unoId?:string
   ) {
-    let accountId:string
-    const findByEmail = await this.authDao.findByEmail(email)
+    let account:CallOfDuty.Account.Base.Entity
+    const findByEmail = await this.authRepo.findByEmail(email)
     if (findByEmail) {
-      accountId = findByEmail.accountId
+      account = findByEmail.account
     }
     for(const { username, platform } of profiles) {
-      if (!accountId) {
-        const findByUsername = await this.profileDao.findByUsername(username, platform)
+      if (!account) {
+        const findByUsername = await this.profileRepo.findByUsernamePlatform(username, platform)
         if (findByUsername) {
-          accountId = findByUsername.accountId
+          account = findByUsername.account
         }
       }
     }
-    if (!accountId && unoId) {
-      const findByUnoId = await this.acctDao.findByUnoId(unoId)
+    if (!account && unoId) {
+      const findByUnoId = await this.acctRepo.findOneByUnoId(unoId)
       if (findByUnoId) {
-        accountId = findByUnoId.accountId
+        account = findByUnoId
       }
     }
-    const authId = await this.authDao.insert({ ip, accountId, email, tokens, games, profiles })
-    if (!accountId) {
+    const authId = await this.authRepo.insertAuth({ ip, account, email, tokens, games, profiles })
+    if (!account) {
       return { authId, unoId, email, tokens, games, profiles }
     }
-    return this.buildModelForAccountId(accountId)
+    return this.buildModelForAccountId(account.accountId)
   }
   public async authorizationExchange(
     email:string,
@@ -128,47 +125,44 @@ export class CallOfDutyAccountService {
     return model
   }
   public async buildModelForUnoId(unoId:string):Promise<AccountModel> {
-    const acct = await this.acctDao.findByUnoId(unoId)
+    const acct = await this.acctRepo.findOneByUnoId(unoId)
     if (!acct) {
       return null
     }
     return this.buildModelForAccountId(acct.accountId)
   }
   public async buildModelForProfile(username:string, platform:Schema.Platform):Promise<AccountModel> {
-    const profileRecord = await this.profileDao.findByUsername(username, platform)
+    const profileRecord = await this.profileRepo.findByUsernamePlatform(username, platform)
     if (!profileRecord) {
       return null
     }
-    return this.buildModelForAccountId(profileRecord.accountId)
+    return this.buildModelForAccountId(profileRecord.account.accountId)
   }
-  public async buildModelForAccountId(accountId:string):Promise<AccountModel> {
-    const { userId, unoId } = await this.acctDao.findById(accountId)
-    const { authId, profiles, games, email, tokens } = await this.authDao.findByAccountId(accountId)
+  public async buildModelForAccountId(accountId):Promise<AccountModel> {
+    const { userId, unoId } = await this.acctRepo.findOneOrFail(accountId)
+    const { authId, profiles, games, email, tokens } = await this.authRepo.findByAccountId(accountId)
     return { userId, unoId, authId, profiles, games, email, tokens, accountId }
   }
   public async insertProfileForAccountId(accountId:string, username:string, platform:Schema.Platform, games:Schema.Game[]) {
-    const profileParmas = { accountId, username, platform, games }
-    const hashId = `${accountId}.${objHash(profileParmas)}`
-    await this.profileDao.insert({ hashId, ...profileParmas })
+    const account = await this.acctRepo.findOneOrFail(accountId)
+    await this.profileRepo.insertProfile({ account, username, platform, games })
   }
   public async deleteProfileForAccountId(accountId:string, username:string, platform:Schema.Platform) {
-    const profile = await this.profileDao.findByUsername(username, platform)
-    if (!profile || profile.accountId !== accountId) {
+    const profile = await this.profileRepo.findByUsernamePlatform(username, platform)
+    if (!profile || profile.account.accountId !== accountId) {
       throw 'invalid account'
     }
-    await this.profileDao.deleteById(profile.hashId)
+    await this.profileRepo.deleteForAccountId(accountId, username, platform)
   }
   public async saveUnoIdProfile(unoId:string, game:Schema.Game, username?:string, platform?:Schema.Platform) {
-    let account = await this.acctDao.findByUnoId(unoId)
+    let account = await this.acctRepo.findOneByUnoId(unoId)
     if (!account) {
-      await this.acctDao.insert({ unoId })
-      account = await this.acctDao.findByUnoId(unoId)
+      account = await this.acctRepo.insertAccount({ unoId })
     }
-    const { accountId } = account
     if (game && username && platform) {
-      const found = await this.profileDao.findByUsername(username, platform)
-      if (!found || found.accountId !== accountId) {
-        await this.profileDao.insert({ accountId, username, platform, games: [game] })
+      const found = await this.profileRepo.findByUsernamePlatform(username, platform)
+      if (!found || found.account !== account) {
+        await this.profileRepo.insertProfile({ account, username, platform, games: [game] })
       }
     }
   }
@@ -196,21 +190,19 @@ export class CallOfDutyAccountService {
     }
   }
   public async createAccountForUser(userId:string, authId:string, unoId:string='', etl:boolean=true) {
-    const authRecord = await this.authDao.findById(authId)
+    const authRecord = await this.authRepo.findOne(authId)
     if (!authRecord) {
       throw new InternalServerErrorException(`invalid authId ${authId}`)
     }
-    const { games, profiles, email, tokens } = authRecord
-    await this.acctDao.insert({ userId, unoId })
-    const [acct] = await this.acctDao.findAllByUserId(userId)
-    const { accountId } = acct
-    await this.authDao.update({ ...authRecord, accountId })
+    const { games, profiles } = authRecord
+    const account = await this.acctRepo.insertAccount({ userId, unoId })
+    await this.authRepo.updateAuth({ ...authRecord, account })
     for(const { username, platform } of profiles) {
-      await this.insertProfileForAccountId(accountId, username, platform, games)
+      await this.insertProfileForAccountId(account.accountId, username, platform, games)
     }
     if (etl) {
-      await this.triggerETL(accountId)
+      await this.triggerETL(account.accountId)
     }
-    return this.buildModelForAccountId(accountId)
+    return this.buildModelForAccountId(account.accountId)
   }
 }

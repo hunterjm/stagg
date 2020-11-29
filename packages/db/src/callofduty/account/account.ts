@@ -20,25 +20,29 @@ class AccountRepository extends AbstractRepository<Account> {
     }
 
     public async insertAccount(account: Partial<Account>): Promise<Account> {
-        return await this.repository.save(this.normailze(account))
+        return this.repository.save(this.normailze(account))
     }
 
     public async updateAccount(account: Account): Promise<Account> {
         const existing = await this.repository.findOneOrFail(account.accountId)
-        return await this.repository.save({ ...existing, ...this.normailze(account) })
+        return this.repository.save({ ...existing, ...this.normailze(account) })
     }
 
     public async updateAccountUnoId(accountId: string, unoId: string): Promise<Account> {
         const existing = await this.repository.findOneOrFail(accountId)
-        return await this.repository.save({ ...existing, unoId })
+        return this.repository.save({ ...existing, unoId })
+    }
+
+    public async findAll(): Promise<Account[]> {
+        return this.repository.find()
     }
 
     public async findOneOrFail(accountId: string): Promise<Account> {
-        return await this.repository.findOneOrFail(accountId)
+        return this.repository.findOneOrFail(accountId)
     }
 
-    public async findOneOrFailByUnoId(unoId: string): Promise<Account> {
-        return await this.repository.findOneOrFail({ unoId })
+    public async findOneByUnoId(unoId: string): Promise<Account> {
+        return this.repository.findOne({ unoId })
     }
 
     public async findAllByUserId(userId: string): Promise<Account[]> {

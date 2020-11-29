@@ -405,13 +405,16 @@ export namespace Worker {
                 // pull account by unoId OR username/platform
                 let account: CallOfDuty.Account.Base.Entity
                 if (this.ShouldExecuteFeature('unoId')) {
-                    account = await this.accountRepo.findOneOrFailByUnoId(match.player.uno)
+                    account = await this.accountRepo.findOneByUnoId(match.player.uno)
                 } else {
                     const profile = await this.profileRepo.findByUsernamePlatform(username, platform)
                     if (!profile) {
                         throw `user profile not found`
                     }
                     account = profile.account
+                }
+                if (!account) {
+                    throw `account not found`
                 }
                 await this.callofdutyMatchService.insertMatchRecord(account, gameId, gameType, match)
                 // inserting match recrod into match table

@@ -1,3 +1,5 @@
+import { CallOfDuty, Discord, Stagg } from '@stagg/db'
+
 // .env is only used for local
 require('dotenv').config()
 
@@ -54,21 +56,35 @@ export const PGSQL = {
     CODE: {
         DUPLICATE: 23505
     },
-    FACTORY(database:string) {
+    FACTORY(database: string) {
         const baseConfig = {
             database,
             type: 'postgres',
             username: PGSQL.USER,
             password: PGSQL.PASS,
             entities: [
-              'dist/**/*entity.js',
+                CallOfDuty.Account.Base.Entity,
+                CallOfDuty.Account.Auth.Entity,
+                CallOfDuty.Account.Profile.Entity,
+                CallOfDuty.Match.MW.MP.Detail.Entity,
+                CallOfDuty.Match.MW.MP.Stats.Entity,
+                CallOfDuty.Match.MW.MP.Killstreak.Entity,
+                CallOfDuty.Match.MW.MP.Loadout.Entity,
+                CallOfDuty.Match.MW.MP.Objective.Entity,
+                CallOfDuty.Match.MW.MP.Weapon.Entity,
+                CallOfDuty.Match.MW.WZ.Detail.Entity,
+                CallOfDuty.Match.MW.WZ.Stats.Entity,
+                CallOfDuty.Match.MW.WZ.Loadout.Entity,
+                CallOfDuty.Match.MW.WZ.Objective.Entity,
+                Discord.Account.Entity,
+                Stagg.User.Entity,
             ],
             synchronize: false,
         }
         return IS_DEV ? {
             ...baseConfig,
             extra: {
-              socketPath: `${PGSQL.SOCKETPATH}/${PGSQL.INSTANCE}=tcp:${PGSQL.PORT}`
+                socketPath: `${PGSQL.SOCKETPATH}/${PGSQL.INSTANCE}=tcp:${PGSQL.PORT}`
             },
         } : {
             ...baseConfig,

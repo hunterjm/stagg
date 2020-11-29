@@ -160,6 +160,10 @@ class StatsRepository extends AbstractRepository<Stats> {
         const existing = await this.repository.findOneOrFail(stats.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(stats) })
     }
+
+    public async findByAccountId(accountId: string, limit: number, offset: number): Promise<Stats[]> {
+        return await this.repository.find({ where: { accountId }, take: limit, skip: offset, order: { startTime: 'DESC' }})
+    } 
 }
 
 export {
