@@ -1,6 +1,6 @@
 {
   "name": "@stagg/db",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -27,7 +27,7 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "callofduty": "^1.0.0",
+    "callofduty": "^1.0.3",
     "object-hash": "^2.0.3",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.10",
