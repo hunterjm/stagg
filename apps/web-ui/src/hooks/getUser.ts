@@ -8,8 +8,8 @@ export interface UserStateModel {
 }
 export interface UserModel {
     userId?: string
-    apiKey?: string
-    created?: Date
+    createdAt?: Date
+    updatedAt?: Date
 }
 export interface OAuthModel {
     discord?: OAuth.Discord

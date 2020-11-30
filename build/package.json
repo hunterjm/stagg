@@ -71,6 +71,8 @@
         "region": "us-east1",
         "secrets": [
           "API_HOST",
+          "PGSQL_USER",
+          "PGSQL_PASS",
           "FAAS_ETL_COD_TTL",
           "FAAS_ETL_COD_HOST"
         ]

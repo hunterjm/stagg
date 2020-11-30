@@ -21,6 +21,14 @@ interface UserCreationDomainDTO {
     domainId: string
     jwt: string
 }
+
+export namespace User {
+    export namespace Schema {
+      export type DomainId = 'discord' | 'callofduty' | 'pubg'
+      export type Domain = { domainId: DomainId, accountId: string, model?:any }
+    }
+  }
+
 @Controller('/user')
 export class UserController {
     constructor(
@@ -51,6 +59,7 @@ export class UserController {
             try {
                 await this.discordSvcs.createAccount(userId, id, tag, avatar)
             } catch(e) {
+                console.log(`[!] discord error consumed: ${e}`)
                 // discord acct already exists
             }
         }

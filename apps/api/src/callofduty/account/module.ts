@@ -3,22 +3,19 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { CallOfDutyDbModule } from '../module.db'
 import { CallOfDutyAccountService } from './services'
 import { CallOfDutyAccountController } from './controller'
-import {
-  Account,
-  AccountDAO,
-  AccountAuth,
-  AccountAuthDAO,
-  AccountProfile,
-  AccountProfileDAO,
-} from './entity'
+import { CallOfDuty } from '@stagg/db'
 
 @Module({
   imports: [
     CallOfDutyDbModule,
-    TypeOrmModule.forFeature([Account, AccountAuth, AccountProfile], 'callofduty'),
+    TypeOrmModule.forFeature([
+      CallOfDuty.Account.Base.Repository,
+      CallOfDuty.Account.Auth.Repository,
+      CallOfDuty.Account.Profile.Repository
+    ], 'callofduty'),
   ],
-  exports: [CallOfDutyAccountService, AccountDAO, AccountAuthDAO, AccountProfileDAO],
-  providers: [CallOfDutyAccountService, AccountDAO, AccountAuthDAO, AccountProfileDAO],
+  exports: [CallOfDutyAccountService],
+  providers: [CallOfDutyAccountService],
   controllers: [CallOfDutyAccountController],
 })
 export class CallOfDutyAccountModule {}

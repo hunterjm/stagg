@@ -2,17 +2,22 @@ import { Module } from '@nestjs/common'
 import { CallOfDutyController } from './controller'
 import { CallOfDutyMatchModule } from './match/module'
 import { CallOfDutyAccountModule } from './account/module'
-import { CallOfDutyProfileModule } from './profile/module'
-import { CallOfDutyFriendsModule } from './friends/module'
+import { CallOfDutyAccountService } from './account/services'
+import { CallOfDuty } from '@stagg/db'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 @Module({
   imports: [
     CallOfDutyMatchModule,
     CallOfDutyAccountModule,
-    CallOfDutyProfileModule,
-    CallOfDutyFriendsModule,
+    TypeOrmModule.forFeature([
+      CallOfDuty.Account.Base.Repository,
+      CallOfDuty.Account.Auth.Repository,
+      CallOfDuty.Account.Profile.Repository
+    ], 'callofduty'),
   ],
-  providers: [],
+  exports: [CallOfDutyAccountService],
+  providers: [CallOfDutyAccountService],
   controllers: [CallOfDutyController],
 })
-export class CallOfDutyModule {}
+export class CallOfDutyModule { }

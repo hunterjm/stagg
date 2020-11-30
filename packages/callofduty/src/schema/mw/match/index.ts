@@ -5,6 +5,7 @@ import * as WZ from './wz'
 export type Match = Match.MP | Match.WZ
 export type Summary = MP.Summary | WZ.Summary
 export type MapEvents = MP.MapEvents
+export type Team = MP.Team
 export namespace Match {
     export interface MP extends Generic {
         gameType: 'mp'

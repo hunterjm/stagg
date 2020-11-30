@@ -41,6 +41,9 @@ function hydrateApp(dir, hydratedSecrets) {
             script: 'auto',
         }
     ]
+    if (process.env.NODE_ENV === 'development') {
+        rawEnvLines.push('NODE_ENV=development')
+    }
     for(const secret of secrets) {
         if (!hydratedSecrets[secret]) {
             throw `${APPS_DIR}/${dir} missing secret ${secret}`
@@ -81,22 +84,20 @@ function hydrateService(dir, hydratedSecrets) {
 
 // Download individual secret from GCP
 async function downloadSecretFromGCP(secret, destroyDownloadedSecret=true) {
-    let secretValue
-    const cmd = `gcloud secrets versions access latest --secret=${GCP_SECRET_PREFIXES[secretSauce]}${secret} > .env.${secret}`
-    console.log(`[>] ${cmd}`)
-    const child = exec(cmd, (error, stdout, stderr) => {
-        if (error || stderr) throw error || stderr
-        secretValue = fs.readFileSync(`${__dirname}/.env.${secret}`, 'utf8').trim()
-        if (destroyDownloadedSecret) {
-            setTimeout(() => fs.unlinkSync(`${__dirname}/.env.${secret}`), 1000)
-        }
-        console.log(`[>] Hydrated secret "${secret}" with "${secretValue}"`)
+    return new Promise((resolve, reject) => {
+        let secretValue
+        const cmd = `gcloud secrets versions access latest --secret=${GCP_SECRET_PREFIXES[secretSauce]}${secret} > ${__dirname}/.env.${secret}`
+        console.log(`[>] ${cmd}`)
+        exec(cmd, (error, stdout, stderr) => {
+            if (error || stderr) reject(error || stderr)
+            secretValue = fs.readFileSync(`${__dirname}/.env.${secret}`, 'utf8').trim()
+            if (destroyDownloadedSecret) {
+                setTimeout(() => fs.unlinkSync(`${__dirname}/.env.${secret}`), 1000)
+            }
+            console.log(`[>] Hydrated secret "${secret}" with "${secretValue}"`)
+            resolve(secretValue)
+        })
     })
-    await new Promise((resolve,reject) => {
-        child.addListener("exit", resolve)
-        child.addListener("error", reject)
-    })
-    return secretValue
 }
 
 // Read local .env.* files, return their value as a mapped object, and delete the source file if applicable

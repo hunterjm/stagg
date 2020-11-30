@@ -17,3 +17,6 @@
 /apps/*/app.yaml
 !/apps/img.chart/lib
 /**/.next
+
+/packages/db/src/migration
+/**/ormconfig.json

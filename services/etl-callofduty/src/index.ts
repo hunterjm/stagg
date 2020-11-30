@@ -1,5 +1,15 @@
 import { Worker } from './worker'
 
+// only need accountId
+// fuck shit we don't need
+// scrape EVERYTHING: supply account id
+// logic to pull newest game: supply accountId
+
+// fetch one thing, profile, batch of matches for account or user/platform
+
+// ohcestrator that takes one account id, and it invokes this guy
+// can be kicked off manually or with a scheduler
+
 export default async (req, res) => {
     console.log('[+] ETL Request')
     const required = ['gameId', 'gameType', 'authTokens', 'startTime', 'username', 'platform']
