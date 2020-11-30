@@ -4,6 +4,7 @@ import * as Account from '../../../account'
 import * as Detail from './detail'
 import { Schema as CallOfDuty } from 'callofduty'
 import { BaseEntity } from '../../../../abstract'
+import { arrayTransformer } from '../../../../util'
 
 @Entity({ name: 'mw/wz/match/loadouts', database: 'callofduty' })
 @Index('idx_mwwz_loadout_matchaccount', ['match', 'account'])
@@ -25,7 +26,7 @@ class Loadout extends BaseEntity {
     @Column('smallint', { nullable: true })
     pwVariant: number
 
-    @Column('citext', { array: true, nullable: true })
+    @Column('citext', { array: true, nullable: true, transformer: arrayTransformer })
     pwAttachments: string[]
 
     @Column('citext', { nullable: true })
@@ -34,7 +35,7 @@ class Loadout extends BaseEntity {
     @Column('smallint', { nullable: true })
     swVariant: number
 
-    @Column('citext', { array: true, nullable: true })
+    @Column('citext', { array: true, nullable: true, transformer: arrayTransformer })
     swAttachments: string[]
 
     @Column('citext', { nullable: true })
@@ -43,7 +44,7 @@ class Loadout extends BaseEntity {
     @Column('citext', { nullable: true })
     tactical: string
 
-    @Column('citext', { array: true, nullable: true })
+    @Column('citext', { array: true, nullable: true, transformer: arrayTransformer })
     perks: string[]
 }
 

@@ -3,6 +3,7 @@ import { AbstractRepository, Column, DeleteDateColumn, Entity, EntityRepository,
 import { Schema as CallOfDuty } from 'callofduty'
 import { Entity as Account } from './account'
 import { BaseEntity } from '../../abstract'
+import { arrayTransformer } from '../../util'
 
 @Entity({ name: 'accounts/profiles', database: 'callofduty' })
 class AccountProfile extends BaseEntity {
@@ -19,7 +20,7 @@ class AccountProfile extends BaseEntity {
     @Column('citext')
     username: string
 
-    @Column('citext', { array: true })
+    @Column('citext', { array: true, transformer: arrayTransformer })
     games: CallOfDuty.Game[]
 
     @DeleteDateColumn()

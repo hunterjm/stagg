@@ -1,15 +1,16 @@
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import faas from '.'
 import { createConnection } from 'typeorm'
 import { CallOfDuty } from '@stagg/db'
+import { PGSQL } from './config'
+import faas from '.'
 
 createConnection({
-    "type": "postgres",
-    "host": "127.0.0.1",
-    "port": 5432,
-    "username": "postgres",
-    "password": "",
+    type: 'postgres',
+    host: '127.0.0.1',
+    port: 5432,
+    username: PGSQL.USER,
+    password: PGSQL.PASS,
     database: 'callofduty',
     entities: [ 
         CallOfDuty.Account.Base.Entity,
@@ -27,12 +28,10 @@ createConnection({
         CallOfDuty.Match.MW.WZ.Stats.Entity,
     ]
 }).then(() => {
-    console.log(__dirname)
-    console.log('[>] Connected to Stagg database!')
     const app = express()
     app.use(bodyParser.json())
     app.use('/', faas)
     app.listen(8110, () => {
         console.log('[>] FaaS running on http://localhost:8110')
     })
-})
+}).catch((e) => console.log('[!] Startup failure:', e))

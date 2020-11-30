@@ -1,6 +1,7 @@
 import { AbstractRepository, Column, Entity, EntityRepository, FindManyOptions, Index, PrimaryColumn } from 'typeorm'
 import { BaseEntity } from '../../../../abstract'
 import { Schema as CallOfDuty } from 'callofduty'
+import { arrayTransformer } from '../../../../util'
 
 @Entity({ name: 'mw/wz/match/stats', database: 'callofduty' })
 class Stats extends BaseEntity {
@@ -78,7 +79,7 @@ class Stats extends BaseEntity {
     @Column('smallint')
     deaths: number
 
-    @Column('smallint', { array: true })
+    @Column('smallint', { array: true, transformer: arrayTransformer })
     downs: number[]
 
     @Column('smallint')

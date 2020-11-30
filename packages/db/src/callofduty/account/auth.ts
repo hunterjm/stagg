@@ -2,6 +2,7 @@ import { AbstractRepository, Column, Entity, EntityRepository, JoinColumn, ManyT
 import { Schema as CallOfDuty } from 'callofduty'
 import { Entity as Account } from './account'
 import { BaseEntity } from '../../abstract'
+import { arrayTransformer } from '../../util'
 
 @Entity({ name: 'accounts/auth', database: 'callofduty' })
 class AccountAuth extends BaseEntity {
@@ -18,7 +19,7 @@ class AccountAuth extends BaseEntity {
     @Column('citext')
     email: string
 
-    @Column('citext', { array: true })
+    @Column('citext', { array: true, transformer: arrayTransformer })
     games: CallOfDuty.Game[]
 
     @Column('jsonb')
