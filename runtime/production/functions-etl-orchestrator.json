@@ -1,0 +1,5 @@
+{
+    "INTERVAL_PREMIUM": 5,
+    "INTERVAL_STANDARD": 10,
+    "HOST_ETL_ACCOUNT": "https://us-east1-staggco.cloudfunctions.net/etl-account"
+}

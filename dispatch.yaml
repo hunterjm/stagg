@@ -1,0 +1,5 @@
+dispatch:
+    - url: api.stagg.co/*
+      service: api
+    - url: stagg.co/*
+      service: default

@@ -1,0 +1,4 @@
+timeout: 120s
+steps:
+  - name: gcr.io/cloud-builders/gcloud
+    args: ['app', 'deploy', 'dispatch.yaml', '--version=production']

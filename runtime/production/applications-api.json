@@ -1,0 +1,75 @@
+{
+    "HOST_WEB": "https://stagg.co",
+    "HOST_ETL_ACCOUNT": "https://us-east1-staggco.cloudfunctions.net/etl-account",
+    "HOST_RENDER_HTML": "https://us-east1-staggco.cloudfunctions.net/render-html",
+    "HOST_DISCORD_OAUTH_REDIRECT": "https://stagg.co/discord/oauth",
+    "HOST_DISCORD_OAUTH_IDENTIFY": "https://discord.com/api/v6/users/@me",
+    "HOST_DISCORD_OAUTH_EXCHANGE": "https://discord.com/api/v6/oauth2/token",
+    "DISCORD_CLIENT_ID": "723179755548967027",
+    "DISCORD_OAUTH_SCOPE": "identify",
+    "DISCORD_INITIAL_REPLY": ["One moment..."],
+    "DISCORD_INVALID_REPLY": ["Invalid command, try `% help`..."],
+    "DISCORD_HELLO_MESSAGE": [
+        "**----------------------------------------------**",
+        "🚀🚀🚀 **Welcome aboard!** 🚀🚀🚀",
+        "**----------------------------------------------**",
+        "",
+        "We'll start collecting your profile data in the background and let you know when it's complete. In the meantime, try some of the commands below:",
+        "",
+        "**# Show online friends**",
+        "```",
+        "% online",
+        "```",
+        "**# Fix in-game empty friends list glitch**",
+        "```",
+        "% fixfriends",
+        "```",
+        "When using commands, the `%` prefix is only necessary in public channels; you can omit this prefix in DMs.",
+        "",
+        "_Don't worry, there's more cool stuff to do when your profile data is ready, sit tight!_"
+    ],
+    "DISCORD_PROFILE_READY_MESSAGE": [
+        "**------------------------------------------**",
+        "👀 **Your profile is ready to go!** 👀",
+        "**------------------------------------------**",
+        "",
+        "Try some of the commands below to get started:",
+        "",
+        "**# Generate your all-time Warzone barracks:**",
+        "```",
+        "% wz barracks",
+        "```",
+        "**# Generate your weekly Warzone barracks:**",
+        "```",
+        "% wz barracks 7d",
+        "```",
+        "**# Generate last week's Warzone barracks:**",
+        "```",
+        "% wz barracks 7d 7d",
+        "```",
+        "The `7d` parameters above can be swapped out for any number of days you want to include. If two of these parameters are included, the first is treated as a limit and the second is treated as a skip."
+    ],
+    "DISCORD_HELP_REPLY": [
+        "More on this coming soon, in the meantime try out `% wz barracks` or `% wz barracks 7d` for weekly"
+    ],
+    "DISCORD_UNREGISTERED_REPLY": [
+        "Looks like we aren't acquainted yet :(",
+        "Head over to https://stagg.co/start to get started, it's quick and easy!"
+    ],
+    "RANKING": {
+        "ranksPerTier": 4,
+        "tierNames": [
+            "Bronze",
+            "Silver",
+            "Gold",
+            "Platinum",
+            "Diamond",
+            "Pro"
+        ],
+        "WZ": {
+            "KDR": { "weight": 5, "limit": 3 },
+            "DDR": { "weight": 3, "limit": 10 },
+            "POS": { "weight": 2, "limit": 0 }
+        }
+    }
+}

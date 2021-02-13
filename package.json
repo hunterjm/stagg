@@ -1,0 +1,17 @@
+{
+  "name": "stagg",
+  "private": true,
+  "scripts": {
+    "tsc": "lerna run tsc",
+    "build": "lerna run build"
+  },
+  "workspaces": [
+    "packages/*",
+    "functions/*",
+    "applications/*"
+  ],
+  "devDependencies": {
+    "@stagg/cli": "^1.0.20",
+    "lerna": "^3.22.1"
+  }
+}

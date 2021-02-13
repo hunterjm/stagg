@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["DOM"],
+    "types": ["node", "jest"],
+    "outDir": "./dist"
+  },
+  "include": [
+    "./src"
+  ]
+ }

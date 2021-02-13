@@ -1,0 +1,306 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #151719;
+
+    color: #9ca9b3;
+    font-size: 1rem;
+    font-weight: 400;
+    font-family: Inter, sans-serif;
+
+    background-image: url('/assets/images/header.svg');
+    background-size: 120%;
+    background-repeat: no-repeat;
+    background-position-x: 50%;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+footer {
+    font-size: 12px;
+    text-align: center;
+    padding: 128px 32px 32px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #fff;
+}
+
+a, button {
+    font-weight: 500;
+}
+
+button {
+    height: 48px;
+    padding: 11px 31px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    justify-content: center;
+    text-align: center;
+    letter-spacing: inherit;
+    white-space: nowrap;
+}
+
+button.sm {
+    height: 36px;
+    padding: 5px 23px;
+}
+
+button.primary {
+    color: #eceded;
+    background-color: #6163ff;
+}
+button.primary:hover {
+    background-color: #6b6dff;
+}
+button.secondary {
+    color: #eceded;
+    background-color:#25282c;
+}
+button.secondary:hover {
+    background-color: #2a2d32;
+}
+
+button:disabled,
+button:disabled:hover,
+button[disabled],
+button[disabled]:hover {
+  border: 1px solid #444;
+  background-color: #666;
+  color: #333;
+  cursor: not-allowed;
+}
+
+.brand, .brand a {
+    color: #fff;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.3rem;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+.brand i.icon-stagg-antlers {
+    position: relative;
+    bottom: -0.16em;
+    line-height: 0;
+    font-size: 1.66em;
+}
+
+h1.brand {
+    margin: 0;
+    padding: 0;
+    font-size: 2rem;
+}
+
+body header:first-of-type > .container {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+}
+
+body header:first-of-type > .container > h1 {
+    grid-column: span 4;
+}
+
+body header:first-of-type > .container > nav {
+    text-align: right;
+    grid-column: span 8;
+}
+
+body header:first-of-type > .container > nav > ul,
+body header:first-of-type > .container > nav > ul > li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    display: inline-block;
+}
+
+body header:first-of-type > .container > nav > ul > li {
+    position: relative;
+    margin: 0 8px;
+    padding: 8px;
+    vertical-align: middle;
+}
+body header:first-of-type > .container > nav > ul > li:first-of-type {
+    margin-left: 0;
+}
+body header:first-of-type > .container > nav > ul > li:last-of-type {
+    margin-right: 0;
+}
+@media (max-width: 500px) {
+    body header:first-of-type > .container > nav > ul > li:first-of-type {
+        display: none;
+    }
+    body header:first-of-type > .container > nav > ul > li:last-of-type {
+        display: inline-block;
+    }
+}
+body header:first-of-type > .container > nav > ul > li.avatar {
+    height: 30px;
+    margin-left: 32px;
+}
+body header:first-of-type > .container > nav > ul > li.avatar > * {
+    position: absolute;
+    left: -20px;
+    border-radius: 50%;
+    width: 38px;
+    cursor: pointer;
+}
+
+h2.headline {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 54px;
+    margin-bottom: 16px;
+}
+h2.headline + p {
+    margin-top: 16px;
+}
+
+/****  floating-Lable style start ****/
+.floating-label { 
+    position:relative; 
+    margin-bottom:20px; 
+}
+.floating-label input,
+.floating-label select {
+    color:#fff;
+    font-size:18px;
+    padding:4px 4px;
+    display:block;
+    width:100%;
+    height:30px;
+    background-color: transparent;
+    border:none;
+    border-bottom:1px solid #757575;
+}
+
+.floating-label input:focus,
+.floating-label select:focus {
+    outline:none;
+    border-bottom:2px solid#757575; /* #5264AE */
+}
+
+.floating-label label {
+    color:#999; 
+    font-size:14px;
+    font-weight:normal;
+    position:absolute;
+    pointer-events:none;
+    left:5px;
+    top:5px;
+    transition:0.2s ease all; 
+    -moz-transition:0.2s ease all; 
+    -webkit-transition:0.2s ease all;
+}
+
+.floating-label input:focus ~ label,
+.floating-label input:not(:placeholder-shown) ~ label {
+    top:-18px;
+    font-size:14px;
+    color:#757575; /* #5264AE */
+}
+
+.floating-label select:focus ~ label,
+.floating-label select:not([value=""]):valid ~ label {
+    top:-18px;
+    font-size:14px;
+    color:#757575; /* #5264AE */
+}
+
+/* active state */
+.floating-label input:focus ~ .bar:before,
+.floating-label input:focus ~ .bar:after,
+.floating-label select:focus ~ .bar:before,
+.floating-label select:focus ~ .bar:after {
+    width:50%;
+}
+
+
+.floating-label textarea {
+    min-height: 30px;
+    max-height: 260px; 
+    overflow:hidden;
+    overflow-x: hidden; 
+}
+
+.floating-label .highlight {
+    position:absolute;
+    height:50%; 
+    width:100%; 
+    top:15%; 
+    left:0;
+    pointer-events:none;
+    opacity:0.5;
+}
+
+/* active state */
+.floating-label input:focus ~ .highlight,
+.floating-label select:focus ~ .highlight {
+    -webkit-animation:inputHighlighter 0.3s ease;
+    -moz-animation:inputHighlighter 0.3s ease;
+    animation:inputHighlighter 0.3s ease;
+}
+
+/* animation */
+/* @-webkit-keyframes inputHighlighter {
+    from { background:#5264AE; }
+    to 	{ width:0; background:transparent; }
+}
+@-moz-keyframes inputHighlighter {
+    from { background:#5264AE; }
+    to 	{ width:0; background:transparent; }
+}
+@keyframes inputHighlighter {
+    from { background:#5264AE; }
+    to 	{ width:0; background:transparent; }
+} */
+  
+  
+
+
+
+/* 
+light: (
+    1: #ECEDED,
+    2: #9CA9B3,
+    3: #717D86
+),
+dark: (
+    1: #151719,
+    2: #25282C,
+    3: #33363A
+),
+primary: (
+    1: #6163FF,
+    2: #ACADFF,
+    3: #5658DD,
+    4: #E9E9FF
+ ),
+secondary: (
+    1: #24E5AF,
+    2: #73EFCC,
+    3: #1CB68B,
+    4: #D2F9EE
+),
+alert: (
+    error: #FF6171,
+    warning: #FFA173,
+    success: #24E5AF
+) */
+

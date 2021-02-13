@@ -1,0 +1,50 @@
+{
+  "name": "stagg-web",
+  "version": "1.2.1",
+  "description": "Web UI for Stagg.co",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 8080",
+    "build": "rimraf .next && next build",
+    "start": "next start -p 8080",
+    "build:clean": "rimraf .next && next build",
+    "docker:build": "docker build -t stagg/web-ui .",
+    "docker:run": "docker run -d -p 8080:8080 stagg/web-ui"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-proposal-decorators": "^7.10.1",
+    "@types/js-cookie": "^2.2.6",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/node": "^14.0.26",
+    "@types/react": "^16.9.43",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-notifications-component": "^2.4.0",
+    "@types/react-redux": "^7.1.15",
+    "@types/styled-components": "^5.1.4",
+    "babel-plugin-inline-react-svg": "^1.1.1",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-styled-components": "^1.10.7",
+    "cross-env": "^7.0.3",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@callofduty/assets": "^1.2.1",
+    "@callofduty/types": "^1.2.1",
+    "@stagg/api": "^1.2.1",
+    "@stagg/gcp": "^1.2.1",
+    "axios": "^0.21.1",
+    "js-cookie": "^2.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "next": "^10.0.1",
+    "next-redux-wrapper": "^6.0.2",
+    "ordinal": "^1.0.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-notifications-component": "^3.0.3",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "styled-components": "^5.2.1"
+  }
+}

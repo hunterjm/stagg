@@ -1,0 +1,35 @@
+{
+  "name": "@stagg/db",
+  "version": "1.2.1",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib",
+    "migration"
+  ],
+  "scripts": {
+    "tsc": "tsc",
+    "test": "mocha",
+    "migration:gen": "rimraf ./lib && tsc && yarn typeorm migration:generate -c stagg -n",
+    "migration:run": "rimraf ./lib && tsc && yarn typeorm migration:run -c stagg"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.7",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "@callofduty/types": "^1.2.1",
+    "object-hash": "^2.0.3",
+    "pg": "^8.4.0",
+    "reflect-metadata": "^0.1.10",
+    "typeorm": "^0.2.30"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "c282ddec9d5651abab023f5e5f0b260abf452aad"
+}

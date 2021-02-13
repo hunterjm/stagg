@@ -1,0 +1,6 @@
+{
+    "API_HOST": "https://api.stagg.co",
+    "SELF_HOST": "https://us-east1-staggco.cloudfunctions.net/etl-account",
+    "HOST_ETL_CHEATERS": "https://us-east1-staggco.cloudfunctions.net/etl-cheaters",
+    "MAX_EXECUTION_TIME": 500
+}
