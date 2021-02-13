@@ -6,6 +6,9 @@ Built with TypeScript, NextJS, NestJS, and PostgreSQL; monorepo and package mana
 
 To see the platform in action, head over to [Stagg.co](https://stagg.co); after linking your Call of Duty and Discord accounts, you'll be up and running in a matter of seconds. Feel free to [join our Discord server](https://stagg.co/discord/join) and ask questions, make suggestions, or squad up for a quick game.
 
+If you're looking for [the best Call of Duty API Postman Collection ever](https://docs.stagg.co), it's freely available at [docs.stagg.co](https://docs.stagg.co).
+
+
 ## What makes this cool?
 
 Glad you asked, there's a constantly growing list of features that separate Stagg from any other platform.
