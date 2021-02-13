@@ -1,6 +1,8 @@
 # Stagg Web UI
 
-Provided by Stagg.co
+Provided by [Stagg.co](https://stagg.co)
+
+Feeling stuck? Feel free to [join our Discord](https://stagg.co/discord/join) and ask for help!
 
 ## Supporting Discord Remote Rendering
 
@@ -17,16 +19,3 @@ You can use the `.report-hidden` CSS `className` on any element you wish to show
  *     INCORRECT: <img src="/image.png" />                                       *
  *********************************************************************************/
 ```
-
-## Development
-
-### yarn install
-
-### yarn dev
-
-## Production
-
-### yarn build
-
-### yarn start
-

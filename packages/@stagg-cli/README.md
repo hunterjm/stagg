@@ -1,10 +1,5 @@
-# @stagg/cli
+# Stagg CLI Library
 
-Provided by Stagg.co
+Provided by [Stagg.co](https://stagg.co)
 
-`@stagg/cli` deployment: `stg deploy web-ui`
-- `yarn workspace <arg> install`
-- `yarn workspace <arg> build`
-- read `app.yaml` for secrets
-- hydrate secrets from `@stagg/gcp`
-
+Feeling stuck? Feel free to [join our Discord](https://stagg.co/discord/join) and ask for help!
