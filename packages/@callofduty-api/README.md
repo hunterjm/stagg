@@ -10,27 +10,27 @@ Install the package:
 
 ```
 # Using npm
-npm i callofduty
+npm i @callofduty/api
 ```
 
 ```
 # Using yarn
-yarn add callofduty
+yarn add @callofduty/api
 ```
 
-After installation is complete, you will have access to API, Assets, and Schema libraries:
+After installation is complete, you will have access to the API library:
 
-```
-import { API, Assets, Schema } from 'callofduty'
+```ts
+import API from '@callofduty/api'
 ```
 
 ### Schemas
 
-If you're using TypeScript, you'll notice that all API route responses are typed and that we offer interfaces for our standardized models as well.
+If you're using TypeScript, you'll notice that all API route responses are typed and that we offer interfaces for our standardized models, which can be found in the accompanying `@callofduty/types`. This separation is to allow API types as devDependencies on front-end clients without the need to accomodate the deprecated `request` package.
 
 ### API Library
 
-After creating [the most comprehensive documentation for the official Call of Duty API](https://documenter.getpostman.com/view/5519582/SzzgAefq), it was time to streamline this functionality into an NPM module that comes complete with TypeScript support right out of the box.
+After creating [the most comprehensive documentation for the official Call of Duty API](https://docs.stagg.co), it was time to streamline this functionality into an NPM module that comes complete with TypeScript support right out of the box.
 
 #### Authentication
 
@@ -39,7 +39,7 @@ Unless you are accessing the [Public API Routes](https://documenter.getpostman.c
 When authenticating a new user whose tokens are not yet saved, you must first instantiate the API instance without tokens as the the tokens are only returned after we login.
 
 ```ts
-import { API } from 'callofduty'
+import API from '@callofduty/api'
 
 // Step 1: Instantiate the API
 const CallOfDutyAPI = new API()
@@ -60,7 +60,7 @@ At this point you have authentication tokens (`xsrf`, `sso`, and `atkn`) in addi
 Some functionality is only available for the user whose tokens are actively being used for authentication. In other words, you can only fetch private routes for _yourself_ and cannot fetch this information for any players other than the currently authenticated user. It's worth mentioning that the above `API.Identity()` invocation relies on a private route as well, but you will most likely only need to use it for the purpose of identifying a newly authenticated user.
 
 ```ts
-import { API } from 'callofduty'
+import API from '@callofduty/api'
 // { xsrf, sso, atkn } are assumed to be defined already (see first example)
 const CallOfDutyAPI = new API({ xsrf, sso, atkn })
 // API.Accounts() - Get all platform profiles for this account
@@ -87,7 +87,7 @@ Luckily, match and profile data can be fetched for _any_ user given that we're a
 Profiles can be fetched for any user when provided with a `username`, `platform`, `mode` (`wz` or `mp`), and `game` (eg: `mw`) input.
 
 ```ts
-import { API } from 'callofduty'
+import API from '@callofduty/api'
 // { xsrf, sso, atkn } are assumed to be defined already (see first example)
 const CallOfDutyAPI = new API({ xsrf, sso, atkn })
 const profileData = await CallOfDutyAPI.Profile({ username: 'HusKerrs', platform: 'uno' }, 'wz', 'mw')
@@ -96,7 +96,7 @@ const profileData = await CallOfDutyAPI.Profile({ username: 'HusKerrs', platform
 Fetching matches is also simple, it just requires the same `username`, `platform`, `mode` (`wz` or `mp`), and `game` (eg: `mw`) input to fetch the last 20 matches for any given player.
 
 ```ts
-import { API } from 'callofduty'
+import API from '@callofduty/api'
 // { xsrf, sso, atkn } are assumed to be defined already (see first example)
 const CallOfDutyAPI = new API({ xsrf, sso, atkn })
 const lastTwentyMatches = await CallOfDutyAPI.MatchHistory({ username: 'HusKerrs', platform: 'uno' }, 'wz', 'mw')
@@ -105,7 +105,7 @@ const lastTwentyMatches = await CallOfDutyAPI.MatchHistory({ username: 'HusKerrs
 If you want to fetch more than the last 20 matches or want to fetch matches from a specific period of time, you can provide a millisecond timestamp to the `next` parameter at the end of the call signature.
 
 ```ts
-import { API } from 'callofduty'
+import API from '@callofduty/api'
 // { xsrf, sso, atkn } are assumed to be defined already (see first example)
 const CallOfDutyAPI = new API({ xsrf, sso, atkn })
 const millisecondTimestamp = new Date().getUTCMilliseconds()
@@ -117,7 +117,7 @@ const nextTwentyMatches = await CallOfDutyAPI.MatchHistory({ username: 'HusKerrs
 Although this route only works for multiplayer (`mp`) games, it works without authentication and only requires a `matchId` and `game` (eg: `mw`) input. In exchange, it provides all data necessary to generate hotspot charts and retrive the universal account ID of any player in the game (which we can use to fetch _their_ profile and matches and create an endless scraping scenario). 
 
 ```ts
-import { API } from 'callofduty'
+import API from '@callofduty/api'
 
 const CallOfDutyAPI = new API()
 const matchEvents = await CallOfDutyAPI.MatchEvents('16435623658620974427', 'mw')
@@ -128,7 +128,7 @@ const matchEvents = await CallOfDutyAPI.MatchEvents('16435623658620974427', 'mw'
 Currently a work-in-progress, the goal of this library is to offer standardized models and comprehensive details for all in-game assets including maps, modes, weapons, killstreaks, and more.
 
 ```ts
-import { Assets } from 'callofduty'
+import { Assets } from '@callofduty/assets'
 ```
 
 ## Discovery + Findings
