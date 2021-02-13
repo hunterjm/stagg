@@ -1,6 +1,6 @@
 # Stagg.co
 
-Built with TypeScript, Node, Express, PostgreSQL, React, and Next; monorepo and package management provided by Lerna.
+Built with TypeScript, NextJS, NestJS, and PostgreSQL; monorepo and package management provided by Lerna.
 
 ## Check it out!
 
