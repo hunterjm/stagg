@@ -4,6 +4,8 @@ import { createConnection } from 'typeorm'
 import { CallOfDuty } from '@stagg/db'
 import { PGSQL } from './config'
 import faas from '.'
+import { createConnection } from 'typeorm'
+import { CallOfDuty } from '@stagg/db'
 
 createConnection({
     type: 'postgres',
