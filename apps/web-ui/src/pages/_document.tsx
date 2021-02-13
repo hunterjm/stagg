@@ -14,7 +14,7 @@ class AppDocument extends Document {
       <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
-          <link rel="stylesheet" href="/cdn/core/style.css" media="all" />
+          {/* <link rel="stylesheet" href="/cdn/core/style.css" media="all" /> */}
           <link rel="stylesheet" href="/cdn/icomoon/style.css" media="all" />
           <script
             async
@@ -23,8 +23,10 @@ class AppDocument extends Document {
           <script src="/cdn/core/ga.js" />
           {this.props.styleTags}
         </Head>
-        <body className="has-animations" data-gr-c-s-loaded="true">
-          <Main />
+        <body>
+          <div className="container">
+            <Main />
+          </div>
           <NextScript />
         </body>
       </Html>

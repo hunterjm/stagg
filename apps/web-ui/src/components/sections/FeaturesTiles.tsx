@@ -1,12 +1,14 @@
+import { useEffect } from 'react';
 import classNames from 'classnames';
 import config from 'config/ui';
+
 import FeatureSplitIconOne from 'public/icons/feature-tile-icon-01.svg';
 import FeatureSplitIconTwo from 'public/icons/feature-tile-icon-02.svg';
 import FeatureSplitIconThree from 'public/icons/feature-tile-icon-03.svg';
 import FeatureSplitIconFour from 'public/icons/feature-tile-icon-04.svg';
 import FeatureSplitIconFive from 'public/icons/feature-tile-icon-05.svg';
 import FeatureSplitIconSix from 'public/icons/feature-tile-icon-06.svg';
-import React, { useEffect } from 'react';
+
 import { SectionTilesProps } from 'src/interfaces/SectionProps';
 
 import { SectionHeader } from './partials/SectionHeader';
@@ -175,7 +177,7 @@ export const FeaturesTiles = ({
                   <p className="m-0 text-sm">
                     Got an idea for a feature you'd like to see? We'd love to
                     hear all about it. &nbsp;
-                    <a href={config.discord.url.join} target="_blank">
+                    <a href={config.discord.url.join} target="_blank" rel=>
                       Tell us in our Discord!
                     </a>
                   </p>

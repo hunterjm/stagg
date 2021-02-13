@@ -8,11 +8,11 @@ import { ButtonGroup } from '../elements/ButtonGroup';
 import { Image } from '../elements/Image';
 import { Modal } from '../elements/Modal';
 
-let ScrollReveal: scrollReveal.ScrollRevealObject;
+// let ScrollReveal: scrollReveal.ScrollRevealObject;
 
-if (typeof window !== 'undefined') {
-  ScrollReveal = require('scrollreveal').default;
-}
+// if (typeof window !== 'undefined') {
+//   ScrollReveal = require('scrollreveal').default;
+// }
 
 export const Hero = ({
   className,
@@ -26,32 +26,28 @@ export const Hero = ({
 }: SectionSharedProps) => {
   const [videoModalActive, setVideomodalactive] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      ScrollReveal().reveal('#hero-text-h2', {
-        delay: 200,
-      });
-      ScrollReveal().reveal('#hero-text-p', {
-        delay: 400,
-      });
-      ScrollReveal().reveal('#hero-button', {
-        delay: 600,
-      });
-      ScrollReveal().reveal('.featured-games', { delay: 600 });
-      ScrollReveal().reveal('.hero-figure', { delay: 800, distance: '20px' });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     ScrollReveal().reveal('#hero-text-h2', {
+  //       delay: 200,
+  //     });
+  //     ScrollReveal().reveal('#hero-text-p', {
+  //       delay: 400,
+  //     });
+  //     ScrollReveal().reveal('#hero-button', {
+  //       delay: 600,
+  //     });
+  //     ScrollReveal().reveal('.featured-games', { delay: 600 });
+  //     ScrollReveal().reveal('.hero-figure', { delay: 800, distance: '20px' });
+  //   }
+  // }, []);
 
-  const openModal = (
-    event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>
-  ) => {
+  const openModal = (event: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) => {
     event.preventDefault();
     setVideomodalactive(true);
   };
 
-  const closeModal = (
-    event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
-  ) => {
+  const closeModal = (event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
     event.preventDefault();
     setVideomodalactive(false);
   };
@@ -77,25 +73,19 @@ export const Hero = ({
         <div className={innerClasses}>
           <div className="hero-content">
             <h2 className="mt-0 mb-16" id="hero-text-h2">
-              We help you{' '}
-              <span className="text-color-primary">git&nbsp;gud</span>
+              We help you <span className="text-color-primary">git&nbsp;gud</span>
             </h2>
             <div className="container-xs">
               <p id="hero-text-p">
-                Unrivaled stat tracking combined with a proprietary Discord
-                integration to provide personalized coaching and so much more
+                Unrivaled stat tracking combined with a proprietary Discord integration to provide personalized coaching
+                and so much more
               </p>
               <div id="hero-button">
                 <ButtonGroup>
                   <Button as="a" color="primary" wideMobile href="/start">
                     Get Started
                   </Button>
-                  <Button
-                    as="a"
-                    color="dark"
-                    wideMobile
-                    href="/discord/join"
-                  >
+                  <Button as="a" color="dark" wideMobile href="/discord/join">
                     Join our Discord
                   </Button>
                 </ButtonGroup>
@@ -120,7 +110,7 @@ export const Hero = ({
             >
               <Image
                 className="has-shadow video-preview"
-                src="/images/video-preview.png"
+                src="/images/video-preview.jpg"
                 alt="Hero"
                 width={896}
                 height={504}

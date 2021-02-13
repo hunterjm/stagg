@@ -1,39 +1,39 @@
-import Head from 'next/head'
-import { useEffect } from 'react'
-import { AppProps } from 'next/app'
-import 'public/scss/style.scss'
-import 'react-notifications-component/dist/theme.css'
-import ReactNotification from 'react-notifications-component'
+import { AppProps } from 'next/app';
+import { Router } from 'next/router';
+import { useState } from 'react';
+import ReactNotification from 'react-notifications-component';
+import { Header } from 'src/components/layout/Header';
+import Loader from 'src/components/loader/Loader';
+import { GlobalStyle } from 'src/styles/GlobalStyle';
+import { theme } from 'src/styles/theme';
+import { ThemeProvider } from 'styled-components';
 
-
-let ScrollReveal: scrollReveal.ScrollRevealObject;
-
-if (typeof window !== 'undefined') {
-  ScrollReveal = require('scrollreveal').default;
-}
+import 'react-notifications-component/dist/theme.css';
 
 const StaggWebUI = ({ Component, pageProps }: AppProps) => {
-  useEffect(() => {
-    ScrollReveal({ useDelay: 'onload' })
-  }, [])
+  // Loader Logic
+  const [showLoader, setShowLoader] = useState(false);
+  Router.events.on('routeChangeStart', (url) => {
+    setShowLoader(true);
+  });
+
+  Router.events.on('routeChangeComplete', () => {
+    setShowLoader(false);
+  });
+  Router.events.on('routeChangeError', () => {
+    setShowLoader(false);
+  });
 
   return (
-    <>
-      <Head>
-        <link rel="stylesheet" href="/cdn/core/style.css" media="all" />
-        <link rel="stylesheet" href="/cdn/icomoon/style.css" media="all" />
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=UA-171798332-1"
-          />
-        <script src="/cdn/core/ga.js" />
-      </Head>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <Loader showLoader={showLoader} />
       <ReactNotification />
+      <Header />
       <Component {...pageProps} />
-    </>
-  )
-}
-
+    </ThemeProvider>
+  );
+};
 
 // eslint-disable-next-line import/no-default-export
-export default StaggWebUI
+export default StaggWebUI;

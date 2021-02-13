@@ -14,50 +14,52 @@ const DiscordOAuth = ({ jwt, forward }) => {
   const payload:any = JWT.decode(jwt)
   const userModel = userState.get()
 
-  const attemptLogin = async () => { // Define separately for async
-    const { response } = await API.login('discord')
+  const attemptLogin = async () => {
+    // Define separately for async
+    const { response } = await API.login('discord');
     if (response?.jwt) {
-      store.cookies.jwtUser = response.jwt
-      userState.set(getUser())
+      store.cookies.jwtUser = response.jwt;
+      userState.set(getUser());
       notify({
-        title: 'All clear for take off',
-        message: 'You have been logged in',
-        type: 'success',
         duration: 2500,
+        message: 'You have been logged in',
+        title: 'All clear for take off',
+        type: 'success',
       })
       Router.push(profileUrlFromUserStateModel(userModel))
     } else {
-      Router.push('/start?')
+      Router.push('/start?');
     }
-  }
+  };
 
-  useEffect(() => { // useEffect so we only use Router on client
+  useEffect(() => {
+    // useEffect so we only use Router on client
     if (payload?.userId) {
-      attemptLogin()
-      return
+      attemptLogin();
+      return;
     }
     notify({
-      title: 'Woohoo!',
-      message: `Discord account linked`,
-      type: 'success',
       duration: 2500,
-    })
-    userState.set(getUser())
-    Router.push('/start')
-  }, [])
+      message: `Discord account linked`,
+      title: 'Woohoo!',
+      type: 'success',
+    });
+    userState.set(getUser());
+    Router.push('/start');
+  }, []);
 
   return (
     <Layout hideSignIn title="One moment...">
-      <h2 style={{marginTop: 128, textAlign: 'center'}}>One moment...</h2>
+      <h2 style={{ marginTop: 128, textAlign: 'center' }}>One moment...</h2>
     </Layout>
-  )
-}
+  );
+};
 
 DiscordOAuth.getInitialProps = async (ctx) => {
-  let forward = ctx.query.state
-  const res = await API.Discord.exchangeToken(ctx.query.code)
-  return { jwt: res?.response?.jwt, forward }
-}
+  let forward = ctx.query.state;
+  const res = await API.Discord.exchangeToken(ctx.query.code);
+  return { jwt: res?.response?.jwt, forward };
+};
 
 // eslint-disable-next-line import/no-default-export
-export default DiscordOAuth
+export default DiscordOAuth;
