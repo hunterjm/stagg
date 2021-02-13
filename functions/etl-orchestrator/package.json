@@ -1,0 +1,32 @@
+{
+  "name": "@stagg/etl-orchestrator",
+  "version": "1.2.2",
+  "author": "Dan Lindsey",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development ts-node-dev src/express.ts",
+    "prod": "tsc && node dist/express.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@stagg/db": "^1.2.2",
+    "@stagg/gcp": "^1.2.2",
+    "axios": "^0.21.1",
+    "typeorm": "^0.2.29"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.13",
+    "@types/node": "^14.0.13",
+    "cross-env": "^7.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.49",
+    "typescript": "^3.9.5"
+  }
+}

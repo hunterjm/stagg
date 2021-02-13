@@ -5,7 +5,6 @@
 /**/.env*
 /**/**/.env
 /**/**/dist
-/**/yarn.lock
 /**/**/.vscode
 /**/**/coverage
 /**/**/node_modules
@@ -13,10 +12,9 @@
 /**/**/yarn-debug.log*
 /**/**/yarn-error.log*
 /packages/*/lib
-/apps/*/lib
-/apps/*/app.yaml
-!/apps/img.chart/lib
 /**/.next
 
 /packages/db/src/migration
 /**/ormconfig.json
+
+!/functions/render-chart/lib

@@ -1,0 +1,6 @@
+{
+    "API_HOST": "http://localhost:8081",
+    "SELF_HOST": "http://localhost:8110",
+    "HOST_ETL_CHEATERS": "http://localhost:8120",
+    "MAX_EXECUTION_TIME": 90
+}

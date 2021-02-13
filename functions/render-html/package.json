@@ -1,0 +1,34 @@
+{
+  "name": "@stagg/render-html",
+  "version": "1.2.2",
+  "author": "Dan Lindsey",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development ts-node-dev src/express.ts",
+    "prod": "tsc && node dist/express.js",
+    "build": "tsc",
+    "deploy": "yarn build && gcloud functions deploy render-html --trigger-http --entry-point=default --runtime=nodejs12 --region=us-east1 --memory=512MB --timeout=60",
+    "start": "node dist/index.js",
+    "build:docker": "docker build --tag stagg-faas-render-html .",
+    "test": "ts-jest"
+  },
+  "dependencies": {
+    "@stagg/gcp": "^1.2.2",
+    "axios": "^0.21.1",
+    "node-html-to-image": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.13",
+    "@types/node": "^14.0.13",
+    "body-parser": "^1.19.0",
+    "copyfiles": "^2.3.0",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.49",
+    "typescript": "^3.9.5"
+  }
+}

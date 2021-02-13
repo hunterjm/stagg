@@ -1,6 +1,0 @@
-export * as Detail from './detail'
-export * as Killstreak from './killstreak'
-export * as Loadout from './loadout'
-export * as Objective from './objective'
-export * as Stats from './stats'
-export * as Weapon from './weapon'

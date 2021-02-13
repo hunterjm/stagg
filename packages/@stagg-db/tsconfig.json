@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+         "baseUrl": "./",
+         "outDir": "./lib",
+         "emitDecoratorMetadata": true,
+         "experimentalDecorators": true,
+    },
+    "include": [
+        "./src",
+        "./migration"
+    ],
+    "exclude": [
+        "../../node_modules",
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
