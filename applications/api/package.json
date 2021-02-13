@@ -1,6 +1,6 @@
 {
   "name": "stagg-api",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Dan Lindsey",
   "private": true,
   "license": "UNLICENSED",
@@ -23,16 +23,16 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@callofduty/api": "^1.2.0",
-    "@callofduty/assets": "^1.2.0",
+    "@callofduty/api": "^1.2.1",
+    "@callofduty/assets": "^1.2.1",
     "@nestjs/common": "^7.0.0",
     "@nestjs/config": "^0.5.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/typeorm": "^7.1.4",
-    "@stagg/api": "^1.2.0",
-    "@stagg/db": "^1.2.0",
-    "@stagg/gcp": "^1.2.0",
+    "@stagg/api": "^1.2.1",
+    "@stagg/db": "^1.2.1",
+    "@stagg/gcp": "^1.2.1",
     "axios": "^0.21.1",
     "class-transformer": "^0.3.2",
     "class-validator": "^0.12.2",
@@ -42,7 +42,7 @@
     "typeorm": "^0.2.29"
   },
   "devDependencies": {
-    "@callofduty/types": "^1.2.0",
+    "@callofduty/types": "^1.2.1",
     "@nestjs/cli": "^7.0.0",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
