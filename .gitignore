@@ -5,7 +5,7 @@
 /**/.env*
 /**/**/.env
 /**/**/dist
-/**/yarn.lock
+# /**/yarn.lock
 /**/**/.vscode
 /**/**/coverage
 /**/**/node_modules

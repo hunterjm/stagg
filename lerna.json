@@ -1,8 +1,8 @@
 {
   "packages": [
-    "apps/*",
-    "services/*",
-    "packages/*"
+    "packages/*",
+    "functions/*",
+    "applications/*"
   ],
-  "version": "1.0.3"
+  "version": "1.1.9"
 }

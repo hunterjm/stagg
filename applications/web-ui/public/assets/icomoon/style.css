@@ -1,0 +1,292 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?rw9kja');
+  src:  url('fonts/icomoon.eot?rw9kja#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?rw9kja') format('truetype'),
+    url('fonts/icomoon.woff?rw9kja') format('woff'),
+    url('fonts/icomoon.svg?rw9kja#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-content_copy:before {
+  content: "\e905";
+}
+.icon-activision:before {
+  content: "\e91a";
+}
+.icon-poo:before {
+  content: "\e919";
+}
+.icon-callofduty-wwii:before {
+  content: "\e918";
+}
+.icon-battlenet:before {
+  content: "\e911";
+}
+.icon-callofduty-bo:before {
+  content: "\e912";
+}
+.icon-callofduty-bo4:before {
+  content: "\e913";
+}
+.icon-callofduty-mw:before {
+  content: "\e914";
+}
+.icon-playstation:before {
+  content: "\e915";
+}
+.icon-steam1:before {
+  content: "\e916";
+}
+.icon-xbox:before {
+  content: "\e917";
+}
+.icon-callofduty-c:before {
+  content: "\e910";
+}
+.icon-discord-check:before {
+  content: "\e90f";
+}
+.icon-bullets:before {
+  content: "\e909";
+}
+.icon-crosshair:before {
+  content: "\e90a";
+}
+.icon-killstreak:before {
+  content: "\e90b";
+}
+.icon-knives:before {
+  content: "\e90c";
+}
+.icon-watch:before {
+  content: "\e90d";
+}
+.icon-callofduty:before {
+  content: "\e908";
+}
+.icon-stagg-antlers:before {
+  content: "\e902";
+}
+.icon-stagg-full:before {
+  content: "\e903";
+}
+.icon-github:before {
+  content: "\e900";
+}
+.icon-discord:before {
+  content: "\e901";
+  color: #7289da;
+}
+.icon-newspaper:before {
+  content: "\e904";
+}
+.icon-image:before {
+  content: "\e90e";
+}
+.icon-images:before {
+  content: "\e91b";
+}
+.icon-coin-dollar:before {
+  content: "\e93b";
+}
+.icon-alarm:before {
+  content: "\e950";
+}
+.icon-stopwatch:before {
+  content: "\e952";
+}
+.icon-user:before {
+  content: "\e971";
+}
+.icon-users:before {
+  content: "\e972";
+}
+.icon-user-plus:before {
+  content: "\e973";
+}
+.icon-user-minus:before {
+  content: "\e974";
+}
+.icon-user-check:before {
+  content: "\e975";
+}
+.icon-spinner10:before {
+  content: "\e983";
+}
+.icon-cog:before {
+  content: "\e994";
+}
+.icon-bug:before {
+  content: "\e999";
+}
+.icon-stats-bars:before {
+  content: "\e99c";
+}
+.icon-trophy:before {
+  content: "\e99e";
+}
+.icon-earth:before {
+  content: "\e9ca";
+}
+.icon-star-empty:before {
+  content: "\e9d7";
+}
+.icon-star-half:before {
+  content: "\e9d8";
+}
+.icon-star-full:before {
+  content: "\e9d9";
+}
+.icon-heart:before {
+  content: "\e9da";
+}
+.icon-heart-broken:before {
+  content: "\e9db";
+}
+.icon-happy:before {
+  content: "\e9df";
+}
+.icon-happy2:before {
+  content: "\e9e0";
+}
+.icon-smile:before {
+  content: "\e9e1";
+}
+.icon-smile2:before {
+  content: "\e9e2";
+}
+.icon-tongue:before {
+  content: "\e9e3";
+}
+.icon-tongue2:before {
+  content: "\e9e4";
+}
+.icon-sad:before {
+  content: "\e9e5";
+}
+.icon-sad2:before {
+  content: "\e9e6";
+}
+.icon-wink:before {
+  content: "\e9e7";
+}
+.icon-wink2:before {
+  content: "\e9e8";
+}
+.icon-grin:before {
+  content: "\e9e9";
+}
+.icon-grin2:before {
+  content: "\e9ea";
+}
+.icon-cool:before {
+  content: "\e9eb";
+}
+.icon-cool2:before {
+  content: "\e9ec";
+}
+.icon-angry:before {
+  content: "\e9ed";
+}
+.icon-angry2:before {
+  content: "\e9ee";
+}
+.icon-evil:before {
+  content: "\e9ef";
+}
+.icon-evil2:before {
+  content: "\e9f0";
+}
+.icon-shocked:before {
+  content: "\e9f1";
+}
+.icon-shocked2:before {
+  content: "\e9f2";
+}
+.icon-baffled:before {
+  content: "\e9f3";
+}
+.icon-baffled2:before {
+  content: "\e9f4";
+}
+.icon-confused:before {
+  content: "\e9f5";
+}
+.icon-confused2:before {
+  content: "\e9f6";
+}
+.icon-neutral:before {
+  content: "\e9f7";
+}
+.icon-neutral2:before {
+  content: "\e9f8";
+}
+.icon-hipster:before {
+  content: "\e9f9";
+}
+.icon-hipster2:before {
+  content: "\e9fa";
+}
+.icon-wondering:before {
+  content: "\e9fb";
+}
+.icon-wondering2:before {
+  content: "\e9fc";
+}
+.icon-sleepy:before {
+  content: "\e9fd";
+}
+.icon-sleepy2:before {
+  content: "\e9fe";
+}
+.icon-frustrated:before {
+  content: "\e9ff";
+}
+.icon-frustrated2:before {
+  content: "\ea00";
+}
+.icon-crying:before {
+  content: "\ea01";
+}
+.icon-crying2:before {
+  content: "\ea02";
+}
+.icon-blocked:before {
+  content: "\ea0e";
+}
+.icon-arrow-right:before {
+  content: "\ea34";
+}
+.icon-arrow-left:before {
+  content: "\ea38";
+}
+.icon-terminal:before {
+  content: "\ea81";
+}
+.icon-github1:before {
+  content: "\eab0";
+}
+.icon-npm:before {
+  content: "\eab1";
+}
+.icon-git:before {
+  content: "\eae7";
+}
