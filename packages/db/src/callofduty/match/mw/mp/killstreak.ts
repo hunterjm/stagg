@@ -46,6 +46,10 @@ class KillstreakRepository extends AbstractRepository<Killstreak> {
         const existing = await this.repository.findOneOrFail(killstreak.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(killstreak) })
     }
+
+    public async findKillstreaks(matchId:string, accountId:string): Promise<Killstreak[]> {
+        return await this.repository.find({ where: { match: { matchId }, account: { accountId } }})
+    }
 }
 
 export {

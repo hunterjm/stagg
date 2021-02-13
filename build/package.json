@@ -76,6 +76,17 @@
           "FAAS_ETL_COD_TTL",
           "FAAS_ETL_COD_HOST"
         ]
+      },
+      "match-service": {
+        "memory": "128MB",
+        "region": "us-east1",
+        "secrets": [
+          "PGSQL_USER",
+          "PGSQL_PASS",
+          "PGSQL_PORT",
+          "PGSQL_INSTANCE",
+          "PGSQL_SOCKETPATH"
+        ]
       }
     }
   },

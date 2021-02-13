@@ -61,6 +61,10 @@ class WeaponRepository extends AbstractRepository<Weapon> {
         const existing = await this.repository.findOneOrFail(weapon.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(weapon) })
     }
+
+    public async findWeapons(matchId:string, accountId:string): Promise<Weapon[]> {
+        return await this.repository.find({ where: { match: { matchId }, account: { accountId } }})
+    }
 }
 
 export {

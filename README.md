@@ -100,3 +100,6 @@ Switch to RDB so individual match records/performances just relate back to a row
     - Kills
     - Damage
     - Any win
+- Comparison tooling
+    - Match History endpoint returns stats for a single user, create a tool that can compare multiple users
+    - Expand to the squad/server level to aggregate stats across a couple to a couple hundred accounts

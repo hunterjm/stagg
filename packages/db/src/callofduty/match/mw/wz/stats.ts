@@ -1,4 +1,4 @@
-import { AbstractRepository, Column, Entity, EntityRepository, FindManyOptions, Index, PrimaryColumn } from 'typeorm'
+import { AbstractRepository, Column, Entity, EntityRepository, FindConditions, FindManyOptions, Index, PrimaryColumn } from 'typeorm'
 import { BaseEntity } from '../../../../abstract'
 import { Schema as CallOfDuty } from 'callofduty'
 import { arrayTransformer } from '../../../../util'
@@ -79,7 +79,7 @@ class Stats extends BaseEntity {
     @Column('smallint')
     deaths: number
 
-    @Column('smallint', { array: true, transformer: arrayTransformer })
+    @Column('smallint', { array: true })
     downs: number[]
 
     @Column('smallint')
@@ -177,9 +177,12 @@ class StatsRepository extends AbstractRepository<Stats> {
         return await this.repository.save({ ...existing, ...this.normalize(stats) })
     }
 
-    public async findByAccountId(accountId: string, limit?: number, offset?: number): Promise<Stats[]> {
+    public async findByAccountId(accountId: string, where?: FindConditions<Stats>, limit?: number, offset?: number): Promise<Stats[]> {
         const options = {
-            where: { accountId },
+            where: {
+                accountId,
+                ...where
+            },
             order: { startTime: 'DESC' },
         } as FindManyOptions
         if (limit) options.take = limit

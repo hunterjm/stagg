@@ -39,6 +39,10 @@ class ObjectiveRepository extends AbstractRepository<Objective> {
         const existing = await this.repository.findOneOrFail(objective.combinedId)
         return await this.repository.save({ ...existing, ...this.normalize(objective) })
     }
+
+    public async findObjectives(matchId: string, accountId: string) {
+        return await this.repository.find({ where: { match: { matchId }, account: { accountId } }})
+    }
 }
 
 export {

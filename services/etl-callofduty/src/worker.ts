@@ -343,14 +343,13 @@ export namespace Worker {
             try {
                 // const suffix = username && platform ? `/${platform}/${username}` : ''
                 // await this.HttpPut(`${API_HOST}/callofduty/account/${origin}/${gameId}/${unoId}${suffix}`)
-                // TODO: check if this is implemented or not
+                // not implemented
                 return true
             } catch (e) {
                 console.log('[>] SaveDiscoveredAccount Error consumed', e.message)
                 return false
             }
         }
-        // callofduty.friends.controller line 12
         private async SaveFriendsList(friendsList: Schema.ProfileId[]) {
             try {
                 // const { gameId, gameType, platform, username } = this.cfg
@@ -362,7 +361,6 @@ export namespace Worker {
                 return false
             }
         }
-        // callofduty.profile.controller line 18
         private async SaveProfileData(profileRes: Schema.Routes.Profile) {
             try {
                 // const { gameId, gameType, platform, username } = this.cfg
@@ -384,7 +382,6 @@ export namespace Worker {
                 return false
             }
         }
-        // callofduty.match.controller line 39
         private async SaveMatchEvents(matchMapEventsRes: Schema.Routes.MatchEvents) {
             try {
                 // await this.HttpPut(`${API_HOST}/callofduty/match/${this.cfg.gameId}/${this.cfg.gameType}/${matchMapEventsRes.matchId}/events`, matchMapEventsRes)
@@ -395,7 +392,6 @@ export namespace Worker {
                 return false
             }
         }
-        // callofduty.match.controller line 43 and line 69
         private async SaveMatchRecord(match: Schema.Match, isForeignAcct?: boolean) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg
@@ -424,7 +420,6 @@ export namespace Worker {
                 return false
             }
         }
-        // callofduty.match.controller line 82
         private async UpdateMatchRecord(matchId: string, summary: Schema.Summary) {
             try {
                 const { gameId, gameType, platform, username } = this.cfg

@@ -66,6 +66,10 @@ class LoadoutRepository extends AbstractRepository<Loadout> {
         const existing = await this.repository.findOneOrFail(loadout.hashId)
         return await this.repository.save({ ...existing, ...this.normalize(loadout) })
     }
+
+    public async findLoadouts(matchId: string, accountId: string) {
+        return await this.repository.find({ where: { match: { matchId }, account: { accountId } }})
+    }
 }
 
 export {
