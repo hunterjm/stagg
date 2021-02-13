@@ -1,0 +1,9 @@
+dispatch:
+    - url: discord.stagg.co/*
+      service: bot
+    - url: bot.stagg.co/*
+      service: bot
+    - url: api.stagg.co/*
+      service: api
+    - url: stagg.co/*
+      service: default

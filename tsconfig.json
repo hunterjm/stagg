@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "types": ["node"],
       "module": "commonjs",
       "declaration": true,
       "noImplicitAny": false,
@@ -7,6 +8,7 @@
       "noLib": false,
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
+      "allowSyntheticDefaultImports": true,
       "target": "es6",
       "sourceMap": true,
       "lib": [
