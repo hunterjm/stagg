@@ -105,3 +105,48 @@ export const denormalizeWzModes = (entities:CallOfDuty.WZ.Profile.Mode.Entity[])
     }
     return modeMap
 }
+
+export const denormalizeWzMatch = (e:CallOfDuty.WZ.Match.Entity) => ({
+    matchId: e.match_id,
+    mode: e.mode_id,
+    startTime: e.start_time,
+    endTime: e.end_time,
+    teamId: e.team_id,
+    score: e.stat_score,
+    downs: e.stat_downs,
+    kills: e.stat_kills,
+    deaths: e.stat_deaths,
+    damageDone: e.stat_damage_done,
+    damageTaken: e.stat_damage_taken,
+    teamWipes: e.stat_team_wipes,
+    executions: e.stat_executions,
+    headshots: e.stat_headshots,
+    revives: e.stat_revives,
+    contracts: e.stat_contracts,
+    lootCrates: e.stat_loot_crates,
+    buyStations: e.stat_buy_stations,
+    timePlayed: e.stat_time_played,
+    avgLifeSpan: e.stat_avg_life_time,
+    teamPlacement: e.stat_team_placement,
+    teamSurvivalTime: e.stat_team_survival_time,
+    bestKillstreak: e.stat_longest_streak,
+    distanceTraveled: Number(e.stat_distance_traveled), // decimal numbers must be recast on fetch
+    percentTimeMoving: Number(e.stat_percent_time_moving),
+    gulagKills: e.stat_gulag_kills,
+    gulagDeaths: e.stat_gulag_deaths,
+    clusterKills: e.stat_cluster_kills,
+    airstrikeKills: e.stat_airstrike_kills,
+    trophyDefense: e.stat_trophy_defense,
+    munitionShares: e.stat_munition_shares,
+    missileRedirects: e.stat_missile_redirects,
+    equipmentDestroyed: e.stat_equipment_destroyed,
+    xp: {
+        match: e.stat_xp_match,
+        score: e.stat_xp_score,
+        bonus: e.stat_xp_bonus,
+        medal: e.stat_xp_medal,
+        misc: e.stat_xp_misc,
+        challenge: e.stat_xp_challenge,
+        total: e.stat_xp_total,
+    }
+})

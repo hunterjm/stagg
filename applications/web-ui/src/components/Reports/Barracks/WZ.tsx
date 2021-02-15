@@ -16,7 +16,7 @@ export interface Props extends ReportAccountProps {
         id: number
         label: string
     }
-    stats: {
+    results: {
         wins: number
         score: number
         games: number
@@ -38,7 +38,7 @@ export interface Props extends ReportAccountProps {
 export const Component = (props:ReportLazyLoadProps|Props) => {
     const propsAsComplete = props as Props
     const propsAsIncomplete = props as ReportLazyLoadProps
-    if (!propsAsComplete.stats) {
+    if (!propsAsComplete.results) {
         if (!propsAsIncomplete.accountIdentifier) {
             throw 'Cannot lazy-load report component without accountIdentifier'
         }
@@ -54,7 +54,6 @@ const LoadingWrapper = styled.div`
 export const LazyLoader = ({ accountIdentifier, limit=0, skip=0 }:ReportLazyLoadProps&{ limit?:number, skip?:number }) => {
     const [reportProps, setReportProps] = useState<Props>(null)
     const loader = async () => {
-        console.log('loading with limit', limit)
         const props = await PropsLoader({ accountIdentifier }, limit, skip)
         setReportProps(props)
     }
@@ -73,33 +72,24 @@ export const PropsLoader = async ({ accountIdentifier }:ReportLazyLoadProps, lim
     if (!accountIdentifier.uno) {
         throw 'uno username required'
     }
-    const { data } = await request<any>(`/callofduty/${encodeURIComponent(accountIdentifier.uno)}/wz/barracks?limit=${limit}&skip=${skip}`)
+    const limitQuery = limit ? `${limit}d` : ''
+    const skipQuery = skip ? `${skip}d` : ''
+    const apiUrlBase = `/callofduty/db/uno/${encodeURIComponent(accountIdentifier.uno)}/wz`
+    const apiUrlFilters = `?limit=${limitQuery}&skip=${skipQuery}&modesExcluded=dmz`
+    const { data } = await request<any>(apiUrlBase + apiUrlFilters)
     if (!data.account) {
         return null
     }
     return {
         _propsLoader: { limit, skip },
         account: data.account.callofduty,
-        rank: {
-            id: data.stats.rankId,
-            label: data.stats.rankLabel,
-        },
-        stats: {
-            wins: data.stats.wins,
-            score: data.stats.score,
-            games: data.stats.games,
-            kills: data.stats.kills,
-            deaths: data.stats.deaths,
-            revives: data.stats.revives,
-            avgFinish: Math.round(data.stats.teamPlacement / data.stats.games) || 0,
-            timePlayed: data.stats.timePlayed,
-            damageDone: data.stats.damageDone,
-            damageTaken: data.stats.damageTaken,
-            finalCircles: data.stats.finalCircles,
-            bestKillstreak: data.stats.bestKillstreak,
-            top10FinishRate: data.stats.gamesTop10 / data.stats.games,
-            gulagWinRate: data.stats.winsGulag / data.stats.gamesGulag,
-            timeMovingPercentage: (data.stats.percentTimeMoving / 100) / data.stats.games,
+        rank: data.rank,
+        results: {
+            ...data.results,
+            avgFinish: Math.round(data.results.teamPlacement / data.results.games) || 0,
+            top10FinishRate: data.results.gamesTop10 / data.results.games,
+            gulagWinRate: data.results.winsGulag / data.results.gamesGulag,
+            timeMovingPercentage: (data.results.percentTimeMoving / 100) / data.results.games,
         }
     }
 }
@@ -151,7 +141,7 @@ export const View = (props:Props) => {
                 <hr />
                 <div className="stat">
                     <h2>
-                        {commaNum(props.stats.wins)}
+                        {commaNum(props.results.wins)}
                     </h2>
                     <label>
                         WINS
@@ -160,7 +150,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaNum(props.stats.games)}
+                        {commaNum(props.results.games)}
                     </h2>
                     <label>
                         GAMES
@@ -169,7 +159,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaToFixed(props.stats.timePlayed / 60 / 60, 1)}hr
+                        {commaToFixed(props.results.timePlayed / 60 / 60, 1)}hr
                     </h2>
                     <label>
                         TIME PLAYED
@@ -187,7 +177,7 @@ export const View = (props:Props) => {
                 <hr />
                 <div className="stat">
                     <h2 style={{marginTop: -8}}>
-                        {Math.round(props.stats.avgFinish)}<sup>{ordinal(Math.round(props.stats.avgFinish)).replace(String(Math.round(props.stats.avgFinish)), '')}</sup>
+                        {Math.round(props.results.avgFinish)}<sup>{ordinal(Math.round(props.results.avgFinish)).replace(String(Math.round(props.results.avgFinish)), '')}</sup>
                     </h2>
                     <label>
                         FINISH
@@ -196,7 +186,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.stats.top10FinishRate * 100).toFixed(1)}%
+                        {(props.results.top10FinishRate * 100).toFixed(1)}%
                     </h2>
                     <label>
                         TOP 10
@@ -205,7 +195,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.stats.gulagWinRate * 100).toFixed(1)}%
+                        {(props.results.gulagWinRate * 100).toFixed(1)}%
                     </h2>
                     <label>
                         GULAG WIN
@@ -223,7 +213,7 @@ export const View = (props:Props) => {
                 <hr />
                 <div className="stat">
                     <h2>
-                        {commaNum(props.stats.revives)}
+                        {commaNum(props.results.revives)}
                     </h2>
                     <label>
                         REVIVES
@@ -232,7 +222,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.stats.timeMovingPercentage * 100).toFixed(1)}%
+                        {(props.results.timeMovingPercentage * 100).toFixed(1)}%
                     </h2>
                     <label>
                         TIME MOVING
@@ -241,7 +231,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaNum(props.stats.finalCircles)}
+                        {commaNum(props.results.finalCircles)}
                     </h2>
                     <label>
                         FINAL CIRCLES
@@ -257,7 +247,7 @@ export const View = (props:Props) => {
                 <hr />
                 <div className="stat">
                     <h2>
-                        {commaToFixed(props.stats.damageDone / props.stats.games, 1)}
+                        {commaToFixed(props.results.damageDone / props.results.games, 1)}
                     </h2>
                     <label>
                         DAMAGE
@@ -266,7 +256,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaNum(props.stats.bestKillstreak)}
+                        {commaNum(props.results.bestKillstreak)}
                     </h2>
                     <label>
                         KILLSTREAK
@@ -275,7 +265,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaToFixed(props.stats.kills / props.stats.games, 2)}
+                        {commaToFixed(props.results.kills / props.results.games, 2)}
                     </h2>
                     <label>
                         KILLS
@@ -291,7 +281,7 @@ export const View = (props:Props) => {
                 <hr />
                 <div className="stat">
                     <h2>
-                        {(props.stats.kills / props.stats.deaths).toFixed(2)}
+                        {(props.results.kills / props.results.deaths).toFixed(2)}
                     </h2>
                     <label>
                         K/D RATIO
@@ -300,7 +290,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.stats.damageDone / props.stats.damageTaken).toFixed(2)}
+                        {(props.results.damageDone / props.results.damageTaken).toFixed(2)}
                     </h2>
                     <label>
                         DD/DT RATIO
@@ -309,7 +299,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaToFixed(props.stats.score / (props.stats.timePlayed/60))}
+                        {commaToFixed(props.results.score / (props.results.timePlayed/60))}
                     </h2>
                     <label>
                         SCORE / MIN

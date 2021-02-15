@@ -3,14 +3,10 @@ import {
     Post,
     Body,
     Res,
-    Get,
-    Param,
-    Query,
     Controller,
-    BadRequestException,
 } from '@nestjs/common'
 import { AccountCredentialsDTO } from './dto'
-import { CallOfDutyApiService, CallOfDutyDbService } from './services'
+import { CallOfDutyApiService } from './services'
 import { AccountService } from 'src/account/services'
 import { signJwt } from 'src/jwt'
 import { denormalizeAccount } from 'src/account/model'
@@ -19,7 +15,6 @@ import { denormalizeAccount } from 'src/account/model'
 export class CallOfDutyController {
     constructor(
         private readonly acctService: AccountService,
-        private readonly codDbService: CallOfDutyDbService,
         private readonly codApiService: CallOfDutyApiService,
     ) {}
 
@@ -48,16 +43,6 @@ export class CallOfDutyController {
         }
         res.send(responsePayload)
         return responsePayload
-    }
-    @Get('/:unoUsername/wz/barracks')
-    async WzBarracksData(@Param() { unoUsername }, @Query() { limit, skip }) {
-        const account = await this.acctService.getByPlatformId({ platform: 'uno', username: unoUsername })
-        if (!account) {
-            throw new BadRequestException('invalid uno username')
-        }
-        const formattedAcct = denormalizeAccount(account)
-        const stats = await this.codDbService.getWzBarracksData(account.account_id, Number(limit || 0), Number(skip || 0), 'days')
-        return { account:formattedAcct, stats }
     }
     
 }

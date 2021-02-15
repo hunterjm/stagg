@@ -67,9 +67,9 @@
             "Pro"
         ],
         "WZ": {
-            "KDR": { "weight": 5, "limit": 3 },
-            "DDR": { "weight": 3, "limit": 10 },
-            "POS": { "weight": 2, "limit": 0 }
+            "KDR":   { "weight": 5, "limit": 3 },
+            "DDR":   { "weight": 3, "limit": 10 },
+            "SCORE": { "weight": 2, "limit": 20000 }
         }
     }
 }

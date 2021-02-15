@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty } from 'class-validator'
 
-export class AccountCredentialsDTO {
+export class CallOfDutyAccountCredentials {
     @IsEmail()
     email: string
 

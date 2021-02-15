@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common'
 import { Account, CallOfDuty } from '@stagg/db'
-import { CallOfDutyApiService, CallOfDutyDbService } from './services'
+import { CallOfDutyApiService } from './services'
 import { CallOfDutyController } from './controller'
+import { CallOfDutyDbService } from './db/services'
+import { CallOfDutyDataController } from './db/controller'
+import { CallOfDutyPassthroughAPI } from './api/controller'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AccountModule } from 'src/account/module'
 import { DbModule } from '../module.db'
@@ -24,7 +27,11 @@ import { DbModule } from '../module.db'
   ],
   exports: [],
   providers: [CallOfDutyApiService, CallOfDutyDbService],
-  controllers: [CallOfDutyController],
+  controllers: [
+    CallOfDutyController,
+    CallOfDutyPassthroughAPI,
+    CallOfDutyDataController,
+  ],
 })
 
 export class CallOfDutyModule {}

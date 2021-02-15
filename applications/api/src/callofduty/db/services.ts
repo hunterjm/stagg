@@ -1,76 +1,77 @@
-import API from '@callofduty/api'
 // import * as DB from '@stagg/db'
-import * as Schema from '@callofduty/types'
 import * as Assets from '@callofduty/assets'
 import {
   Injectable,
-  BadGatewayException,
-  BadRequestException,
-  UnauthorizedException,
 } from '@nestjs/common'
 import { getManager } from 'typeorm'
 import { CONFIG } from 'src/config'
+import { urlQueryToSql, FilterUrlQuery } from './filters'
+import { wzRank } from './rank'
+import { denormalizeWzMatch } from '../model'
 // import { InjectRepository } from '@nestjs/typeorm'
-
-@Injectable()
-export class CallOfDutyApiService {
-  public async authorizeCredentials(email:string, password:string):Promise<Schema.Tokens> {
-    const api = new API()
-    try {
-      console.log('[?] Why does this lag without a log?')
-      const tokens = await api.Authorize(email, password) // will throw if fail
-      return tokens
-    } catch(e) {
-      throw new UnauthorizedException(e)
-    }
-  }
-  public async fetchIdentity(tokens:Schema.Tokens):Promise<{ games: Schema.Game[], profiles: Schema.PlatformId[] }> {
-    const api = new API(tokens)
-    const games:Schema.Game[] = []
-    const profiles:Schema.PlatformId[] = []
-    const { titleIdentities } = await api.Identity()
-    if (!titleIdentities.length) {
-      throw new BadGatewayException('identity empty')
-    }
-    for(const { title, platform, username } of titleIdentities) {
-      if (!games.includes(title)) {
-        games.push(title)
-      }
-      if (!profiles.filter(p => p.username === username && p.platform === platform).length) {
-        profiles.push({ platform, username })
-      }
-    }
-    return { games, profiles }
-  }
-  public async fetchAccounts(tokens:Schema.Tokens, profile:Schema.PlatformId):Promise<Schema.PlatformId[]> {
-    const api = new API(tokens)
-    const accounts = await api.Accounts(profile)
-    const profiles:Schema.PlatformId[] = []
-    for(const platform in accounts) {
-      const { username } = accounts[platform]
-      profiles.push({ platform: platform as Schema.Platform, username })
-    }
-    return profiles
-  }
-  public async fetchUnoId(tokens:Schema.Tokens, { username, platform }:Schema.PlatformId):Promise<Schema.UnoId> {
-    const api = new API(tokens)
-    const { matches: [ firstWzMatch ] } = await api.MatchHistory({ username, platform }, 'wz', 'mw', 0, 1)
-    if (firstWzMatch) {
-      return { unoId: firstWzMatch.player.uno }
-    }
-    const { matches: [ firstMpMatch ] } = await api.MatchHistory({ username, platform }, 'mp', 'mw', 0, 1)
-    if (!firstMpMatch) {
-      throw new BadRequestException('unoId only available in Modern Warfare / Warzone')
-    }
-    return { unoId: firstMpMatch.player.uno }
-  }
-}
 
 @Injectable()
 export class CallOfDutyDbService {
   constructor(
     // @InjectRepository(DB.Account.Entity, 'stagg') private readonly acctRepo: DB.Account.Repository,
   ) {}
+  public async wzMatchHistoryData(account_id:string, filters:FilterUrlQuery) {
+    const manager = getManager()
+    const filterQuery = urlQueryToSql(filters)
+    const whereClause = `account_id=$1 AND ${filterQuery}`
+    const query = ` SELECT  * FROM "callofduty/matches/wz" WHERE ${whereClause}`
+    const results = await manager.query(query, [account_id])
+    const formattedResults = []
+    const rankStats = { score: 0, kills: 0, deaths: 0, damageDone: 0, damageTaken: 0 }
+    for(const result of results) {
+      rankStats.score += result.stat_score
+      rankStats.kills += result.stat_kills
+      rankStats.deaths += result.stat_deaths
+      rankStats.damageDone += result.stat_damage_done
+      rankStats.damageTaken += result.stat_damage_taken
+      formattedResults.push(denormalizeWzMatch(result))
+    }
+    const rank = wzRank(rankStats.score, rankStats.kills, rankStats.deaths, rankStats.damageDone, rankStats.damageTaken)
+    return { rank, results: formattedResults }
+  }
+  public async wzAggregateMatchData(account_id:string, filters:FilterUrlQuery) {
+    const filterQuery = urlQueryToSql(filters)
+    const whereClause = `account_id=$1 ${!filterQuery ? '' : `AND ${filterQuery}`}`
+    const query = `
+        SELECT 
+          COUNT(*) as games,
+          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement = 1 AND ${whereClause}) as "wins",
+          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_gulag_kills > 0 AND ${whereClause}) as "winsGulag",
+          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE (stat_gulag_kills > 0 OR stat_gulag_deaths > 0) AND ${whereClause}) as "gamesGulag",
+          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement <= 10 AND ${whereClause}) as "gamesTop10",
+          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE (stat_team_placement = 1 OR stat_team_survival_time > $2) AND ${whereClause}) as "finalCircles",
+          SUM(stat_score) as "score",
+          SUM(stat_kills) as "kills",
+          SUM(stat_longest_streak) as "killstreak",
+          MAX(stat_longest_streak) as "bestKillstreak",
+          SUM(stat_deaths) as "deaths",
+          SUM(stat_revives) as "revives",
+          SUM(stat_damage_done) as "damageDone",
+          SUM(stat_damage_taken) as "damageTaken",
+          SUM(stat_gulag_kills) as "gulagKills",
+          SUM(stat_gulag_deaths) as "gulagDeaths",
+          SUM(stat_team_placement) as "teamPlacement",
+          SUM(stat_time_played) as "timePlayed",
+          SUM(stat_percent_time_moving) as "percentTimeMoving"
+        FROM "callofduty/matches/wz"
+        WHERE ${whereClause}
+    `
+    const manager = getManager()
+    const maxCircleId = Math.max(...Assets.MW.Circles.map(c => c.circleId))
+    const finalCircleTime = Assets.MW.CircleStartTime(maxCircleId-3) * 1000 // convert to ms
+    const [result] = await manager.query(query, [account_id, finalCircleTime])
+    // convert to nums
+    for(const key in result) {
+      result[key] = Number(result[key])
+    }
+    const rank = wzRank(result.score, result.kills, result.deaths, result.damageDone, result.damageTaken)
+    return { rank, results: result }
+  }
   public async getWzBarracksData(account_id:string, limit:number=0, skip:number=0, limitType:'matches'|'days'='days') {
     const manager = getManager()
     const maxCircleId = Math.max(...Assets.MW.Circles.map(c => c.circleId))
@@ -97,7 +98,6 @@ export class CallOfDutyDbService {
     const query = `
         SELECT 
           COUNT(*) as games,
-          (SELECT string_agg(CAST(stat_team_placement AS varchar),',') AS plist FROM "callofduty/matches/wz" WHERE ${whereClause} GROUP BY 1) as "placements",
           (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement = 1 AND ${whereClause}) as "wins",
           (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement <= 10 AND ${whereClause}) as "gamesTop10",
           (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_gulag_kills > 0 AND ${whereClause}) as "winsGulag",

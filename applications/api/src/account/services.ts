@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Account } from '@stagg/db'
-import { Tokens, PlatformId } from '@callofduty/types'
-import { Injectable } from '@nestjs/common'
+import { Tokens, PlatformId, Platform } from '@callofduty/types'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Model } from '@stagg/api'
 import { CONFIG } from 'src/config'
@@ -11,6 +11,23 @@ export class AccountService {
   constructor(
     @InjectRepository(Account.Entity, 'stagg') private readonly repo: Account.Repository,
   ) {}
+  public async findAny(platform:Platform|'id'|'discord'|'account', id:string):Promise<Account.Entity> {
+    let criteria = <{[key:string]:string}>{}
+    switch(platform) {
+      case 'id':
+        criteria = { callofduty_uno_id: id }
+        break
+      case 'discord':
+        criteria = { discord_id: id }
+        break
+      case 'account':
+        criteria = { account_id: id }
+        break
+      default:
+        criteria = { [`callofduty_${platform}_username`]: id }
+    }
+    return this.repo.findOne(criteria)
+  }
   public async getById(account_id:string):Promise<Account.Entity> {
     return this.repo.findOne({ account_id })
   }
