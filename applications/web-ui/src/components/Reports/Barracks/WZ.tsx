@@ -51,7 +51,7 @@ const LoadingWrapper = styled.div`
     width: 680px;
     height: 480px;
 `
-export const LazyLoader = ({ accountIdentifier, limit=0, skip=0 }:ReportLazyLoadProps&{ limit?:number, skip?:number }) => {
+export const LazyLoader = ({ accountIdentifier, limit='', skip='' }:ReportLazyLoadProps&{ limit?:string, skip?:string }) => {
     const [reportProps, setReportProps] = useState<Props>(null)
     const loader = async () => {
         const props = await PropsLoader({ accountIdentifier }, limit, skip)
