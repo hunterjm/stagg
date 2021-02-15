@@ -4,6 +4,7 @@ export const wzRank = (score:number, kills:number, deaths:number, damageDone:num
     const factors = [
         { weight: CONFIG.RANKING.WZ.KDR.weight,   limitValue: CONFIG.RANKING.WZ.KDR.limit,    statValue: kills / (deaths || 1) },
         { weight: CONFIG.RANKING.WZ.DDR.weight,   limitValue: CONFIG.RANKING.WZ.DDR.limit,    statValue: damageDone / (damageTaken || 1) },
+        { weight: CONFIG.RANKING.WZ.KILLS.weight, limitValue: CONFIG.RANKING.WZ.KILLS.limit,  statValue: kills },
         { weight: CONFIG.RANKING.WZ.SCORE.weight, limitValue: CONFIG.RANKING.WZ.SCORE.limit,  statValue: score },
     ]
     const factoredScores = []

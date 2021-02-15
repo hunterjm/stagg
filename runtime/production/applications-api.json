@@ -69,6 +69,7 @@
         "WZ": {
             "KDR":   { "weight": 5, "limit": 3 },
             "DDR":   { "weight": 3, "limit": 10 },
+            "KILLS": { "weight": 4, "limit": 20 },
             "SCORE": { "weight": 2, "limit": 20000 }
         }
     }
