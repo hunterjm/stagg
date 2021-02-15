@@ -68,14 +68,12 @@ export const LazyLoader = ({ accountIdentifier, limit=0, skip=0 }:ReportLazyLoad
     )
 }
 
-export const PropsLoader = async ({ accountIdentifier }:ReportLazyLoadProps, limit:number=0, skip:number=0) => {
+export const PropsLoader = async ({ accountIdentifier }:ReportLazyLoadProps, limit:string='', skip:string='') => {
     if (!accountIdentifier.uno) {
         throw 'uno username required'
     }
-    const limitQuery = limit ? `${limit}d` : ''
-    const skipQuery = skip ? `${skip}d` : ''
     const apiUrlBase = `/callofduty/db/uno/${encodeURIComponent(accountIdentifier.uno)}/wz`
-    const apiUrlFilters = `?limit=${limitQuery}&skip=${skipQuery}&modesExcluded=dmz`
+    const apiUrlFilters = `?limit=${limit}&skip=${skip}&modesExcluded=dmz`
     const { data } = await request<any>(apiUrlBase + apiUrlFilters)
     if (!data.account) {
         return null
@@ -98,9 +96,9 @@ export const View = (props:Props) => {
     const uno = props.account.profiles.find(p => p.platform === 'uno')
     const cmdModifiers:string[] = []
     if (props._propsLoader?.limit) {
-        cmdModifiers.push(`${props._propsLoader?.limit}d`)
+        cmdModifiers.push(`${props._propsLoader?.limit}`)
         if (props._propsLoader?.skip) {
-            cmdModifiers.push(`${props._propsLoader?.skip}d`)
+            cmdModifiers.push(`${props._propsLoader?.skip}`)
         }
     }
     const fullCommand = `% wz barracks ${uno?.username} ${cmdModifiers.join(' ')}`

@@ -20,8 +20,8 @@ const Page = ({ renderReport, reportProps }) => {
 }
 
 Page.getInitialProps = async ({ store, res, req, query }:NextPageContext) => {
-    const limit = query.limit ? Number(query.limit) : 0
-    const skip = query.skip ? Number(query.skip) : 0
+    const limit = query.limit as string
+    const skip = query.skip as string
     const unoUsername = query.playerIdentifier as string
     const reportProps = await Reports.Barracks.WZ.PropsLoader({ accountIdentifier: { uno: unoUsername.replace('@', '#') } }, limit, skip)
     return { reportProps }
