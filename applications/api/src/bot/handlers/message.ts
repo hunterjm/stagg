@@ -53,7 +53,7 @@ export class MessageHandler {
     await this.validateLog()
     await this.validateAuthor()
     await this.acknowledgementReply()
-    this.parseMessage()
+    await this.parseMessage()
   }
   private async acknowledgementReply() {
     return this.reply(CONFIG.DISCORD_INITIAL_REPLY)
@@ -90,15 +90,17 @@ export class MessageHandler {
       .replace(/\s+/g, ' ') // replace multiple spaces with single space
       .trim() // trim space from ends
       .split(' ') // split into array of words
-    const foundDiscordIds:string[] = []
     for(const i in chain) {
       if (chain[i].match(/<@!([0-9]+)>/)) {
         const discordId = chain[i].replace(/<@!([0-9]+)>/, '$1')
-        foundDiscordIds.push(discordId)
+        const memberAcct = await this.service.acctRepo.findOne({ discord_id: discordId })
+        if (memberAcct) {
+          this.accounts.push(memberAcct)
+        }
         delete chain[i]
       }
     }
-    this.chain.push(...chain)
+    this.chain.push(...chain.filter(str => str))
   }
   private async saveMessageLog():Promise<DB.Discord.Log.Message.Entity> {
     try { return this.service.logMsgRepo.save(this.normalize()) } catch(e) { console.log(e); return null }

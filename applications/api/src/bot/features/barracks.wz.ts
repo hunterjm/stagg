@@ -13,6 +13,9 @@ export class BarracksWZ implements Feature {
                 span[span.limit === null ? 'limit' : 'skip'] = param.replace(/[^0-9]/g, '')
                 delete params[i]
             }
+            if (param === 'me') {
+                params[i] = handler.authorAccount.callofduty_uno_username
+            }
         }
         const unoUsernames = [... new Set([...params, ...handler.accounts.map(a => a.callofduty_uno_username)])].filter(str => str)
         if (!unoUsernames.length) {
@@ -29,7 +32,8 @@ export class BarracksWZ implements Feature {
         for(const uname of unoUsernames) {
             const webUrl = `/${uname.replace('#', '@')}/wz/barracks${spanParamStr}`
             const imgUrl = `${webUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`
-            await handler.reply({ content: `> ${CONFIG.HOST_WEB}${webUrl}`, files: [`${CONFIG.HOST_RENDER_HTML}?url=${imgUrl}`] })
+            console.log('[>] Discord bot dispatching image from', `${CONFIG.HOST_RENDER_HTML}?url=${imgUrl}`)
+            handler.reply({ content: `> ${CONFIG.HOST_WEB}${webUrl}`, files: [`${CONFIG.HOST_RENDER_HTML}?url=${imgUrl}`] })
         }
     }
 }
