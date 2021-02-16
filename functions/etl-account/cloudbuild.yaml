@@ -10,4 +10,4 @@ steps:
     entrypoint: yarn
     args: ['build']
   - name: gcr.io/cloud-builders/gcloud
-    args: ['functions', 'deploy', 'etl-account', '--source=functions/etl-account', '--max-instances=32', '--memory=128MB', '--timeout=540', '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1' ]
+    args: ['functions', 'deploy', 'etl-account', '--source=functions/etl-account', '--max-instances=128', '--memory=256MB', '--timeout=540', '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1' ]
