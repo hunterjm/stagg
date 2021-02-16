@@ -7,12 +7,12 @@ const romanNumeral = (count:number) => {
     return q
 }
 
-export const wzRank = (score:number, kills:number, deaths:number, damageDone:number, damageTaken:number) => {
+export const wzRank = (games:number, score:number, kills:number, deaths:number, damageDone:number, damageTaken:number) => {
     const factors = [
         { weight: CONFIG.RANKING.WZ.KDR.weight,   limitValue: CONFIG.RANKING.WZ.KDR.limit,    statValue: kills / (deaths || 1) },
         { weight: CONFIG.RANKING.WZ.DDR.weight,   limitValue: CONFIG.RANKING.WZ.DDR.limit,    statValue: damageDone / (damageTaken || 1) },
-        { weight: CONFIG.RANKING.WZ.KILLS.weight, limitValue: CONFIG.RANKING.WZ.KILLS.limit,  statValue: kills },
-        { weight: CONFIG.RANKING.WZ.SCORE.weight, limitValue: CONFIG.RANKING.WZ.SCORE.limit,  statValue: score },
+        { weight: CONFIG.RANKING.WZ.KILLS.weight, limitValue: CONFIG.RANKING.WZ.KILLS.limit,  statValue: kills / games },
+        { weight: CONFIG.RANKING.WZ.SCORE.weight, limitValue: CONFIG.RANKING.WZ.SCORE.limit,  statValue: score / games },
     ]
     const factoredScores = []
     for(const factor of factors) {

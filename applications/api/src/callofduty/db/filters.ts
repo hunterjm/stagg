@@ -135,7 +135,6 @@ export const reduceSqlSuffix = (filters:FilterMap):string => {
     let query = wheres.join(' AND ')
     if (skips.length)  query += ` OFFSET ${skips.join(',')}`
     if (limits.length) query += ` LIMIT  ${limits.join(',')}`
-    console.log(query)
     return query
 }
 
