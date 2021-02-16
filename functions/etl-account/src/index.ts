@@ -34,7 +34,7 @@ export default async (req, res) => {
     await dbService.saveAccount(account)
     // kick-off worker
     const startTimes = { mw: Number(mw_end || 0), cw: Number(cw_end || 0), wz: Number(wz_end || 0) }
-    const worker = new Worker(account, Boolean(redundancy), startTimes)
+    const worker = new Worker(account, Boolean(redundancy || fresh), startTimes)
     await worker.Run()
     if (fresh) {
         await Axios.get(`${CONFIG.API_HOST}/events/account/${account_id}/ready`)
