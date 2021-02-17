@@ -18,7 +18,7 @@ export class CallOfDutyDbService {
   public async wzMatchHistoryData(account_id:string, filters:FilterUrlQuery) {
     const manager = getManager()
     const filterQuery = urlQueryToSql(filters)
-    const whereClause = `account_id=$1 AND ${filterQuery}`
+    const whereClause = `account_id=$1 ${filterQuery ? `AND ${filterQuery}` : ''}`
     const query = ` SELECT  * FROM "callofduty/matches/wz" WHERE ${whereClause}`
     const results = await manager.query(query, [account_id])
     const formattedResults = []
