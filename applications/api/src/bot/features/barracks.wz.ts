@@ -9,8 +9,8 @@ export class BarracksWZ implements Feature {
         const span = { limit: null, skip: null }
         for(const i in params) {
             const param = params[i].trim()
-            if (param.match(/^[0-9]{1,3}d?$/i)) {
-                span[span.limit === null ? 'limit' : 'skip'] = param.replace(/[^0-9]/g, '')
+            if (param.match(/^[0-9]{1,3}(d|m)?$/i)) {
+                span[span.limit === null ? 'limit' : 'skip'] = param
                 delete params[i]
             }
             if (param === 'me') {
