@@ -1,4 +1,4 @@
-import { CreateDateColumn, UpdateDateColumn, AbstractRepository } from 'typeorm'
+import { CreateDateColumn, UpdateDateColumn, AbstractRepository, InsertResult } from 'typeorm'
 
 export abstract class BaseEntity {
     @CreateDateColumn()
@@ -22,6 +22,10 @@ export abstract class BaseRepository<T> extends AbstractRepository<T> {
     public async update(entity:T&{id:string}): Promise<T> {
         const existing = await this.repository.findOneOrFail(entity.id)
         return this.repository.save({ ...existing, ...this.normailze(entity) })
+    }
+    public async insert(entity:T): Promise<InsertResult> {
+        const normalized = <T>this.normailze(entity)
+        return this.repository.insert(normalized)
     }
     public async findOne(criteria:Partial<T>): Promise<T> {
         return this.repository.findOne(criteria)
