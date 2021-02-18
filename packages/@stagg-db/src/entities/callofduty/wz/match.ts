@@ -7,10 +7,10 @@ import {
     EntityRepository,
 } from 'typeorm'
 import * as CallOfDuty from '@callofduty/types'
-import { BaseEntity, BaseRepository } from '../../../../abstract'
-import { arrayTransformer } from '../../../../util'
+import { BaseEntity, BaseRepository } from '../../../abstract'
+import { arrayTransformer } from '../../../util'
 
-@Entity({ name: 'callofduty/matches/wz', database: 'stagg' })
+@Entity({ name: 'callofduty/wz/matches', database: 'stagg' })
 class MatchWZ extends BaseEntity {
     @PrimaryColumn('text')
     combined_id: string // <matchId>.<accountId>

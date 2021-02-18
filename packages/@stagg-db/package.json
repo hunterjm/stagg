@@ -11,7 +11,7 @@
     "migration"
   ],
   "scripts": {
-    "tsc": "tsc",
+    "tsc": "rimraf lib && tsc",
     "test": "mocha",
     "migration:gen": "rimraf ./lib && tsc && yarn typeorm migration:generate -c stagg -n",
     "migration:run": "rimraf ./lib && tsc && yarn typeorm migration:run -c stagg"

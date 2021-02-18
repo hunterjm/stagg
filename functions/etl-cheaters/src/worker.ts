@@ -24,11 +24,11 @@ const isSus = (record:MW.Match.WZ):string[] => {
     return reasons
 }
 
-export const worker = async (match_id:string):Promise<CallOfDuty.Sus.Entity[]> => {
+export const worker = async (match_id:string):Promise<CallOfDuty.WZ.Suspect.Entity[]> => {
     const api = new API()
     const db = new DbService()
-    const suspects:CallOfDuty.Sus.Entity[] = []
-    const existing = await db.getMatchInvesgitation(match_id)
+    const suspects:CallOfDuty.WZ.Suspect.Entity[] = []
+    const existing = await db.matchAlreadyInvestigated(match_id)
     if (existing) {
         throw 'already investigated'
     }
@@ -50,6 +50,5 @@ export const worker = async (match_id:string):Promise<CallOfDuty.Sus.Entity[]> =
             await db.saveSuspect(suspect)
         }
     }
-    await db.saveMatchInvesgitation(match_id)
     return suspects
 }

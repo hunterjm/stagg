@@ -38,8 +38,8 @@ export class BotService {
   public readonly logResRepo: DB.Discord.Log.Response.Repository
   @InjectRepository(DB.Discord.Log.Voice.Entity, 'stagg')
   public readonly logVoiceRepo: DB.Discord.Log.Voice.Repository
-  @InjectRepository(DB.Discord.FeatureFlag.Entity, 'stagg')
-  public readonly ffRepo: DB.Discord.FeatureFlag.Repository
+  @InjectRepository(DB.Discord.Settings.Features.Entity, 'stagg')
+  public readonly ffRepo: DB.Discord.Settings.Features.Repository
   constructor() {
     this.initFeatures()
     this.client = new Discord.Client()

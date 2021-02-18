@@ -8,7 +8,7 @@ import {
 import * as CallOfDuty from '@callofduty/types'
 import { BaseEntity, BaseRepository } from '../../../../abstract'
 
-@Entity({ name: 'callofduty/profiles/mw/weapons', database: 'stagg' })
+@Entity({ name: 'callofduty/mw/profiles/weapons', database: 'stagg' })
 class ProfileWeaponMW extends BaseEntity {
     @PrimaryColumn('text')
     combined_id: string // <account_id>.<weapon_id>

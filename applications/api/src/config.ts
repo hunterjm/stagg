@@ -41,11 +41,10 @@ export const useFactory = ():TypeOrmModuleOptions => ({
     entities: [
       Entities.Account.Entity,
       Entities.Account.Repository,
-      Entities.Account.Payment.Entity,
-      Entities.Discord.FeatureFlag.Entity,
       Entities.Discord.Log.Voice.Entity,
       Entities.Discord.Log.Message.Entity,
       Entities.Discord.Log.Response.Entity,
+      Entities.Discord.Settings.Features.Entity,
       Entities.CallOfDuty.Friend.Entity,
       Entities.CallOfDuty.MW.Match.Entity,
       Entities.CallOfDuty.WZ.Match.Entity,

@@ -10,7 +10,7 @@ export * as Mode from './modes'
 export * as Weapon from './weapons'
 export * as Equipment from './equipment'
 
-@Entity({ name: 'callofduty/profiles/mw', database: 'stagg' })
+@Entity({ name: 'callofduty/mw/profiles', database: 'stagg' })
 class ProfileMW extends BaseEntity {
     @PrimaryColumn('uuid')
     account_id: string

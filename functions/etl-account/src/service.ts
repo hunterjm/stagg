@@ -12,6 +12,7 @@ import {
     normalizeWzProfileModes,
     normalizeMwProfileEquipment,
     normalizeMwProfileWeapons,
+    normalizeWzLoadout,
 } from './normalize'
 import { CONFIG } from './config'
 
@@ -21,6 +22,7 @@ export class DbService {
     private readonly friendRepo:DB.CallOfDuty.Friend.Repository = getCustomRepository(DB.CallOfDuty.Friend.Repository)
     private readonly mwMatchRepo:DB.CallOfDuty.MW.Match.Repository = getCustomRepository(DB.CallOfDuty.MW.Match.Repository)
     private readonly wzMatchRepo:DB.CallOfDuty.WZ.Match.Repository = getCustomRepository(DB.CallOfDuty.WZ.Match.Repository)
+    private readonly wzLoadoutRepo:DB.CallOfDuty.WZ.Loadout.Repository = getCustomRepository(DB.CallOfDuty.WZ.Loadout.Repository)
     private readonly mwProfileRepo:DB.CallOfDuty.MW.Profile.Repository = getCustomRepository(DB.CallOfDuty.MW.Profile.Repository)
     private readonly mwProfileModeRepo:DB.CallOfDuty.MW.Profile.Mode.Repository = getCustomRepository(DB.CallOfDuty.MW.Profile.Mode.Repository)
     private readonly wzProfileModeRepo:DB.CallOfDuty.WZ.Profile.Mode.Repository = getCustomRepository(DB.CallOfDuty.WZ.Profile.Mode.Repository)
@@ -33,37 +35,40 @@ export class DbService {
     public async saveAccount(account:DB.Account.Entity):Promise<DB.Account.Entity> {
         return this.acctRepo.save(account)
     }
-    async saveFriend(friend:DB.CallOfDuty.Friend.Entity):Promise<DB.CallOfDuty.Friend.Entity> {
+    public async saveFriend(friend:DB.CallOfDuty.Friend.Entity):Promise<DB.CallOfDuty.Friend.Entity> {
         return this.friendRepo.save(friend)
     }
-    async pruneFriends(account_id:string, valid_friend_uno_ids:string[]) {
+    public async pruneFriends(account_id:string, valid_friend_uno_ids:string[]) {
         return this.friendRepo.prune(account_id, valid_friend_uno_ids)
     }
-    async getMwMatchRecord(account_id:string, match_ids:string[]):Promise<DB.CallOfDuty.MW.Match.Entity[]> {
+    public async getMwMatchRecord(account_id:string, match_ids:string[]):Promise<DB.CallOfDuty.MW.Match.Entity[]> {
         return this.mwMatchRepo.findAll({ account_id, match_id: In(match_ids) } as any)
     }
-    async saveMwMatch(match:DB.CallOfDuty.MW.Match.Entity):Promise<DB.CallOfDuty.MW.Match.Entity> {
+    public async saveMwMatch(match:DB.CallOfDuty.MW.Match.Entity):Promise<DB.CallOfDuty.MW.Match.Entity> {
         return this.mwMatchRepo.save(match)
     }
-    async getWzMatchRecord(account_id:string, match_ids:string[]):Promise<DB.CallOfDuty.WZ.Match.Entity[]> {
+    public async getWzMatchRecord(account_id:string, match_ids:string[]):Promise<DB.CallOfDuty.WZ.Match.Entity[]> {
         return this.wzMatchRepo.findAll({ account_id, match_id: In(match_ids) } as any)
     }
-    async saveWzMatch(match:DB.CallOfDuty.WZ.Match.Entity):Promise<DB.CallOfDuty.WZ.Match.Entity> {
+    public async saveWzMatch(match:DB.CallOfDuty.WZ.Match.Entity):Promise<DB.CallOfDuty.WZ.Match.Entity> {
         return this.wzMatchRepo.save(match)
     }
-    async saveMwProfile(profile:DB.CallOfDuty.MW.Profile.Entity):Promise<DB.CallOfDuty.MW.Profile.Entity> {
+    public async saveWzLoadout(loadout:DB.CallOfDuty.WZ.Loadout.Entity):Promise<DB.CallOfDuty.WZ.Loadout.Entity> {
+        return this.wzLoadoutRepo.save(loadout)
+    }
+    public async saveMwProfile(profile:DB.CallOfDuty.MW.Profile.Entity):Promise<DB.CallOfDuty.MW.Profile.Entity> {
         return this.mwProfileRepo.save(profile)
     }
-    async saveMwProfileMode(mode:DB.CallOfDuty.MW.Profile.Mode.Entity):Promise<DB.CallOfDuty.MW.Profile.Mode.Entity> {
+    public async saveMwProfileMode(mode:DB.CallOfDuty.MW.Profile.Mode.Entity):Promise<DB.CallOfDuty.MW.Profile.Mode.Entity> {
         return this.mwProfileModeRepo.save(mode)
     }
-    async saveWzProfileMode(mode:DB.CallOfDuty.WZ.Profile.Mode.Entity):Promise<DB.CallOfDuty.WZ.Profile.Mode.Entity> {
+    public async saveWzProfileMode(mode:DB.CallOfDuty.WZ.Profile.Mode.Entity):Promise<DB.CallOfDuty.WZ.Profile.Mode.Entity> {
         return this.wzProfileModeRepo.save(mode)
     }
-    async saveMwProfileWeapon(weapon:DB.CallOfDuty.MW.Profile.Weapon.Entity):Promise<DB.CallOfDuty.MW.Profile.Weapon.Entity> {
+    public async saveMwProfileWeapon(weapon:DB.CallOfDuty.MW.Profile.Weapon.Entity):Promise<DB.CallOfDuty.MW.Profile.Weapon.Entity> {
         return this.mwProfileWeaponsRepo.save(weapon)
     }
-    async saveMwProfileEquipment(equipment:DB.CallOfDuty.MW.Profile.Equipment.Entity):Promise<DB.CallOfDuty.MW.Profile.Equipment.Entity> {
+    public async saveMwProfileEquipment(equipment:DB.CallOfDuty.MW.Profile.Equipment.Entity):Promise<DB.CallOfDuty.MW.Profile.Equipment.Entity> {
         return this.mwProfileEquipmentRepo.save(equipment)
     }
 }
@@ -170,6 +175,10 @@ export class ScraperService {
             startTime = this.updateStartTime(startTime, match.utcStartSeconds)
             const normalizedMatch = normalizeWzMatch(this.account.account_id, match)
             try { await this.dbService.saveWzMatch(normalizedMatch) } catch(e) { console.log('[!] WZ Match Failure', e) }
+            for(const index in match.player.loadout) {
+                const normalized = normalizeWzLoadout(this.account.account_id, match.matchID, Number(index), match.player.loadout[index])
+                try { await this.dbService.saveWzLoadout(normalized) } catch(e) { console.log('[!] WZ Loadout Failure', e) }
+            }
         }
         return startTime === originalStartTime ? -1 : startTime
     }

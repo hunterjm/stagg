@@ -5,10 +5,8 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { Game, Tokens } from '@callofduty/types'
-import { BaseEntity, BaseRepository } from '../../abstract'
-import { arrayTransformer } from '../../util'
-
-export * as Payment from './payments'
+import { BaseEntity, BaseRepository } from '../abstract'
+import { arrayTransformer } from '../util'
 
 @Entity({ name: 'accounts', database: 'stagg' })
 class Account extends BaseEntity {

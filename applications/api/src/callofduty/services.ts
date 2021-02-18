@@ -17,7 +17,6 @@ export class CallOfDutyApiService {
   public async authorizeCredentials(email:string, password:string):Promise<Schema.Tokens> {
     const api = new API()
     try {
-      console.log('[?] Why does this lag without a log?')
       const tokens = await api.Authorize(email, password) // will throw if fail
       return tokens
     } catch(e) {
@@ -97,12 +96,12 @@ export class CallOfDutyDbService {
     const query = `
         SELECT 
           COUNT(*) as games,
-          (SELECT string_agg(CAST(stat_team_placement AS varchar),',') AS plist FROM "callofduty/matches/wz" WHERE ${whereClause} GROUP BY 1) as "placements",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement = 1 AND ${whereClause}) as "wins",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement <= 10 AND ${whereClause}) as "gamesTop10",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_gulag_kills > 0 AND ${whereClause}) as "winsGulag",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_survival_time > $2 AND ${whereClause}) as "finalCircles",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE (stat_gulag_kills > 0 OR stat_gulag_deaths > 0) AND ${whereClause}) as "gamesGulag",
+          (SELECT string_agg(CAST(stat_team_placement AS varchar),',') AS plist FROM "callofduty/wz/matches" WHERE ${whereClause} GROUP BY 1) as "placements",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE stat_team_placement = 1 AND ${whereClause}) as "wins",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE stat_team_placement <= 10 AND ${whereClause}) as "gamesTop10",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE stat_gulag_kills > 0 AND ${whereClause}) as "winsGulag",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE stat_team_survival_time > $2 AND ${whereClause}) as "finalCircles",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE (stat_gulag_kills > 0 OR stat_gulag_deaths > 0) AND ${whereClause}) as "gamesGulag",
           SUM(stat_score) as "score",
           SUM(stat_kills) as "kills",
           SUM(stat_longest_streak) as "killstreak",
@@ -116,7 +115,7 @@ export class CallOfDutyDbService {
           SUM(stat_team_placement) as "teamPlacement",
           SUM(stat_time_played) as "timePlayed",
           SUM(stat_percent_time_moving) as "percentTimeMoving"
-        FROM "callofduty/matches/wz"
+        FROM "callofduty/wz/matches"
         WHERE ${whereClause}
     `
     const [result] = await manager.query(query, [account_id, finalCircleTime])

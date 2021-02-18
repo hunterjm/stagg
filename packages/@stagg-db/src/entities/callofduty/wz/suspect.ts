@@ -1,18 +1,15 @@
 import {
     Index,
-    Entity,
     Column,
+    Entity,
     PrimaryColumn,
     EntityRepository,
 } from 'typeorm'
 import * as CallOfDuty from '@callofduty/types'
 import { BaseEntity, BaseRepository } from '../../../abstract'
 
-export * as Match from './matches'
-export * as Report from './reports'
-
-@Entity({ name: 'callofduty/suspects', database: 'stagg' })
-class Suspect extends BaseEntity {
+@Entity({ name: 'callofduty/wz/suspects', database: 'stagg' })
+class SuspectWZ extends BaseEntity {
     @PrimaryColumn('text')
     combined_id: string // <uno_id>.<match_id>
 
@@ -27,18 +24,21 @@ class Suspect extends BaseEntity {
     @Column('citext', { array: true })
     reasons: string[]
 
+    @Column('uuid', { nullable: true })
+    reporter_account_id?: string
+
     @Column('jsonb')
     match_log: CallOfDuty.MW.Match.WZ
 }
 
-@EntityRepository(Suspect)
-class SuspectRepository extends BaseRepository<Suspect> {
-    protected normailze(entity:Partial<Suspect>) {
+@EntityRepository(SuspectWZ)
+class SuspectWZRepository extends BaseRepository<SuspectWZ> {
+    protected normailze(entity:Partial<SuspectWZ>) {
         return { ...entity }
     }
 }
 
 export {
-    Suspect as Entity,
-    SuspectRepository as Repository
+    SuspectWZ as Entity,
+    SuspectWZRepository as Repository
 }

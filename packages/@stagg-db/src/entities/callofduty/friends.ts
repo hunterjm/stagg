@@ -8,7 +8,7 @@ import {
 import * as CallOfDuty from '@callofduty/types'
 import { BaseEntity, BaseRepository } from '../../abstract'
 
-@Entity({ name: 'callofduty/friends', database: 'stagg' })
+@Entity({ name: 'accounts/friends', database: 'stagg' })
 class Friend extends BaseEntity {
     @PrimaryColumn('text')
     combined_id: string // <account_id>.<friend-uno_id>

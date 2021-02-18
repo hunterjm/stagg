@@ -6,9 +6,9 @@ export class VoiceStateHandler {
   public account:DB.Account.Entity
   public oldStateJoinedTime:number
   public oldStateConnectionDuration:number
-  public readonly featureFlags:DB.Discord.FeatureFlag.Entity[] = []
-  public readonly oldStateFeatureFlags:DB.Discord.FeatureFlag.Entity[] = []
-  public readonly newStateFeatureFlags:DB.Discord.FeatureFlag.Entity[] = []
+  public readonly featureFlags:DB.Discord.Settings.Features.Entity[] = []
+  public readonly oldStateFeatureFlags:DB.Discord.Settings.Features.Entity[] = []
+  public readonly newStateFeatureFlags:DB.Discord.Settings.Features.Entity[] = []
   public readonly oldStateMembers:DB.Account.Entity[] = []
   public readonly newStateMembers:DB.Account.Entity[] = []
   constructor(

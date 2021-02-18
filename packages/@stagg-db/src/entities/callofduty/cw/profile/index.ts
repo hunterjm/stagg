@@ -8,7 +8,7 @@ import { BaseEntity, BaseRepository } from '../../../../abstract'
 
 export * as Mode from './modes'
 
-@Entity({ name: 'callofduty/profiles/cw', database: 'stagg' })
+@Entity({ name: 'callofduty/cw/profiles', database: 'stagg' })
 class Profile extends BaseEntity {
     @PrimaryColumn('uuid')
     account_id: string
