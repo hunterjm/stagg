@@ -9,10 +9,10 @@ import { DbModule } from '../module.db'
     DbModule,
     TypeOrmModule.forFeature([
       Account.Repository,
-      Discord.FeatureFlag.Repository,
       Discord.Log.Voice.Repository,
       Discord.Log.Message.Repository,
       Discord.Log.Response.Repository,
+      Discord.Settings.Features.Repository,
     ], 'stagg'),
   ],
   exports: [BotService],

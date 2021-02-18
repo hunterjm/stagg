@@ -12,7 +12,6 @@ import { BotModule } from 'src/bot/module'
     BotModule,
     TypeOrmModule.forFeature([
       Account.Repository,
-      Account.Payment.Repository,
     ], 'stagg'),
   ],
   exports: [AccountService],

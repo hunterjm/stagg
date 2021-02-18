@@ -1,6 +1,6 @@
 {
   "name": "@stagg/etl-cheaters",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -12,10 +12,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "@callofduty/api": "^1.2.2",
-    "@callofduty/types": "^1.2.2",
-    "@stagg/db": "^1.2.2",
-    "@stagg/gcp": "^1.2.2",
+    "@callofduty/api": "^1.2.3",
+    "@callofduty/types": "^1.2.3",
+    "@stagg/db": "^1.2.3",
+    "@stagg/gcp": "^1.2.3",
     "axios": "^0.21.1",
     "typeorm": "^0.2.29"
   },

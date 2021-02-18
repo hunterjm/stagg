@@ -15,7 +15,6 @@ import { DbModule } from '../module.db'
     AccountModule,
     TypeOrmModule.forFeature([
       Account.Repository,
-      Account.Payment.Repository,
       CallOfDuty.MW.Match.Repository,
       CallOfDuty.WZ.Match.Repository,
       CallOfDuty.MW.Profile.Repository,

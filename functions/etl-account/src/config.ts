@@ -40,6 +40,7 @@ export const useConnection = ():ConnectionOptions => ({
         DB.CallOfDuty.MW.Profile.Entity,
         DB.CallOfDuty.MW.Profile.Mode.Entity,
         DB.CallOfDuty.WZ.Match.Entity,
+        DB.CallOfDuty.WZ.Loadout.Entity,
         DB.CallOfDuty.WZ.Profile.Mode.Entity,
         DB.CallOfDuty.MW.Profile.Weapon.Entity,
         DB.CallOfDuty.MW.Profile.Equipment.Entity,

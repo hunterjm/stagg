@@ -18,8 +18,8 @@ export class CallOfDutyDbService {
   public async wzMatchHistoryData(account_id:string, filters:FilterUrlQuery) {
     const manager = getManager()
     const filterQuery = urlQueryToSql(filters)
-    const whereClause = `account_id=$1 AND ${filterQuery}`
-    const query = ` SELECT  * FROM "callofduty/matches/wz" WHERE ${whereClause}`
+    const whereClause = `account_id=$1 ${filterQuery ? `AND ${filterQuery}` : ''}`
+    const query = ` SELECT  * FROM "callofduty/wz/matches" WHERE ${whereClause}`
     const results = await manager.query(query, [account_id])
     const formattedResults = []
     const rankStats = { score: 0, kills: 0, deaths: 0, damageDone: 0, damageTaken: 0 }
@@ -40,11 +40,11 @@ export class CallOfDutyDbService {
     const query = `
         SELECT 
           COUNT(*) as games,
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement = 1 AND ${whereClause}) as "wins",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_gulag_kills > 0 AND ${whereClause}) as "winsGulag",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE (stat_gulag_kills > 0 OR stat_gulag_deaths > 0) AND ${whereClause}) as "gamesGulag",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE stat_team_placement <= 10 AND ${whereClause}) as "gamesTop10",
-          (SELECT COUNT(*) FROM "callofduty/matches/wz" WHERE (stat_team_placement = 1 OR stat_team_survival_time > $2) AND ${whereClause}) as "finalCircles",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE stat_team_placement = 1 AND ${whereClause}) as "wins",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE stat_gulag_kills > 0 AND ${whereClause}) as "winsGulag",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE (stat_gulag_kills > 0 OR stat_gulag_deaths > 0) AND ${whereClause}) as "gamesGulag",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE stat_team_placement <= 10 AND ${whereClause}) as "gamesTop10",
+          (SELECT COUNT(*) FROM "callofduty/wz/matches" WHERE (stat_team_placement = 1 OR stat_team_survival_time > $2) AND ${whereClause}) as "finalCircles",
           SUM(stat_score) as "score",
           SUM(stat_kills) as "kills",
           SUM(stat_deaths) as "deaths",
@@ -79,7 +79,7 @@ export class CallOfDutyDbService {
           MAX(stat_damage_done) as "mostDamageDone",
           MAX(stat_damage_taken) as "mostDamageTaken",
           MAX(stat_longest_streak) as "bestKillstreak"
-        FROM "callofduty/matches/wz"
+        FROM "callofduty/wz/matches"
         WHERE ${whereClause}
     `
     const manager = getManager()

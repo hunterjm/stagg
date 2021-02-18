@@ -269,3 +269,32 @@ export const normalizeWzProfileModes = (account_id:string, profile:MW.Profile):D
     }
     return results
 }
+
+export const normalizeWzLoadout = (account_id:string, match_id:string, index:number, loadout:MW.Loadout):DB.CallOfDuty.WZ.Loadout.Entity => ({
+    combined_id: `${account_id}.${match_id}.${index}`,
+    account_id,
+    match_id,
+    equip_lethal_id: loadout.lethal.name,
+    equip_tactical_id: loadout.tactical.name,
+    perk_slot_1: loadout.perks[0]?.name,
+    perk_slot_2: loadout.perks[1]?.name,
+    perk_slot_3: loadout.perks[2]?.name,
+    perk_extra_1: loadout.extraPerks[0]?.name,
+    perk_extra_2: loadout.extraPerks[1]?.name,
+    perk_extra_3: loadout.extraPerks[2]?.name,
+    primary_weapon_id: loadout.primaryWeapon.name,
+    primary_weapon_var: Number(loadout.primaryWeapon.variant || -1),
+    primary_weapon_att_1: loadout.primaryWeapon.attachments[0]?.name,
+    primary_weapon_att_2: loadout.primaryWeapon.attachments[1]?.name,
+    primary_weapon_att_3: loadout.primaryWeapon.attachments[2]?.name,
+    primary_weapon_att_4: loadout.primaryWeapon.attachments[3]?.name,
+    primary_weapon_att_5: loadout.primaryWeapon.attachments[4]?.name,
+    secondary_weapon_id: loadout.secondaryWeapon.name,
+    secondary_weapon_var: Number(loadout.secondaryWeapon.variant || -1),
+    secondary_weapon_att_1: loadout.secondaryWeapon.attachments[0]?.name,
+    secondary_weapon_att_2: loadout.secondaryWeapon.attachments[1]?.name,
+    secondary_weapon_att_3: loadout.secondaryWeapon.attachments[2]?.name,
+    secondary_weapon_att_4: loadout.secondaryWeapon.attachments[3]?.name,
+    secondary_weapon_att_5: loadout.secondaryWeapon.attachments[4]?.name,
+
+})

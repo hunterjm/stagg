@@ -7,10 +7,10 @@ import {
     EntityRepository,
 } from 'typeorm'
 import * as CallOfDuty from '@callofduty/types'
-import { BaseEntity, BaseRepository } from '../../../../abstract'
+import { BaseEntity, BaseRepository } from '../../../abstract'
 
-@Entity({ name: 'callofduty/matches/mw', database: 'stagg' })
-class Match extends BaseEntity {
+@Entity({ name: 'callofduty/mw/matches', database: 'stagg' })
+class MwMatch extends BaseEntity {
     @PrimaryColumn('text')
     combined_id: string // <matchId>.<accountId>
 
@@ -119,13 +119,13 @@ class Match extends BaseEntity {
 }
 
 
-@EntityRepository(Match)
-class MatchRepository extends BaseRepository<Match> {
-    protected normalize(entity:Omit<Match, 'combined_id'>): Match {
+@EntityRepository(MwMatch)
+class MwMatchRepository extends BaseRepository<MwMatch> {
+    protected normalize(entity:Omit<MwMatch, 'combined_id'>): MwMatch {
         return { ...entity, combined_id: `${entity.match_id}.${entity.account_id}` }
     }
     
-    public async findAll(criteria:Partial<Match>, limit?:number, offset?:number): Promise<Match[]> {
+    public async findAll(criteria:Partial<MwMatch>, limit?:number, offset?:number): Promise<MwMatch[]> {
         const options = {
             where: { ...criteria },
             order: { start_time: 'DESC' },
@@ -137,6 +137,6 @@ class MatchRepository extends BaseRepository<Match> {
 }
 
 export {
-    Match as Entity,
-    MatchRepository as Repository
+    MwMatch as Entity,
+    MwMatchRepository as Repository
 }

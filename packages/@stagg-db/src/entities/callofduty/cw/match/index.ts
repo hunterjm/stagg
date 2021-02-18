@@ -6,10 +6,9 @@ import {
     FindManyOptions,
     EntityRepository,
 } from 'typeorm'
-import * as CallOfDuty from '@callofduty/types'
 import { BaseEntity, BaseRepository } from '../../../../abstract'
 
-@Entity({ name: 'callofduty/matches/cw', database: 'stagg' })
+@Entity({ name: 'callofduty/cw/matches', database: 'stagg' })
 class Match extends BaseEntity {
     @PrimaryColumn('text')
     combined_id: string // <matchId>.<accountId>

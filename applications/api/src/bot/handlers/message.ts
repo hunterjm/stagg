@@ -102,8 +102,14 @@ export class MessageHandler {
     }
     this.chain.push(...chain.filter(str => str))
   }
-  private async saveMessageLog():Promise<DB.Discord.Log.Message.Entity> {
-    try { return this.service.logMsgRepo.save(this.normalize()) } catch(e) { console.log(e); return null }
+  private async saveMessageLog():Promise<boolean> {
+    try {
+      await this.service.logMsgRepo.insert(this.normalize())
+      return true
+    } catch(e) {
+      console.log('[!] Could not save Discord message log;', e)
+      return false
+    }
   }
   private normalizeResponse(response:BotResponse, m:Discord.Message):DB.Discord.Log.Response.Entity {
     const { files } = <BotAttachment>response

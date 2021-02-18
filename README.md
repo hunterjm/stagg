@@ -67,16 +67,37 @@ This installs all root-level and nested dependencies inside of the various works
 
 ### Stagg CLI
 
+- ts-node
+- typescript@^2.7
+- npm link --force in `packages/@stagg-cli`
+
 Installing the Stagg CLI tool globally can reduce your onboarding setup, database migrations, and other barriers to entry.
 
 ```
 npm i -g @stagg/cli
 ```
 
+If you don't have them installed already, you will need `ts-node` and `typescript` installed globally.
+
+```
+# Install typescript
+npm i -g typescript@^2.7
+# Install ts-node
+npm i -g ts-node
+```
+
 Before you can use `@stagg/cli` you must authenticate with your Google account. It is important to run the command below as opposed to the generic `gcloud auth login` command as the latter will not work inside the Node runtime.
 
 ```
 gcloud auth application-default login
+```
+
+If you are wanting to actively make changes to `packages/@stagg-cli` and test the changes locally, you will need to `npm link --force` your global installation to your local project package directory.
+
+```
+# From project root
+cd packages/@stagg-cli
+npm link --force
 ```
 
 ### Database Connections

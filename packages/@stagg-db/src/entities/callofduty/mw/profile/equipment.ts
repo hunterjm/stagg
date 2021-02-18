@@ -7,7 +7,7 @@ import {
 } from 'typeorm'
 import { BaseEntity, BaseRepository } from '../../../../abstract'
 
-@Entity({ name: 'callofduty/profiles/mw/equipment', database: 'stagg' })
+@Entity({ name: 'callofduty/mw/profiles/equipment', database: 'stagg' })
 class ProfileEquipmentMW extends BaseEntity {
     @PrimaryColumn('text')
     combined_id: string // <account_id>.<equipment_id>
