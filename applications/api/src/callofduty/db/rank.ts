@@ -6,7 +6,7 @@ export type Stats = { scorePerGame: number, killsPerGame: number, killsPerDeath:
 const romanNumeral = (count:number) => {
     if (count === 4) return 'IV'
     let q = ''
-    for(let i = 1; i < count; i++) q += 'I'
+    for(let i = 0; i < count; i++) q += 'I'
     return q
 }
 
@@ -34,9 +34,9 @@ export const wzRank = (
         rankTotal += tierByStat[stat as keyof Stats] * CONFIG.RANKING.weights[stat as keyof Stats]
     }
     const ranksPerTier = (CONFIG.RANKING.thresholds.scorePerGame.length + 1) / CONFIG.RANKING.tiers.length
-    const rankId = Math.round(rankTotal / weightTotal)
-    const tier = Math.floor(rankId / ranksPerTier)
-    const qualifier = (rankId % ranksPerTier) + 1
-    const FINAL_RANK = { id: rankId, tier, qualifier, label: `${CONFIG.RANKING.tiers[tier]} ${romanNumeral(qualifier)}` }
+    const rankIndex = Math.round(rankTotal / weightTotal)
+    const tier = Math.floor(rankIndex / ranksPerTier)
+    const qualifier = (rankIndex % ranksPerTier) + 1
+    const FINAL_RANK = { id: rankIndex + 1, tier, qualifier, label: `${CONFIG.RANKING.tiers[tier]} ${romanNumeral(qualifier)}` }
     return FINAL_RANK
 }
