@@ -1,5 +1,8 @@
 import { CONFIG } from 'src/config'
 
+export type Rank = { id: number, tier: number, qualifier: number, label: string }
+export type Stats = { scorePerGame: number, killsPerGame: number, killsPerDeath: number }
+
 const romanNumeral = (count:number) => {
     if (count === 4) return 'IV'
     let q = ''
@@ -7,28 +10,33 @@ const romanNumeral = (count:number) => {
     return q
 }
 
-export const wzRank = (games:number, score:number, kills:number, deaths:number, damageDone:number, damageTaken:number) => {
-    const factors = [
-        { weight: CONFIG.RANKING.WZ.KDR.weight,   limitValue: CONFIG.RANKING.WZ.KDR.limit,    statValue: kills / (deaths || 1) },
-        { weight: CONFIG.RANKING.WZ.DDR.weight,   limitValue: CONFIG.RANKING.WZ.DDR.limit,    statValue: damageDone / (damageTaken || 1) },
-        { weight: CONFIG.RANKING.WZ.KILLS.weight, limitValue: CONFIG.RANKING.WZ.KILLS.limit,  statValue: kills / games },
-        { weight: CONFIG.RANKING.WZ.SCORE.weight, limitValue: CONFIG.RANKING.WZ.SCORE.limit,  statValue: score / games },
-    ]
-    const factoredScores = []
-    for(const factor of factors) {
-        for(let i = 0; i < factor.weight; i++) {
-            const value = factor.statValue / factor.limitValue
-            factoredScores.push(Math.min(value, 1))
+export const wzRank = (
+    games:number,
+    score:number,
+    kills:number,
+    deaths:number,
+):Rank => {
+    const tierByStat:Stats = { scorePerGame: 0, killsPerGame: 0, killsPerDeath: 0 }
+    const playerStats:Stats = { scorePerGame: score / games, killsPerGame: kills / games, killsPerDeath: kills / deaths }
+    for(const stat in CONFIG.RANKING.thresholds) {
+        for(const cutoffRank in CONFIG.RANKING.thresholds[stat as keyof Stats]) {
+            if (playerStats[stat as keyof Stats] >= CONFIG.RANKING.thresholds[stat as keyof Stats][cutoffRank]) {
+                tierByStat[stat as keyof Stats] = Number(cutoffRank) + 1
+            } else {
+                continue
+            }
         }
     }
-    if (!factoredScores.length) {
-        return { id: 1, label: 'Bronze I' }
+    let rankTotal = 0
+    let weightTotal = 0
+    for(const stat in tierByStat) {
+        weightTotal += CONFIG.RANKING.weights[stat as keyof Stats]
+        rankTotal += tierByStat[stat as keyof Stats] * CONFIG.RANKING.weights[stat as keyof Stats]
     }
-    const sum = factoredScores.reduce((a,b) => a+b)
-    const avg = sum / factoredScores.length
-    const rankValue = 1 + Math.max(0, Math.round(avg * (CONFIG.RANKING.tierNames.length * CONFIG.RANKING.ranksPerTier)))
-    const rankTier = Math.floor((rankValue - 1) / CONFIG.RANKING.ranksPerTier)
-    const rankQualifiers = rankValue - (rankTier * CONFIG.RANKING.ranksPerTier)
-
-    return { id: rankValue, label: `${CONFIG.RANKING.tierNames[rankTier]} ${romanNumeral(rankQualifiers)}` }
+    const ranksPerTier = (CONFIG.RANKING.thresholds.scorePerGame.length + 1) / CONFIG.RANKING.tiers.length
+    const rankId = Math.round(rankTotal / weightTotal)
+    const tier = Math.floor(rankId / ranksPerTier)
+    const qualifier = (rankId % ranksPerTier) + 1
+    const FINAL_RANK = { id: rankId, tier, qualifier, label: `${CONFIG.RANKING.tiers[tier]} ${romanNumeral(qualifier)}` }
+    return FINAL_RANK
 }
