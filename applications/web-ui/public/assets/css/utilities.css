@@ -1,3 +1,9 @@
+@media (max-width: 500px) {
+    .hide-sm {
+        display: none;
+    }
+}
+
 .container {
     padding-right: 15px;
     padding-left: 15px;

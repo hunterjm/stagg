@@ -162,22 +162,24 @@ const Page = () => {
             </p>
           </div>
           </FeaturesWrapper>
-          <Spacer height={64} />
-          <h2>Tired of boring stat trackers? <span className="text-primary">We know.</span></h2>
-          <p>
-            <small>
-              Don't settle for basic Discord bots and TRN links; if you want a richer, 
-              more automated experience you're not alone.
-            </small>
-          </p>
-          <Spacer height={32} />
-          {/* <h3>Generate these reports with the <span className="text-primary">Discord command below</span></h3> */}
-          <DemoWrapper>
-            <CarouselArrowWrapper onClick={() => setCarouselIndex(carouselIndex-1)} style={{left: -36}}><i className="icon-arrow-left" /></CarouselArrowWrapper>
-            <CarouselArrowWrapper onClick={() => setCarouselIndex(carouselIndex+1)} style={{right: -36}}><i className="icon-arrow-right" /></CarouselArrowWrapper>
-            <div className="helper-tip">Paste the command <a href="/discord/join">into Discord</a> and try it out</div>
-            <FeatureCarousel index={carouselIndex} />
-          </DemoWrapper>
+          <div className="hide-sm">
+            <Spacer height={64} />
+            <h2>Tired of boring stat trackers? <span className="text-primary">We know.</span></h2>
+            <p>
+              <small>
+                Don't settle for basic Discord bots and TRN links; if you want a richer, 
+                more automated experience you're not alone.
+              </small>
+            </p>
+            <Spacer height={32} />
+            {/* <h3>Generate these reports with the <span className="text-primary">Discord command below</span></h3> */}
+            <DemoWrapper>
+              <CarouselArrowWrapper onClick={() => setCarouselIndex(carouselIndex-1)} style={{left: -36}}><i className="icon-arrow-left" /></CarouselArrowWrapper>
+              <CarouselArrowWrapper onClick={() => setCarouselIndex(carouselIndex+1)} style={{right: -36}}><i className="icon-arrow-right" /></CarouselArrowWrapper>
+              <div className="helper-tip">Paste the command <a href="/discord/join">into Discord</a> and try it out</div>
+              <FeatureCarousel index={carouselIndex} />
+            </DemoWrapper>
+          </div>
           <Spacer height={64} />
           <p className="text-lg">
             Try 30 days of premium for free, no payment information required
