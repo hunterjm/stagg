@@ -67,10 +67,6 @@ This installs all root-level and nested dependencies inside of the various works
 
 ### Stagg CLI
 
-- ts-node
-- typescript@^2.7
-- npm link --force in `packages/@stagg-cli`
-
 Installing the Stagg CLI tool globally can reduce your onboarding setup, database migrations, and other barriers to entry.
 
 ```
