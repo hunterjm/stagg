@@ -31,7 +31,7 @@ export class CallOfDutyDbService {
       rankStats.damageTaken += result.stat_damage_taken
       formattedResults.push(denormalizeWzMatch(result))
     }
-    const rank = wzRank(results.length, rankStats.score, rankStats.kills, rankStats.deaths, rankStats.damageDone, rankStats.damageTaken)
+    const rank = wzRank(results.length, rankStats.score, rankStats.kills, rankStats.deaths)
     return { rank, results: formattedResults }
   }
   public async wzAggregateMatchData(account_id:string, filters:FilterUrlQuery) {
@@ -90,7 +90,7 @@ export class CallOfDutyDbService {
     for(const key in result) {
       result[key] = Number(result[key])
     }
-    const rank = wzRank(result.games, result.score, result.kills, result.deaths, result.damageDone, result.damageTaken)
+    const rank = wzRank(result.games, result.score, result.kills, result.deaths)
     return { rank, results: result }
   }
 }
