@@ -1,0 +1,13 @@
+timeout: 1800s
+steps:
+  - name: node:12.13.0
+    entrypoint: yarn
+    args: ['install']
+  - name: node:12.13.0
+    entrypoint: yarn
+    args: ['tsc']
+  - name: node:12.13.0
+    entrypoint: yarn
+    args: ['build']
+  - name: gcr.io/cloud-builders/gcloud
+    args: ['functions', 'deploy', 'bot-message', '--source=functions/bot-message', '--max-instances=1024', '--memory=128MB', '--timeout=30', '--trigger-http', '--entry-point=default', '--runtime=nodejs12', '--region=us-east1' ]
