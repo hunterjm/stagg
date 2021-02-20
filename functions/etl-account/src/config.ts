@@ -6,9 +6,11 @@ export const IS_DEV = process.env.NODE_ENV === 'development'
 export const PORT = IS_DEV ? 8110 : Number(process.env.PORT) || 8080
 
 export const CONFIG = {
-    SELF_HOST: '',
     API_HOST: '',
+    SELF_HOST: '',
+    RANK_LIMIT: '',
     HOST_ETL_CHEATERS: '',
+    HOST_ETL_DISCORD_ROLE: '',
     MAX_EXECUTION_TIME: 500
 }
 export const SECRETS = {
@@ -17,10 +19,19 @@ export const SECRETS = {
     POSTGRES_SOCKETPATH: '',
 }
 export const initializeConfig = async () => {
-    const { MAX_EXECUTION_TIME, SELF_HOST, HOST_ETL_CHEATERS, API_HOST } = await getConfigJson('functions-etl-account.json')
+    const {
+        API_HOST,
+        SELF_HOST,
+        RANK_LIMIT,
+        HOST_ETL_CHEATERS,
+        HOST_ETL_DISCORD_ROLE,
+        MAX_EXECUTION_TIME,
+    } = await getConfigJson('functions-etl-account.json')
     CONFIG.API_HOST = API_HOST
     CONFIG.SELF_HOST = SELF_HOST
+    CONFIG.RANK_LIMIT = RANK_LIMIT
     CONFIG.HOST_ETL_CHEATERS = HOST_ETL_CHEATERS
+    CONFIG.HOST_ETL_DISCORD_ROLE = HOST_ETL_DISCORD_ROLE
     CONFIG.MAX_EXECUTION_TIME = Number(MAX_EXECUTION_TIME) || 500
     SECRETS.POSTGRES_USER = await getEnvSecret('PGSQL_USER')
     SECRETS.POSTGRES_PASS = await getEnvSecret('PGSQL_PASS')
