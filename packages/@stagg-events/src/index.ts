@@ -9,20 +9,22 @@ export interface EventPayload {
     account?: DB.Account.Entity
 }
 
-const dispatchEvent = async (type:string, payload:any) => axios.post('', { type, payload })
 
 let eventHandlerUrl = 'https://us-east1-staggco.cloudfunctions.net/event-handler'
+const dispatchEvent = async (type:string, payload:any) => axios.post(eventHandlerUrl, { type, payload })
 export const SetEventHandlerUrl = (url:string) => (eventHandlerUrl = url)
 
 export namespace Account {
     export interface Payload extends EventPayload {
         account: DB.Account.Entity
     }
-    export const Created = async (payload:Payload) => {
-
+    export namespace Created {
+        export const Type = 'account/new'
+        export const Trigger = async (payload:Payload) => dispatchEvent(Type, payload)
     }
-    export const Ready = async (payload:Payload) => {
-
+    export namespace Ready {
+        export const Type = 'account/ready'
+        export const Trigger = async (payload:Payload) => dispatchEvent(Type, payload)
     }
 }
 
@@ -32,8 +34,9 @@ export namespace CallOfDuty {
             export interface Payload extends Account.Payload {
                 match: DB.CallOfDuty.WZ.Match.Entity
             }
-            export const Created = async (payload:Payload) => {
-
+            export namespace Created {
+                export const Type = 'callofduty/wz/match/new'
+                export const Trigger = async (payload:Payload) => dispatchEvent(Type, payload)
             }
         }
     }   

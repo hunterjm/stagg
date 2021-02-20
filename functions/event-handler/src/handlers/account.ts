@@ -9,7 +9,7 @@ export class NewAccountHandler implements EventHandler {
 }
 
 export class EtlCompletionHandler implements EventHandler {
-    public readonly eventType:string = 'etl/account/complete'
+    public readonly eventType:string = 'account/ready'
     public async callback({ account }:EventInput):Promise<void> {
         console.log('[+] Send Discord welcome message to', account.discord_id)
     }
