@@ -15,6 +15,7 @@
     "@callofduty/api": "^1.2.5",
     "@callofduty/types": "^1.2.5",
     "@stagg/db": "^1.2.5",
+    "@stagg/events": "^1.2.5",
     "@stagg/gcp": "^1.2.5",
     "axios": "^0.21.1",
     "typeorm": "^0.2.29"

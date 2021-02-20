@@ -32,6 +32,7 @@
     "@nestjs/typeorm": "^7.1.4",
     "@stagg/api": "^1.2.5",
     "@stagg/db": "^1.2.5",
+    "@stagg/events": "^1.2.5",
     "@stagg/gcp": "^1.2.5",
     "axios": "^0.21.1",
     "class-transformer": "^0.3.2",
