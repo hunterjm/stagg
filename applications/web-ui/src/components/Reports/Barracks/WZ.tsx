@@ -72,7 +72,7 @@ export const PropsLoader = async ({ accountIdentifier }:ReportLazyLoadProps, lim
     if (!accountIdentifier.uno) {
         throw 'uno username required'
     }
-    const apiUrlBase = `/callofduty/db/uno/${encodeURIComponent(accountIdentifier.uno)}/wz`
+    const apiUrlBase = `/callofduty/uno/${encodeURIComponent(accountIdentifier.uno)}/wz`
     const apiUrlFilters = `?limit=${limit}&skip=${skip}&modesExcluded=dmz`
     const { data } = await request<any>(apiUrlBase + apiUrlFilters)
     if (!data.account) {

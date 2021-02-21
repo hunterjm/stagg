@@ -73,7 +73,7 @@ async function persistRoles(guild:Discord.Guild) {
 
 async function assignRole(member:Discord.GuildMember, guild:Discord.Guild, limit:string='7d', skip:string='') {
     const queries = ['modesExcluded=dmz', limit ? `limit=${limit}` : null, skip ? `skip=${skip}` : null]
-    const apiUrl = `${CONFIG.API_HOST}/callofduty/db/discord/${member.user.id}/wz?${queries.filter(q => q).join('&')}`
+    const apiUrl = `${CONFIG.API_HOST}/callofduty/discord/${member.user.id}/wz?${queries.filter(q => q).join('&')}`
     console.log('[>] Requesting API:', apiUrl)
     const { data: { rank } } = await axios.get(apiUrl)
     console.log('[.] Received rank from API:', rank)

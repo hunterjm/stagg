@@ -3,10 +3,15 @@ import {
     Post,
     Body,
     Res,
+    Get,
+    Param,
+    Query,
     Controller,
+    BadRequestException,
 } from '@nestjs/common'
 import { AccountCredentialsDTO } from './dto'
-import { CallOfDutyApiService } from './services'
+import { FilterUrlQuery } from './filters'
+import { CallOfDutyDB, CallOfDutyAPI } from './services'
 import { AccountService } from 'src/account/services'
 import { signJwt } from 'src/jwt'
 import { denormalizeAccount } from 'src/account/model'
@@ -15,7 +20,8 @@ import { denormalizeAccount } from 'src/account/model'
 export class CallOfDutyController {
     constructor(
         private readonly acctService: AccountService,
-        private readonly codApiService: CallOfDutyApiService,
+        private readonly codDbService: CallOfDutyDB,
+        private readonly codApiService: CallOfDutyAPI,
     ) {}
 
     @Post('/authorize')
@@ -43,6 +49,35 @@ export class CallOfDutyController {
         }
         res.send(responsePayload)
         return responsePayload
+    }
+    
+    @Get('/:platform/:identifier')
+    async FetchAccount(@Param() { platform, identifier }) {
+        const account = await this.acctService.findAny(platform, identifier)
+        if (!account) {
+            throw new BadRequestException(`invalid profile ${platform}/${identifier}`)
+        }
+        return { account: denormalizeAccount(account) }
+    }
+    
+    @Get('/:platform/:identifier/wz')
+    async FetchAggregateMatchDataWZ(@Param() { platform, identifier }, @Query() query:FilterUrlQuery) {
+        const account = await this.acctService.findAny(platform, identifier)
+        if (!account) {
+            throw new BadRequestException(`invalid profile ${platform}/${identifier}`)
+        }
+        const { rank, results } = await this.codDbService.wzAggregateMatchData(account.account_id, query)
+        return { rank, account: denormalizeAccount(account), results }
+    }
+    
+    @Get('/:platform/:identifier/wz/list')
+    async FetchMatchHistoryDataWZ(@Param() { platform, identifier }, @Query() query:FilterUrlQuery) {
+        const account = await this.acctService.findAny(platform, identifier)
+        if (!account) {
+            throw new BadRequestException(`invalid profile ${platform}/${identifier}`)
+        }
+        const { rank, results } = await this.codDbService.wzMatchHistoryData(account.account_id, query)
+        return { rank, account: denormalizeAccount(account), results }
     }
     
 }
