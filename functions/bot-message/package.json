@@ -15,6 +15,7 @@
     "@stagg/db": "^1.2.5",
     "@stagg/gcp": "^1.2.5",
     "axios": "^0.21.1",
+    "discord.js": "^12.5.1",
     "typeorm": "^0.2.29"
   },
   "devDependencies": {

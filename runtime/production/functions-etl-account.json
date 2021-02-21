@@ -1,6 +1,8 @@
 {
+    "RANK_LIMIT": "7d",
     "API_HOST": "https://api.stagg.co",
     "SELF_HOST": "https://us-east1-staggco.cloudfunctions.net/etl-account",
     "HOST_ETL_CHEATERS": "https://us-east1-staggco.cloudfunctions.net/etl-cheaters",
+    "HOST_ETL_DISCORD_ROLE": "https://us-east1-staggco.cloudfunctions.net/etl-discord-role",
     "MAX_EXECUTION_TIME": 500
 }

@@ -11,16 +11,34 @@ const connectDiscord = () => new Promise<void>((resolve) => {
     client.on('ready', () => (active = true) && resolve())
 })
 
-export async function runJob(discord_id:string, limit:string='7d', skip:string='') {
+export const runJob = async (discord_id:string, limit:string='7d', skip:string='') => {
+    if (!discord_id) {
+        console.log('[!] Returning empty, no discord id')
+        return
+    }
     await connectDiscord()
     for(const guild of client.guilds.cache.array()) {
+        const member = await getGuildMember(guild, discord_id)
+        if (!member) {
+            continue
+        }
         try {
-            console.log(`[?] Inspecting guild "${guild.name}" (${guild.id}) for user id ${discord_id}`)
-            const member = await guild.members.fetch({ user: discord_id })
-            // ^ will throw error if member not found
             await persistRoles(guild)
             await assignRole(member, guild, limit, skip)
-        } catch(e) {}
+        } catch(e) {
+            console.log('[!] Role assignment failure:', e)
+        }
+    }
+}
+
+async function getGuildMember(guild:Discord.Guild, userId:string) {
+    try {
+        console.log(`[?] Inspecting guild "${guild.name}" (${guild.id}) for user id ${userId}`)
+        const member = await guild.members.fetch({ user: userId })
+        return member
+        // ^ will throw error if member not found
+    } catch(e) {
+        return null
     }
 }
 
@@ -49,6 +67,7 @@ async function persistRoles(guild:Discord.Guild) {
             },
             reason: `Missing ranked role for ${missingRoleTierName} tier`
         })
+
     }
 }
 
