@@ -7,6 +7,9 @@ export class Created implements EventHandler {
         console.log('[+] Send Discord welcome message to', account.discord_id)
         console.log('[+] Kick-off Account Data ETL for', account.account_id)
     }
+    private async triggerETL() {}
+    private async notifyDiscordChannel() {}
+    private async sendDiscordWelcomeMessage() {}
 }
 
 export class Ready implements EventHandler {
@@ -14,4 +17,5 @@ export class Ready implements EventHandler {
     public async callback({ payload: { account } }:EventInput<Events.Account.Payload>):Promise<void> {
         console.log('[+] Send Discord welcome message to', account.discord_id)
     }
+    private async sendDiscordReadyMessage() {}
 }
