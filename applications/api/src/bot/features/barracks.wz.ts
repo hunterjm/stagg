@@ -28,12 +28,13 @@ export class BarracksWZ implements Feature {
         if (span.skip !== null) {
             spanParams.push(`skip=${span.skip}`)
         }
-        const spanParamStr = !spanParams.length ? '' : `?${spanParams.join('&')}`
         for(const uname of unoUsernames) {
-            const webUrl = `/${uname.replace('#', '@')}/wz/barracks${spanParamStr}`
-            const imgUrl = `${webUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`
-            console.log('[>] Discord bot dispatching image from', `${CONFIG.HOST_RENDER_HTML}?url=${imgUrl}`)
-            handler.reply({ content: `> ${CONFIG.HOST_WEB}${webUrl}`, files: [`${CONFIG.HOST_RENDER_HTML}?url=${imgUrl}`] })
+            const playerUrl = `/${uname.replace('#', '@')}/wz/barracks`
+            const profileLinkUrl = CONFIG.HOST_WEB + playerUrl + `?${spanParams.join('&')}`
+            const renderHtmlUrl = `${CONFIG.HOST_RENDER_HTML}?url=${playerUrl}&${spanParams.join('&')}`
+            const renderHtmlUrlFinal =  `${renderHtmlUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`
+            console.log('[>] Discord bot dispatching image from', renderHtmlUrlFinal)
+            handler.reply({ content: `> ${profileLinkUrl}`, files: [renderHtmlUrlFinal] })
         }
     }
 }

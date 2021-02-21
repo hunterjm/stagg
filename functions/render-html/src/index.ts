@@ -18,10 +18,13 @@ export default async function RenderHTML(req, res) {
     if (!url) {
       return res.writeHead(403).end('missing url')
     }
+    const queryParams = []
+    for(const param in req.query) {
+      if (['f', 'url', 'width', 'height'].includes(param)) continue
+      queryParams.push(`${param}=${req.query[param]}`)
+    }
     await initializeConfig()
-    const [, ...relativePaths] = url.replace(/^https?:\/\//i, '').split('/')
-    const relativeUrl = relativePaths.join('/')
-    const fetchableUrl = CONFIG.HOST_WEB_UI + '/' + relativeUrl
+    const fetchableUrl = CONFIG.HOST_WEB_UI + '/' + url.replace(/^\/+/g, '') + '?' + queryParams.join('&')
     if (!fetchableUrl) {
       return res.writeHead(403).end('invalid url')
     }
