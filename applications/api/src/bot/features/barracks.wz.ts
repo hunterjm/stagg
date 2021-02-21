@@ -3,9 +3,13 @@ import { MessageHandler } from '../handlers/message'
 import { Feature } from '.'
 
 export class BarracksWZ implements Feature {
-    public namespace:string = 'wz barracks'
+    public namespace:string = 'wz'
+    public getParams(chain:string[]) {
+        const namespaceParams = this.namespace.split(' ').filter(n => n)
+        return chain.slice(namespaceParams.length)
+    }
     public async onMessage(handler:MessageHandler):Promise<void> {
-        const [,, ...params] = handler.chain
+        const params = this.getParams(handler.chain)
         const span = { limit: null, skip: null }
         for(const i in params) {
             const param = params[i].trim()
@@ -37,5 +41,9 @@ export class BarracksWZ implements Feature {
             handler.reply({ content: `> ${profileLinkUrl}`, files: [renderHtmlUrlFinal] })
         }
     }
+}
+
+export class AliasBarracksWZ extends BarracksWZ {
+    public namespace:string = 'wz barracks'
 }
 

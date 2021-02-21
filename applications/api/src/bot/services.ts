@@ -9,7 +9,7 @@ import {
     Feature,
     BotHelp,
     BarracksWZ,
-    // BarracksMW,
+    AliasBarracksWZ,
     AddFriendViaMessage,
     RemoveFriendViaMessage,
     RefreshFriendsViaInvite,
@@ -22,8 +22,8 @@ export class BotService {
   public readonly client:Discord.Client
   public readonly features = <Feature[]>[
     BotHelp,
-    // BarracksMW,
     BarracksWZ,
+    AliasBarracksWZ,
     AddFriendViaMessage,
     RemoveFriendViaMessage,
     RefreshFriendsViaInvite,
@@ -76,24 +76,35 @@ export class BotService {
   private async onMessage(m:Discord.Message) {
     const handler = new MessageHandler(this, m)
     try { await handler.process() } catch(e) { return }
-    let consumableFeatureFound = false
-    for(const feature of this.features) {
-      if (feature.onMessage) {
-        let namespaceMatch = true
-        const splitNamespace = feature.namespace.replace(/ +/g, ' ').trim().split(' ')
-        for(const i in splitNamespace) {
-          if (handler.chain[i] !== splitNamespace[i]) {
-            namespaceMatch = false
-          }
+    const featureNamespaceMatchDepths = []
+    for(const featureIndex in this.features) {
+      if (!this.features[featureIndex].onMessage) {
+        featureNamespaceMatchDepths[featureIndex] = 0
+        continue
+      }
+      const namespaceBlocks = this.features[featureIndex].namespace.split(' ')
+      for(const blockIndex in namespaceBlocks) {
+        if (featureNamespaceMatchDepths[featureIndex] === undefined) {
+          featureNamespaceMatchDepths[featureIndex] = 0
         }
-        if (namespaceMatch) {
-          feature.onMessage(handler)
-          consumableFeatureFound = true
+        if (handler.chain[blockIndex] !== namespaceBlocks[blockIndex]) {
+          break
         }
+        featureNamespaceMatchDepths[featureIndex]++
+      }
+      if (featureNamespaceMatchDepths[featureIndex] !== namespaceBlocks.length) {
+        featureNamespaceMatchDepths[featureIndex] = 0
       }
     }
-    if (!consumableFeatureFound) {
-      await handler.reply(CONFIG.DISCORD_INVALID_REPLY)
+
+    const consumableFeatureMatchDepth = Math.max(...featureNamespaceMatchDepths.filter(n => n))
+    if (consumableFeatureMatchDepth <= 0) {
+      return handler.reply(CONFIG.DISCORD_INVALID_REPLY)
+    }
+    for(const featureIndex in featureNamespaceMatchDepths) {
+      if (featureNamespaceMatchDepths[featureIndex] === consumableFeatureMatchDepth) {
+        this.features[featureIndex].onMessage(handler)
+      }
     }
   }
   private async onVoiceStateUpdate(oldState:Discord.VoiceState, newState:Discord.VoiceState) {
