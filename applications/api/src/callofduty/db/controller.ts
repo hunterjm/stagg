@@ -17,6 +17,15 @@ export class CallOfDutyDataController {
         private readonly codDbService: CallOfDutyDbService,
     ) {}
     
+    @Get('/:platform/:identifier')
+    async FetchAccount(@Param() { platform, identifier }) {
+        const account = await this.acctService.findAny(platform, identifier)
+        if (!account) {
+            throw new BadRequestException(`invalid profile ${platform}/${identifier}`)
+        }
+        return { account: denormalizeAccount(account) }
+    }
+    
     @Get('/:platform/:identifier/wz')
     async FetchAggregateMatchDataWZ(@Param() { platform, identifier }, @Query() query:FilterUrlQuery) {
         const account = await this.acctService.findAny(platform, identifier)

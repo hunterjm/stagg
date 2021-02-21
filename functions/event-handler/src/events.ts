@@ -1,26 +1,22 @@
 import * as DB from '@stagg/db'
 import { getCustomRepository } from 'typeorm'
-import {
-    EventHandler,
-    NewMatchHandlerWZ,
-    NewAccountHandler,
-    EtlCompletionHandler,
-} from './handlers'
+import { EventHandler } from './handlers'
+import * as Handlers from './handlers'
 
-export interface EventInput {
+export interface EventInput<T> {
     type: string
-    account?: DB.Account.Entity
+    payload?: T
 }
 
 export class GlobalEventHandler {
     public readonly acctRepo:DB.Account.Repository = getCustomRepository(DB.Account.Repository)
     public readonly handlers = <EventHandler[] | typeof EventHandler[]>[
-        NewMatchHandlerWZ,
-        NewAccountHandler,
-        EtlCompletionHandler,
+        Handlers.Account.Ready,
+        Handlers.Account.Created,
+        Handlers.CallOfDuty.WZ.Match.Created,
     ]
     constructor(
-        private readonly inputEvent:EventInput
+        private readonly inputEvent:EventInput<any>
     ) {
         this.initHandlers()
         this.dispatchEvent()
