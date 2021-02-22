@@ -24,7 +24,6 @@ export class Worker {
     private api:CallOfDutyAPI
     private scraperService:ScraperService
     private perferredProfileId:CallOfDuty.ProfileId
-    private shouldEvalRank:boolean = false
     private hardStopReached:boolean = false
     private readonly hrtimeStart = process.hrtime()
     constructor(
@@ -57,10 +56,6 @@ export class Worker {
             }
             await this.RefreshMatchHistory()
         }
-        this.RefreshRank()
-    }
-    private async RefreshRank() {
-        return !this.shouldEvalRank ? null : axios.get(`${CONFIG.HOST_ETL_DISCORD_ROLE}?discord_id=${this.account.discord_id}&limit=${CONFIG.RANK_LIMIT}`)
     }
     private async SpawnSiblingInstance() {
         const siblingUrl = `${CONFIG.SELF_HOST}?redundancy=true`+
@@ -111,9 +106,6 @@ export class Worker {
             if (this.startTimes.wz >= 0) {
                 const wzMatches = await this.api.MatchHistory(this.perferredProfileId, 'wz', 'mw', this.startTimes.wz)
                 this.startTimes.wz = await this.scraperService.saveWzMatchHistory(wzMatches, this.startTimes.wz)
-                if (this.startTimes.wz >= 0) { // this signals that at least one match was saved
-                    this.shouldEvalRank = true
-                }
             } else {
                 console.log('[#] Stopped WZ Match History search for startTime=-1')
             }

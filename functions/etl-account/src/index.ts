@@ -1,5 +1,6 @@
 import Axios from 'axios'
 import { createConnection } from 'typeorm'
+import * as Events from '@stagg/events'
 import { initializeConfig, useConnection, CONFIG } from './config'
 import { DbService } from './service'
 import { Worker } from './worker'
@@ -37,7 +38,7 @@ export default async (req, res) => {
     const worker = new Worker(account, Boolean(redundancy || fresh), startTimes)
     await worker.Run()
     if (fresh) {
-        await Axios.get(`${CONFIG.API_HOST}/events/account/${account_id}/ready`)
+        await Events.Account.Ready.Trigger({ account })
     }
     res.status(200)
     res.send({ success: true })

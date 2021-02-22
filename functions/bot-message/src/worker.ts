@@ -10,6 +10,8 @@ const connectDiscord = () => new Promise<void>((resolve) => {
     client.on('ready', () => (active = true) && resolve())
 })
 
+export const format = (input:string[]) => input.map(l => `> ${l}`).join('\n')
+
 export async function sendUserMessage(userId:string, message:Discord.APIMessageContentResolvable) {
     await connectDiscord()
     const user = await client.users.fetch(userId)

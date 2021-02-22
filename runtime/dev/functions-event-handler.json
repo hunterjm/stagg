@@ -1,0 +1,76 @@
+{
+    "host": {
+        "web": "http://localhost:8080",
+        "api": "http://localhost:8081",
+        "bot": "http://localhost:8400",
+        "etl": {
+            "account": "http://localhost:8110",
+            "cheaters": "http://localhost:8120",
+            "discord": {
+                "role": "http://localhost:8300"
+            }
+        }
+    },
+    "bot": {
+        "ranking": {
+            "limit": "7d"
+        },
+        "channels": {
+            "reporting": {
+                "public": "729782176358596648",
+                "private": "773941661604118610"
+            }
+        },
+        "messages": {
+            "loading": ["One moment..."],
+            "invalid": ["Invalid command, try `% help`..."],
+            "unregistered": [
+                "Looks like we aren't acquainted yet :(",
+                "Head over to https://stagg.co/start to get started, it's quick and easy!"
+            ],
+            "help": [
+                "More on this coming soon, in the meantime try out `% wz barracks` or `% wz barracks 7d` for weekly"
+            ],
+            "welcome": [
+                "**----------------------------------------------**",
+                "🚀🚀🚀 **Welcome aboard!** 🚀🚀🚀",
+                "**----------------------------------------------**",
+                "",
+                "We'll start collecting your profile data in the background and let you know when it's complete. In the meantime, try some of the commands below:",
+                "",
+                "**# Show online friends**",
+                "```",
+                "% online",
+                "```",
+                "**# Fix in-game empty friends list glitch**",
+                "```",
+                "% fixfriends",
+                "```",
+                "When using commands, the `%` prefix is only necessary in public channels; you can omit this prefix in DMs.",
+                "",
+                "_Don't worry, there's more cool stuff to do when your profile data is ready, sit tight!_"
+            ],
+            "ready": [
+                "**------------------------------------------**",
+                "👀 **Your profile is ready to go!** 👀",
+                "**------------------------------------------**",
+                "",
+                "Try some of the commands below to get started:",
+                "",
+                "**# Generate your all-time Warzone barracks:**",
+                "```",
+                "% wz barracks",
+                "```",
+                "**# Generate your weekly Warzone barracks:**",
+                "```",
+                "% wz barracks 7d",
+                "```",
+                "**# Generate last week's Warzone barracks:**",
+                "```",
+                "% wz barracks 7d 7d",
+                "```",
+                "The `7d` parameters above can be swapped out for any number of days you want to include. If two of these parameters are included, the first is treated as a limit and the second is treated as a skip."
+            ]
+        }
+    }
+}

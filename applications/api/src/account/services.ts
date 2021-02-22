@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Account } from '@stagg/db'
 import { Tokens, PlatformId, Platform } from '@callofduty/types'
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Model } from '@stagg/api'
 import { CONFIG } from 'src/config'

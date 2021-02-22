@@ -1,5 +1,3 @@
-import * as DB from '@stagg/db'
-import { getCustomRepository } from 'typeorm'
 import { EventHandler } from './handlers'
 import * as Handlers from './handlers'
 
@@ -9,7 +7,6 @@ export interface EventInput<T> {
 }
 
 export class GlobalEventHandler {
-    public readonly acctRepo:DB.Account.Repository = getCustomRepository(DB.Account.Repository)
     public readonly handlers = <EventHandler[] | typeof EventHandler[]>[
         Handlers.Account.Ready,
         Handlers.Account.Created,

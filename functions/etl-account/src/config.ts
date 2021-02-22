@@ -9,7 +9,6 @@ export const CONFIG = {
     API_HOST: '',
     SELF_HOST: '',
     RANK_LIMIT: '',
-    HOST_ETL_CHEATERS: '',
     HOST_ETL_DISCORD_ROLE: '',
     MAX_EXECUTION_TIME: 500
 }
@@ -23,14 +22,13 @@ export const initializeConfig = async () => {
         API_HOST,
         SELF_HOST,
         RANK_LIMIT,
-        HOST_ETL_CHEATERS,
         HOST_ETL_DISCORD_ROLE,
         MAX_EXECUTION_TIME,
     } = await getConfigJson('functions-etl-account.json')
     CONFIG.API_HOST = API_HOST
     CONFIG.SELF_HOST = SELF_HOST
     CONFIG.RANK_LIMIT = RANK_LIMIT
-    CONFIG.HOST_ETL_CHEATERS = HOST_ETL_CHEATERS
+    // CONFIG.HOST_ETL_CHEATERS = HOST_ETL_CHEATERS
     CONFIG.HOST_ETL_DISCORD_ROLE = HOST_ETL_DISCORD_ROLE
     CONFIG.MAX_EXECUTION_TIME = Number(MAX_EXECUTION_TIME) || 500
     SECRETS.POSTGRES_USER = await getEnvSecret('PGSQL_USER')

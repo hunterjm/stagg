@@ -1,9 +1,12 @@
 import { initializeConfig } from './config'
-import { sendUserMessage, sendChannelMessage } from './worker'
+import { format, sendUserMessage, sendChannelMessage } from './worker'
 
 export default async (req, res) => {
-    const { user, channel, payload } = req.body as {[key:string]:string}
+    let { user, channel, payload } = req.body as {[key:string]:string}
     await initializeConfig()
+    if (Array.isArray(payload)) {
+        payload = format(payload)
+    }
     if (user) {
         await sendUserMessage(user, payload)
     }

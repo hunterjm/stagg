@@ -94,6 +94,11 @@ export class CallOfDutyDB {
   }
   public async wzAggregateMatchData(account_id:string, filters:FilterUrlQuery) {
     const filterQuery = urlQueryToSql(filters)
+    const hasMatchLimit = filterQuery.toLowerCase().includes('limit')
+    const hasMatchOffset = filterQuery.toLowerCase().includes('offset')
+    if (hasMatchLimit || hasMatchOffset) {
+      throw new BadRequestException('match-based limit/skip not allowed on aggregate results; time-based limit/skip only')
+    }
     const whereClause = `account_id=$1 ${!filterQuery ? '' : `AND ${filterQuery}`}`
     const query = `
         SELECT 
@@ -140,6 +145,7 @@ export class CallOfDutyDB {
         FROM "callofduty/wz/matches"
         WHERE ${whereClause}
     `
+    console.log(query)
     const manager = getManager()
     const maxCircleId = Math.max(...Assets.MW.Circles.map(c => c.circleId))
     const finalCircleTime = Assets.MW.CircleStartTime(maxCircleId-3) * 1000 // convert to ms

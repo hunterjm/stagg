@@ -1,3 +1,4 @@
+import * as Events from '@stagg/events'
 import { Route } from '@stagg/api'
 import {
     Req,
@@ -8,13 +9,10 @@ import {
 } from '@nestjs/common'
 import { signJwt, verifyJwt } from 'src/jwt'
 import { AccountService } from './services'
-import { BotService } from 'src/bot/services'
-import { CONFIG } from 'src/config'
 
 @Controller('/account')
 export class AccountController {
     constructor(
-        private readonly botService: BotService,
         private readonly acctService: AccountService,
     ) {}
     @Post('/register')
@@ -28,9 +26,9 @@ export class AccountController {
         }
         const { accountProvision:discord } = discordAcct
         const { accountProvision:callofduty, authorizationProvision:tokens } = callofdutyAcct
-        const { account_id } = await this.acctService.createFromProvisions(discord, callofduty, tokens)
-        await this.botService.messageUser(discord.id, CONFIG.DISCORD_HELLO_MESSAGE)
-        const responsePayload:Route.Account.Registration = { account: { id: account_id, discord, callofduty } }
+        const account = await this.acctService.createFromProvisions(discord, callofduty, tokens)
+        Events.Account.Created.Trigger({ account })
+        const responsePayload:Route.Account.Registration = { account: { id: account.account_id, discord, callofduty } }
         res.setHeader('Access-Control-Expose-Headers', 'X-Authorization-JWT')
         res.setHeader('X-Authorization-JWT', signJwt(responsePayload))
         res.send(responsePayload)

@@ -1,5 +1,5 @@
 import * as DB from '@stagg/db'
-import Axios from 'axios'
+import * as Events from '@stagg/events'
 import { getCustomRepository, In } from 'typeorm'
 import * as CallOfDuty from '@callofduty/types'
 import {
@@ -14,8 +14,6 @@ import {
     normalizeMwProfileWeapons,
     normalizeWzLoadout,
 } from './normalize'
-import { CONFIG } from './config'
-
 
 export class DbService {
     private readonly acctRepo:DB.Account.Repository = getCustomRepository(DB.Account.Repository)
@@ -47,8 +45,11 @@ export class DbService {
     public async saveMwMatch(match:DB.CallOfDuty.MW.Match.Entity):Promise<DB.CallOfDuty.MW.Match.Entity> {
         return this.mwMatchRepo.save(match)
     }
-    public async getWzMatchRecord(account_id:string, match_ids:string[]):Promise<DB.CallOfDuty.WZ.Match.Entity[]> {
-        return this.wzMatchRepo.findAll({ account_id, match_id: In(match_ids) } as any)
+    public async getWzMatchIds(account_id:string, match_ids:string[]):Promise<DB.CallOfDuty.WZ.Match.Entity[]> {
+        return this.wzMatchRepo.query().select('match_id').where({ account_id, match_id: In(match_ids) }).execute()
+    }
+    public async getWzMatchIdsByAny(match_ids:string[]):Promise<DB.CallOfDuty.WZ.Match.Entity[]> {
+        return this.wzMatchRepo.query().select('match_id').where({ match_id: In(match_ids) }).execute()
     }
     public async saveWzMatch(match:DB.CallOfDuty.WZ.Match.Entity):Promise<DB.CallOfDuty.WZ.Match.Entity> {
         return this.wzMatchRepo.save(match)
@@ -161,20 +162,31 @@ export class ScraperService {
         if (!apiMatchRes.matches?.length) {
             return -1
         }
-        if (!this.redundancy) {
-            const matchIds = apiMatchRes.matches.map(m => m.matchID)
-            const existing = await this.dbService.getWzMatchRecord(this.account.account_id, matchIds)
-            if (existing.length === matchIds.length) {
-                console.log('[*] Redundant WZ Match History found; stopping search...')
-                return -1
-            }
+        const matchIds = apiMatchRes.matches.map(m => m.matchID)
+        const existing = await this.dbService.getWzMatchIds(this.account.account_id, matchIds)
+        const existingMatchIds = existing.map(e => e.match_id)
+        if (existing.length === matchIds.length) {
+            console.log('[*] Redundant WZ Match History found; stopping search...')
+            return -1
+        }
+        if (!this.redundancy && existing.length === matchIds.length) {
+            console.log('[*] Redundant WZ Match History found; stopping search...')
+            return -1
         }
         const originalStartTime = startTime
+        const prediscovered = await this.dbService.getWzMatchIdsByAny(matchIds)
+        const prediscoveredMatchIds = prediscovered.map(e => e.match_id)
+        const discoveredMatchIds = matchIds.filter(id => !prediscoveredMatchIds.includes(id))
         for(const match of apiMatchRes.matches as CallOfDuty.MW.Match.WZ[]) {
-            Axios.get(`${CONFIG.HOST_ETL_CHEATERS}?match_id=${match.matchID}`).catch(() => {})
             startTime = this.updateStartTime(startTime, match.utcStartSeconds)
             const normalizedMatch = normalizeWzMatch(this.account.account_id, match)
-            try { await this.dbService.saveWzMatch(normalizedMatch) } catch(e) { console.log('[!] WZ Match Failure', e) }
+            try {
+                const match = await this.dbService.saveWzMatch(normalizedMatch)
+                Events.CallOfDuty.WZ.Match.Created.Trigger({ account: this.account, match })
+                if (discoveredMatchIds.includes(match.match_id)) {
+                    Events.CallOfDuty.WZ.Match.Discovered.Trigger({ account: this.account, match })
+                }
+            } catch(e) { console.log('[!] WZ Match Failure', e) }
             for(const index in match.player.loadout) {
                 const normalized = normalizeWzLoadout(this.account.account_id, match.matchID, Number(index), match.player.loadout[index])
                 try { await this.dbService.saveWzLoadout(normalized) } catch(e) { console.log('[!] WZ Loadout Failure', e) }
