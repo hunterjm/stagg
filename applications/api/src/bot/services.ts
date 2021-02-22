@@ -87,7 +87,7 @@ export class BotService {
         if (featureNamespaceMatchDepths[featureIndex] === undefined) {
           featureNamespaceMatchDepths[featureIndex] = 0
         }
-        if (handler.chain[blockIndex] !== namespaceBlocks[blockIndex]) {
+        if (handler.chain[blockIndex]?.toLowerCase() !== namespaceBlocks[blockIndex]?.toLowerCase()) {
           break
         }
         featureNamespaceMatchDepths[featureIndex]++
