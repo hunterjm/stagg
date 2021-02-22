@@ -1,5 +1,5 @@
 import { CONFIG } from 'src/config'
-import { MessageHandler } from '../handlers/message'
+import { MessageHandler, format } from '../handlers/message'
 import { Feature } from '.'
 
 export class BarracksWZ implements Feature {
@@ -37,8 +37,9 @@ export class BarracksWZ implements Feature {
             const profileLinkUrl = CONFIG.HOST_WEB + playerUrl + `?${spanParams.join('&')}`
             const renderHtmlUrl = `${CONFIG.HOST_RENDER_HTML}?url=${playerUrl}&${spanParams.join('&')}`
             const renderHtmlUrlFinal =  `${renderHtmlUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`
+            const unameCmd = `% wz ${uname}${span.limit ? ` ${span.limit}` : ''}${span.skip ? ` ${span.skip}` : ''}`
             console.log('[>] Discord bot dispatching image from', renderHtmlUrlFinal)
-            handler.reply({ content: `> ${profileLinkUrl}`, files: [renderHtmlUrlFinal] })
+            handler.reply({ content: format(['```', '', unameCmd, '', '```'+profileLinkUrl]), files: [renderHtmlUrlFinal] })
         }
     }
 }
