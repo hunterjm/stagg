@@ -1,6 +1,6 @@
 {
   "name": "stagg-web",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Web UI for Stagg.co",
   "private": true,
   "scripts": {
@@ -32,8 +32,8 @@
   "dependencies": {
     "@callofduty/assets": "^1.2.5",
     "@callofduty/types": "^1.2.5",
-    "@stagg/api": "^1.2.5",
-    "@stagg/gcp": "^1.2.5",
+    "@stagg/api": "^1.2.6",
+    "@stagg/gcp": "^1.2.6",
     "axios": "^0.21.1",
     "js-cookie": "^2.2.1",
     "jsonwebtoken": "^8.5.1",

@@ -1,6 +1,6 @@
 {
   "name": "@stagg/bot-message",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -12,8 +12,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stagg/db": "^1.2.5",
-    "@stagg/gcp": "^1.2.5",
+    "@stagg/db": "^1.2.6",
+    "@stagg/gcp": "^1.2.6",
     "axios": "^0.21.1",
     "discord.js": "^12.5.1",
     "typeorm": "^0.2.29"
