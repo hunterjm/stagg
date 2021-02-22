@@ -184,7 +184,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.results.top10FinishRate * 100).toFixed(1)}%
+                        {(props.results.top10FinishRate || 0 * 100).toFixed(1)}%
                     </h2>
                     <label>
                         TOP 10
@@ -193,7 +193,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.results.gulagWinRate * 100).toFixed(1)}%
+                        {(props.results.gulagWinRate || 0 * 100).toFixed(1)}%
                     </h2>
                     <label>
                         GULAG WIN
@@ -220,7 +220,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.results.timeMovingPercentage * 100).toFixed(1)}%
+                        {(props.results.timeMovingPercentage || 0 * 100).toFixed(1)}%
                     </h2>
                     <label>
                         TIME MOVING
@@ -245,7 +245,7 @@ export const View = (props:Props) => {
                 <hr />
                 <div className="stat">
                     <h2>
-                        {commaToFixed(props.results.damageDone / props.results.games, 1)}
+                        {commaToFixed(props.results.damageDone / (props.results.games || 1), 1)}
                     </h2>
                     <label>
                         DAMAGE
@@ -263,7 +263,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaToFixed(props.results.kills / props.results.games, 2)}
+                        {commaToFixed(props.results.kills / (props.results.games || 1), 2)}
                     </h2>
                     <label>
                         KILLS
@@ -279,7 +279,7 @@ export const View = (props:Props) => {
                 <hr />
                 <div className="stat">
                     <h2>
-                        {(props.results.kills / props.results.deaths).toFixed(2)}
+                        {(props.results.kills / (props.results.deaths || 1)).toFixed(2)}
                     </h2>
                     <label>
                         K/D RATIO
@@ -288,7 +288,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.results.damageDone / props.results.damageTaken).toFixed(2)}
+                        {(props.results.damageDone / (props.results.damageTaken || 1)).toFixed(2)}
                     </h2>
                     <label>
                         DD/DT RATIO
@@ -297,7 +297,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {commaToFixed(props.results.score / (props.results.timePlayed/60))}
+                        {commaToFixed((props.results.score || 0) / (((props.results.timePlayed || 0) / 60) || 1))}
                     </h2>
                     <label>
                         SCORE / MIN
