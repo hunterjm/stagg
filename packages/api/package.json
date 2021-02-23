@@ -17,7 +17,9 @@
   },
   "gitHead": "032ee186093c2e69aaa984284b035630792c5d98",
   "dependencies": {
-    "@callofduty/types": "^1.2.5"
+    "@callofduty/types": "^1.2.5",
+    "@stagg/gcp": "^1.2.5",
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "@callofduty/types": "^1.0.19"

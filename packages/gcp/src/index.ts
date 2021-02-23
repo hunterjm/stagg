@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { readFileSync } from 'fs'
 import { Storage } from '@google-cloud/storage'
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager'
@@ -11,6 +12,36 @@ enum Env {
 
 const storage = new Storage()
 const client = new SecretManagerServiceClient()
+
+// here
+
+export namespace http {
+    const log = (method:string, url:string, payload?:any) => console.log(`[${method}](${SECRETS.NETWORK_KEY}): ${url}`, payload)
+    const reqConfig = () => ({ headers: { 'x-network-key': SECRETS.NETWORK_KEY } })
+    const translateError = e => !e?.response?.data ? e : e.response.data
+    export const get = async (url:string) => {
+        log('GET', url)
+        axios.get(url, reqConfig())
+            .catch(e => console.log('[!] Event handler http failure:', translateError(e)))
+    }
+    export const post = async (url:string, payload:any) => {
+        log('POST', url, payload)
+        axios.post(url, payload, reqConfig())
+            .catch(e => console.log('[!] Event handler http failure:', translateError(e)))
+    }
+}
+
+export const validateNetworkAuth = async (req:any,res:any):Promise<void> => {
+    if (!req?.headers || !req.headers['x-network-key']) {
+        res.status(400).send({ error: 'missing network key' })
+        throw 'missing network key'
+    }
+    const networkKey = await getEnvSecret('NETWORK_KEY')
+    if (req.headers['x-network-key'] !== networkKey) {
+        res.status(401).send({ error: 'invalid network key' })
+        throw 'missing network key'
+    }
+}
 
 export type SecretVersion = 'latest' | number
 export const getSecret = async (secretId:string, projectId:string='staggco', version:SecretVersion='latest') => {
@@ -31,6 +62,7 @@ export async function getEnvSecret(secretId:string, useEnv:Env=env):Promise<stri
     }
     return getSecret(secretId, 'staggco', 'latest')
 }
+
 export const getFileContents = (filepath:string, bucket:string):Promise<string> => new Promise(resolve => {
     const fileStream = storage.bucket(bucket).file(filepath).createReadStream()
     let fileStreamRes:string = ''
@@ -64,16 +96,4 @@ const findRepoRoot = (dirLimit:number=32):string => {
         activeDir = split.slice(0, split.length-1).join('/')
     }
     throw new Error('Unable to find monorepo root directory')
-}
-
-export const validateNetworkAuth = async (req:any,res:any):Promise<void> => {
-    if (!req?.headers || !req.headers['x-network-key']) {
-        res.status(400).send({ error: 'missing network key' })
-        throw 'missing network key'
-    }
-    const networkKey = await getEnvSecret('NETWORK_KEY')
-    if (req.headers['x-network-key'] !== networkKey) {
-        res.status(401).send({ error: 'invalid network key' })
-        throw 'missing network key'
-    }
 }
