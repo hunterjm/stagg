@@ -38,6 +38,7 @@ export namespace WZ {
             public readonly eventType:string = Events.CallOfDuty.WZ.Match.Created.Type
             public async callback({ payload: { account, match } }:EventInput<Events.CallOfDuty.WZ.Match.Payload>):Promise<void> {
                 console.log('[+] Assign Discord rank role')
+                // if (match.end_time >= ) // only kickoff if relevant to rank
                 http.get(`${CONFIG.host.etl.discord.role}?discord_id=${account.discord_id}&limit=${CONFIG.bot.ranking.limit}`)
                 // console.log('[+] Message report to user for match')
                 // Events.CallOfDuty.WZ.Rank.Up.Trigger({ account, oldRank: 0, newRank: 0 })
