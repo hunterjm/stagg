@@ -164,7 +164,6 @@ export class ScraperService {
         }
         const matchIds = apiMatchRes.matches.map(m => m.matchID)
         const existing = await this.dbService.getWzMatchIds(this.account.account_id, matchIds)
-        const existingMatchIds = existing.map(e => e.match_id)
         if (existing.length === matchIds.length) {
             console.log('[*] Redundant WZ Match History found; stopping search...')
             return -1

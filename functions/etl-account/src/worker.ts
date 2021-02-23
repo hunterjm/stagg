@@ -18,7 +18,7 @@ import * as DB from '@stagg/db'
 import * as CallOfDuty from '@callofduty/types'
 import CallOfDutyAPI from '@callofduty/api'
 import { ScraperService } from './service'
-import { CONFIG } from './config'
+import { CONFIG, SECRETS } from './config'
 
 export class Worker {
     private api:CallOfDutyAPI
@@ -64,7 +64,7 @@ export class Worker {
             `&wz_end=${this.startTimes.wz}`+
             `&cw_end=${this.startTimes.cw}`
         console.log(`[$] Spawning sibling instance ${siblingUrl}`)
-        axios.get(siblingUrl)
+        axios.get(siblingUrl, { headers: { 'x-network-key': SECRETS.NETWORK_KEY } })
     }
     private ShouldSpawnSibling(): boolean {
         const [execTimeSec] = process.hrtime(this.hrtimeStart)

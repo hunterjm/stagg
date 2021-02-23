@@ -31,6 +31,7 @@ export const useConnection = ():ConnectionOptions => ({
     password: SECRETS.POSTGRES_PASS,
     database: 'stagg',
     entities: [
+        DB.CallOfDuty.WZ.Match.Entity,
         DB.CallOfDuty.WZ.Suspect.Entity,
     ]
 })

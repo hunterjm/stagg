@@ -18,8 +18,8 @@ const setNetworkKey = async () => {
 }
 const dispatchEvent = async (type:string, payload:any) => {
     if (!networkKey) await setNetworkKey()
-    console.log('[^]', eventHandlerUrl, type, { headers: { 'x-network-key': networkKey } }, payload)
-    axios.post(eventHandlerUrl, { type, payload }, { headers: { 'x-network-key': networkKey } })
+    console.log('[^]', eventHandlerUrl, type)
+    axios.post(eventHandlerUrl, { type, payload }, { headers: { 'x-network-key': networkKey } }).catch(() => {})
 }
 export const SetEventHandlerUrl = (url:string) => (eventHandlerUrl = url)
 

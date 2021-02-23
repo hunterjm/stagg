@@ -13,6 +13,7 @@ export const CONFIG = {
     MAX_EXECUTION_TIME: 500
 }
 export const SECRETS = {
+    NETWORK_KEY: '',
     POSTGRES_USER: '',
     POSTGRES_PASS: '',
     POSTGRES_SOCKETPATH: '',
@@ -31,6 +32,7 @@ export const initializeConfig = async () => {
     // CONFIG.HOST_ETL_CHEATERS = HOST_ETL_CHEATERS
     CONFIG.HOST_ETL_DISCORD_ROLE = HOST_ETL_DISCORD_ROLE
     CONFIG.MAX_EXECUTION_TIME = Number(MAX_EXECUTION_TIME) || 500
+    SECRETS.NETWORK_KEY = await getEnvSecret('NETWORK_KEY')
     SECRETS.POSTGRES_USER = await getEnvSecret('PGSQL_USER')
     SECRETS.POSTGRES_PASS = await getEnvSecret('PGSQL_PASS')
     SECRETS.POSTGRES_SOCKETPATH = await getEnvSecret('PGSQL_SOCKETPATH')
