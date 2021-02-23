@@ -3,6 +3,10 @@ import { getEnvSecret } from '@stagg/gcp'
 export * as Model from './models'
 export * as Route from './routes'
 
+export class FaaS {
+    
+}
+
 export class API {
     private static network_key:string
     private static async request(options:AxiosRequestConfig) {
