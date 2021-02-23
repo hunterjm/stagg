@@ -1,7 +1,7 @@
-import Axios from 'axios'
+import { validateNetworkAuth } from '@stagg/gcp'
 import { createConnection } from 'typeorm'
 import * as Events from '@stagg/events'
-import { initializeConfig, useConnection, CONFIG } from './config'
+import { initializeConfig, useConnection } from './config'
 import { DbService } from './service'
 import { Worker } from './worker'
 
@@ -14,6 +14,7 @@ const dbConnect = async () => {
 }
 
 export default async (req, res) => {
+    try { await validateNetworkAuth(req,res) } catch(e) { return }
     const { fresh, account_id, redundancy, mw_end, cw_end, wz_end } = req.query as {[key:string]:string}
     if (!account_id) {
         res.status(400)

@@ -1,4 +1,3 @@
-import * as Events from '@stagg/events'
 import { Route } from '@stagg/api'
 import {
     Post,
@@ -58,7 +57,6 @@ export class CallOfDutyController {
         if (!account) {
             throw new BadRequestException(`invalid profile ${platform}/${identifier}`)
         }
-        Events.Account.Ready.Trigger({ account })
         return { account: denormalizeAccount(account) }
     }
     

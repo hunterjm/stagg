@@ -1,6 +1,6 @@
 import Axios from 'axios'
 import { createConnection } from 'typeorm'
-import { useConnection, initializeConfig, CONFIG } from './config'
+import { useConnection, initializeConfig, CONFIG, SECRETS } from './config'
 import { Service } from './service'
 
 let isConnected:boolean = false
@@ -19,7 +19,7 @@ export default async (req, res) => {
     const accounts = await service.getAccounts()
     for(const acct of accounts) {
         console.log('[+] Kicking off Account Data ETL for account_id', acct.account_id, '; last updated at', acct.updated_datetime)
-        Axios.get(`${CONFIG.HOST_ETL_ACCOUNT}?account_id=${acct.account_id}`)
+        Axios.get(`${CONFIG.HOST_ETL_ACCOUNT}?account_id=${acct.account_id}`, { headers: { 'x-network-key': SECRETS.NETWORK_KEY } })
     }
     res.status(200)
     res.send({ success: true })

@@ -2,7 +2,7 @@ import API from '@callofduty/api'
 import { MW } from '@callofduty/types'
 import { CallOfDuty } from '@stagg/db'
 import { DbService } from './service'
-import { CONFIG } from './config'
+import { CONFIG, SECRETS } from './config'
 
 const isSus = (record:MW.Match.WZ):string[] => {
     const reasons:string[] = []
@@ -39,15 +39,27 @@ export const worker = async (match_id:string):Promise<CallOfDuty.WZ.Suspect.Enti
     for(const record of <MW.Match.WZ[]>matchDetails.allPlayers) {
         const reasons = isSus(record)
         if (reasons.length) {
+            let uno_username = ''
+            const api = new API(SECRETS.BOT_COD_AUTH_TOKENS)
+            await api.FriendAction(record.player.uno, 'invite')
+            const friends = await api.Friends()
+            for(const inv of friends.outgoingInvitations) {
+              if (inv.accountId === record.player.uno) {
+                uno_username = inv.username
+              }
+            }
             const suspect = {
                 combined_id: `${record.player.uno}.${match_id}`,
                 match_id,
                 reasons,
+                uno_username,
                 uno_id: record.player.uno,
                 match_log: record,
             }
             suspects.push(suspect)
             await db.saveSuspect(suspect)
+            await api.FriendAction(record.player.uno, 'uninvite')
+            await api.FriendAction(record.player.uno, 'remove')
         }
     }
     return suspects

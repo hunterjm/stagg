@@ -11,6 +11,7 @@ export const CONFIG = {
     HOST_ETL_ACCOUNT: '',
 }
 export const SECRETS = {
+    NETWORK_KEY: '',
     POSTGRES_USER: '',
     POSTGRES_PASS: '',
     POSTGRES_SOCKETPATH: '',
@@ -24,6 +25,7 @@ export const initializeConfig = async () => {
     CONFIG.INTERVAL_PREMIUM = Number(INTERVAL_PREMIUM) || 15
     CONFIG.INTERVAL_STANDARD = Number(INTERVAL_STANDARD) || 60
     CONFIG.HOST_ETL_ACCOUNT = HOST_ETL_ACCOUNT
+    SECRETS.NETWORK_KEY = await getEnvSecret('NETWORK_KEY')
     SECRETS.POSTGRES_USER = await getEnvSecret('PGSQL_USER')
     SECRETS.POSTGRES_PASS = await getEnvSecret('PGSQL_PASS')
     SECRETS.POSTGRES_SOCKETPATH = await getEnvSecret('PGSQL_SOCKETPATH')

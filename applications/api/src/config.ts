@@ -48,6 +48,7 @@ export const useFactory = ():TypeOrmModuleOptions => ({
       Entities.CallOfDuty.Friend.Entity,
       Entities.CallOfDuty.MW.Match.Entity,
       Entities.CallOfDuty.WZ.Match.Entity,
+      Entities.CallOfDuty.WZ.Suspect.Entity,
       Entities.CallOfDuty.MW.Profile.Entity,
       Entities.CallOfDuty.MW.Profile.Mode.Entity,
       Entities.CallOfDuty.WZ.Profile.Mode.Entity,

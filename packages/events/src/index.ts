@@ -1,5 +1,6 @@
 import axios from 'axios'
 import * as DB from '@stagg/db'
+import { getEnvSecret } from '@stagg/gcp'
 
 export interface EventInput {
     type: string
@@ -10,8 +11,16 @@ export interface EventPayload {
 }
 
 
-let eventHandlerUrl = 'https://us-east1-staggco.cloudfunctions.net/event-handler'
-const dispatchEvent = async (type:string, payload:any) => axios.post(eventHandlerUrl, { type, payload })
+let networkKey = ''
+let eventHandlerUrl = 'http://localhost:8200' // https://us-east1-staggco.cloudfunctions.net/event-handler
+const setNetworkKey = async () => {
+    networkKey = await getEnvSecret('NETWORK_KEY')
+}
+const dispatchEvent = async (type:string, payload:any) => {
+    if (!networkKey) await setNetworkKey()
+    console.log('[^]', eventHandlerUrl, type, { headers: { 'x-network-key': networkKey } }, payload)
+    axios.post(eventHandlerUrl, { type, payload }, { headers: { 'x-network-key': networkKey } })
+}
 export const SetEventHandlerUrl = (url:string) => (eventHandlerUrl = url)
 
 export namespace Account {

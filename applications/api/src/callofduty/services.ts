@@ -12,7 +12,7 @@ import { getManager } from 'typeorm'
 import { urlQueryToSql, FilterUrlQuery } from './filters'
 import { wzRank } from './rank'
 import { denormalizeWzMatch } from './model'
-import { CONFIG } from 'src/config'
+import { SECRETS } from 'src/config'
 // import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()
@@ -66,12 +66,23 @@ export class CallOfDutyAPI {
     }
     return { unoId: firstMpMatch.player.uno }
   }
+  public async fetchUnoUsernameFromId(unoId:string):Promise<string> {
+    const api = new API(SECRETS.BOT_COD_AUTH_TOKENS)
+    await api.FriendAction(unoId, 'invite')
+    const friends = await api.Friends()
+    for(const inv of friends.outgoingInvitations) {
+      if (inv.accountId === unoId) {
+        return inv.username
+      }
+    }
+    return ''
+  }
 }
 
 @Injectable()
 export class CallOfDutyDB {
   constructor(
-    // @InjectRepository(DB.Account.Entity, 'stagg') private readonly acctRepo: DB.Account.Repository,
+    // @InjectRepository(DB.CallOfDuty.WZ.Suspect.Entity, 'stagg') private readonly susRepo: DB.CallOfDuty.WZ.Suspect.Repository,
   ) {}
   public async wzMatchHistoryData(account_id:string, filters:FilterUrlQuery) {
     const manager = getManager()
@@ -145,7 +156,6 @@ export class CallOfDutyDB {
         FROM "callofduty/wz/matches"
         WHERE ${whereClause}
     `
-    console.log(query)
     const manager = getManager()
     const maxCircleId = Math.max(...Assets.MW.Circles.map(c => c.circleId))
     const finalCircleTime = Assets.MW.CircleStartTime(maxCircleId-3) * 1000 // convert to ms

@@ -17,6 +17,9 @@ class SuspectWZ extends BaseEntity {
     @Index()
     uno_id: string
 
+    @Column('citext', { nullable: true })
+    uno_username: string
+
     @Column('text')
     @Index()
     match_id: string

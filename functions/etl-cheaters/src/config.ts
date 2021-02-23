@@ -12,6 +12,7 @@ export const SECRETS = {
     POSTGRES_USER: '',
     POSTGRES_PASS: '',
     POSTGRES_SOCKETPATH: '',
+    BOT_COD_AUTH_TOKENS: null,
 }
 export const initializeConfig = async () => {
     const {
@@ -21,6 +22,7 @@ export const initializeConfig = async () => {
     SECRETS.POSTGRES_USER = await getEnvSecret('PGSQL_USER')
     SECRETS.POSTGRES_PASS = await getEnvSecret('PGSQL_PASS')
     SECRETS.POSTGRES_SOCKETPATH = await getEnvSecret('PGSQL_SOCKETPATH')
+    SECRETS.BOT_COD_AUTH_TOKENS = JSON.parse(await getEnvSecret('BOT_COD_AUTH_TOKENS_JSON'))
 }
 export const useConnection = ():ConnectionOptions => ({
     type: 'postgres',

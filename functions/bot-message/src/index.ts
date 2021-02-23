@@ -1,9 +1,11 @@
+import { validateNetworkAuth } from '@stagg/gcp'
 import { initializeConfig } from './config'
 import { format, sendUserMessage, sendChannelMessage } from './worker'
 
-export default async (req, res) => {
+export default async (req,res) => {
     let { user, channel, payload } = req.body as {[key:string]:string}
     await initializeConfig()
+    try { await validateNetworkAuth(req,res) } catch(e) { return }
     if (Array.isArray(payload)) {
         payload = format(payload)
     }
