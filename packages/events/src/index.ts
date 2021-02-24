@@ -12,7 +12,7 @@ export interface EventPayload {
 
 
 let networkKey = ''
-let eventHandlerUrl = 'http://localhost:8200' // https://us-east1-staggco.cloudfunctions.net/event-handler
+let eventHandlerUrl = 'https://us-east1-staggco.cloudfunctions.net/event-handler'
 const setNetworkKey = async () => {
     networkKey = await getEnvSecret('NETWORK_KEY')
 }
