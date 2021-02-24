@@ -1,6 +1,6 @@
-import { validateNetworkAuth } from '@stagg/gcp'
+import { validateNetworkAuth, useConfig } from '@stagg/gcp'
 import { createConnection } from 'typeorm'
-import { useConnection } from './config'
+import { useConnection, config } from './config'
 import { worker } from './worker'
 
 let isConnected:boolean = false
@@ -12,6 +12,7 @@ const dbConnect = async () => {
 }
 
 export default async (req, res) => {
+    await useConfig(config)
     try { await validateNetworkAuth(req,res) } catch(e) { return }
     const { match_id } = req.query as {[key:string]:string}
     if (!match_id) {

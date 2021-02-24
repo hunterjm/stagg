@@ -1,4 +1,4 @@
 timeout: 120s
 steps:
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', '-r', 'runtime/*', 'gs://stagg-runtime-config']
+    args: ['cp', '-r', 'runtime-config/*', 'gs://stagg-runtime-config']

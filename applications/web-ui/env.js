@@ -1,10 +1,21 @@
-const { writeFileSync } = require('fs')
+const { writeFileSync, readFileSync } = require('fs')
 const { useConfig } = require('@stagg/gcp')
+
+function genEnvPath() {
+    try {
+        const { name } = JSON.parse(readFileSync(`${process.cwd()}/package.json`))
+        if (name === 'stagg-app-web') {
+            return process.cwd()
+        }
+    } catch(e) {}
+    return process.cwd() + '/applications/web-ui'
+}
 
 async function createEnvFile() {
     const config = {}
     await useConfig(config)
-    writeFileSync(`${process.cwd()}/.env.local`, [
+    console.log(`[+] Generating env at "${genEnvPath()}/.env.local"`)
+    writeFileSync(`${genEnvPath()}/.env.local`, [
         `NEXT_PUBLIC_MEMBERSHIP_PRICE_MONTH=${config.membership.price.month}`,
         `NEXT_PUBLIC_MEMBERSHIP_PRICE_YEAR=${config.membership.price.year}`,
         `NEXT_PUBLIC_HOST_API=${config.network.host.api}`,

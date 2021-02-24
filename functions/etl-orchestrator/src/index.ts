@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import { useConfig } from '@stagg/gcp'
 import { createConnection } from 'typeorm'
 import { useConnection, config } from './config'
 import { Service } from './service'
@@ -12,6 +13,7 @@ const dbConnect = async () => {
 }
 
 export default async (req, res) => {
+    await useConfig(config)
     await dbConnect()
     console.log('[+] Connected, executing...')
     const service = new Service()

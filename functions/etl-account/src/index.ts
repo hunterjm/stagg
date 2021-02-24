@@ -1,7 +1,7 @@
-import { validateNetworkAuth } from '@stagg/gcp'
+import { validateNetworkAuth, useConfig } from '@stagg/gcp'
 import { createConnection } from 'typeorm'
 import * as Events from '@stagg/events'
-import { useConnection } from './config'
+import { useConnection, config } from './config'
 import { DbService } from './service'
 import { Worker } from './worker'
 
@@ -14,6 +14,7 @@ const dbConnect = async () => {
 }
 
 export default async (req, res) => {
+    await useConfig(config)
     try { await validateNetworkAuth(req,res) } catch(e) { return }
     const { fresh, account_id, redundancy, mw_end, cw_end, wz_end } = req.query as {[key:string]:string}
     if (!account_id) {

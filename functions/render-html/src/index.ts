@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useConfig } from '@stagg/gcp'
 import { config } from './config'
 const htmlImg = require('node-html-to-image')
 
@@ -14,6 +15,7 @@ const deriveNumericalOption = (queryParamValue:string, defaultValue:number, min=
 }
 
 export default async function RenderHTML(req, res) {
+    await useConfig(config)
     const url = req?.headers['x-render-url'] || req?.query?.url
     if (!url) {
       return res.writeHead(403).end('missing url')
