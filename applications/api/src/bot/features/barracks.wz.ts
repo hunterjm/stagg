@@ -1,4 +1,4 @@
-import { CONFIG } from 'src/config'
+import { config } from 'src/config'
 import { MessageHandler, format } from '../handlers/message'
 import { Feature } from '.'
 
@@ -34,8 +34,8 @@ export class BarracksWZ implements Feature {
         }
         for(const uname of unoUsernames) {
             const playerUrl = `/${uname.replace('#', '@')}/wz/barracks`
-            const profileLinkUrl = CONFIG.HOST_WEB + playerUrl + `?${spanParams.join('&')}`
-            const renderHtmlUrl = `${CONFIG.HOST_RENDER_HTML}?url=${playerUrl}&${spanParams.join('&')}`
+            const profileLinkUrl = config.network.host.web + playerUrl + `?${spanParams.join('&')}`
+            const renderHtmlUrl = `${config.network.host.faas.render.html}?url=${playerUrl}&${spanParams.join('&')}`
             const renderHtmlUrlFinal =  `${renderHtmlUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`
             const unameCmd = `% wz ${uname}${span.limit ? ` ${span.limit}` : ''}${span.skip ? ` ${span.skip}` : ''}`
             console.log('[>] Discord bot dispatching image from', renderHtmlUrlFinal)

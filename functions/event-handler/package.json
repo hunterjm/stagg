@@ -1,5 +1,5 @@
 {
-  "name": "@stagg/event-handler",
+  "name": "stagg-faas-event-handler",
   "version": "1.2.6",
   "author": "Dan Lindsey",
   "main": "dist/index.js",

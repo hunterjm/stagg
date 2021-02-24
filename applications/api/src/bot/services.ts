@@ -2,7 +2,7 @@ import * as DB from '@stagg/db'
 import * as Discord from 'discord.js'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { SECRETS, CONFIG } from 'src/config'
+import { config } from 'src/config'
 import { VoiceStateHandler } from './handlers/voice'
 import { MessageHandler, format, BotMessage } from './handlers/message'
 import {
@@ -43,7 +43,7 @@ export class BotService {
   constructor() {
     this.initFeatures()
     this.client = new Discord.Client()
-    this.client.login(SECRETS.DISCORD_TOKEN)
+    this.client.login(config.discord.client.token)
     this.client.on('ready', this.onReady.bind(this))
     this.client.on('message', this.onMessage.bind(this))
     this.client.on('voiceStateUpdate', this.onVoiceStateUpdate.bind(this))
@@ -99,7 +99,7 @@ export class BotService {
 
     const consumableFeatureMatchDepth = Math.max(...featureNamespaceMatchDepths.filter(n => n))
     if (consumableFeatureMatchDepth <= 0) {
-      return handler.reply(CONFIG.DISCORD_INVALID_REPLY)
+      return handler.reply(config.discord.messages.invalid)
     }
     for(const featureIndex in featureNamespaceMatchDepths) {
       if (featureNamespaceMatchDepths[featureIndex] === consumableFeatureMatchDepth) {

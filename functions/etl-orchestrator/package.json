@@ -1,5 +1,5 @@
 {
-  "name": "@stagg/etl-orchestrator",
+  "name": "stagg-faas-etl-orchestrator",
   "version": "1.2.6",
   "author": "Dan Lindsey",
   "main": "dist/index.js",

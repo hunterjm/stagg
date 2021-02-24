@@ -1,5 +1,5 @@
 {
-  "name": "@stagg/etl-discord-role",
+  "name": "stagg-faas-etl-discord-role",
   "version": "1.2.6",
   "author": "Dan Lindsey",
   "main": "dist/index.js",

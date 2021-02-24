@@ -1,5 +1,5 @@
 {
-  "name": "@stagg/bot-message",
+  "name": "stagg-faas-bot-message",
   "version": "1.2.6",
   "author": "Dan Lindsey",
   "main": "dist/index.js",

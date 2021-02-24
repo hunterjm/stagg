@@ -1,10 +1,8 @@
-import axios from 'axios'
 import { Account } from '@stagg/db'
 import { Tokens, PlatformId, Platform } from '@callofduty/types'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Model } from '@stagg/api'
-import { CONFIG } from 'src/config'
 
 @Injectable()
 export class AccountService {
@@ -73,7 +71,6 @@ export class AccountService {
       callofduty_authorization_tokens: authorization,
       subscription_expiration_datetime: subscriptionEnd,
     } as any)
-    axios.get(`${CONFIG.HOST_ETL_ACCOUNT}?account_id=${createdAcct.account_id}&fresh=true`).catch(() => {})
     return createdAcct
   }
 }

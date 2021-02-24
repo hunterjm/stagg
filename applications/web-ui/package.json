@@ -1,5 +1,5 @@
 {
-  "name": "stagg-web",
+  "name": "stagg-app-web",
   "version": "1.2.6",
   "description": "Web UI for Stagg.co",
   "private": true,

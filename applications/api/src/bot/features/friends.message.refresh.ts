@@ -1,12 +1,12 @@
 import API from '@callofduty/api'
 import { MessageHandler } from '../handlers/message'
-import { SECRETS } from 'src/config'
+import { config } from 'src/config'
 import { Feature } from '.'
 
 const FRIEND_AUTO_REMOVAL_TIMEOUT = 15000
 export class RefreshFriendsViaInvite implements Feature {
     public namespace:string = 'fixfriends'
-    private readonly botAPI = new API(SECRETS.BOT_COD_AUTH_TOKENS)
+    private readonly botAPI = new API(config.callofduty.bot.auth)
     public async onMessage(handler:MessageHandler):Promise<void> {
         await handler.reply([
             'Accept the incoming friend request as demonstrated here:',

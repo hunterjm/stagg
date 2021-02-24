@@ -3,15 +3,11 @@ import { getEnvSecret } from '@stagg/gcp'
 export * as Model from './models'
 export * as Route from './routes'
 
-export class FaaS {
-    
-}
-
-export class API {
+export class HTTP {
     private static network_key:string
     private static async request(options:AxiosRequestConfig) {
         if (!this.network_key) this.network_key = await getEnvSecret('NETWORK_KEY')
-        console.log(`[>] Stagg.GoogleCloud.HTTP.${options?.method?.toUpperCase()}: ${options?.url}`)
+        console.log(`[>] GCP.HTTP.${options?.method?.toUpperCase()}: ${options?.url}`)
         return axios({
             ...options,
             headers: { 'x-network-key': '' }
@@ -37,4 +33,12 @@ export class API {
             method: 'POST',
         })
     }
+}
+
+export namespace FaaS {
+    
+}
+
+export class API {
+
 }

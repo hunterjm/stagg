@@ -1,5 +1,5 @@
 {
-  "name": "@stagg/render-html",
+  "name": "stagg-faas-render-html",
   "version": "1.2.6",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
