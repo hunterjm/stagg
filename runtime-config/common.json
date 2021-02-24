@@ -51,6 +51,12 @@
             }
         }
     },
+    "membership": {
+        "price": {
+            "year": 9.99,
+            "month": 1.00
+        }
+    },
     "callofduty": {
         "bot": {
             "auth": "${BOT_COD_AUTH_TOKENS_JSON}"

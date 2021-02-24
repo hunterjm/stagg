@@ -8,6 +8,12 @@ import {
 } from '.'
 
 export interface Config {
+    membership: {
+        price: {
+            year: number
+            month: number
+        }
+    }
     jwt: { secret: string }
     postgres: {
         db: string
