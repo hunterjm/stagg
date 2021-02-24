@@ -1,5 +1,0 @@
-{
-    "API_HOST": "https://api.stagg.co",
-    "TIER_NAMES": ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Champion"],
-    "TIER_COLORS": ["#be6f26", "#a0afb8", "#e4a400", "#5081a0", "#2ecaca", "#c251e8"]
-}

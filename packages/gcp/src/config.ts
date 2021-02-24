@@ -142,7 +142,7 @@ export const useConfig = async (objRef:{}):Promise<void> => {
     // Check if it's a package we can extend with localized config if applicable...
     try {
         const packageJson = JSON.parse(readFileSync(`${process.cwd()}/package.json`).toString())
-        prioritizedFiles.push(`${parentDir}/resources/${packageJson.name}.json`)
+        prioritizedFiles.push(`${parentDir}/${packageJson.name}.json`)
     } catch(e) {}
     // Compile config output
     let config = <Config>{}
