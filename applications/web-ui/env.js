@@ -5,9 +5,11 @@ function genEnvPath() {
     try {
         const { name } = JSON.parse(readFileSync(`${process.cwd()}/package.json`))
         if (name === 'stagg-app-web') {
+            console.log('[&] Found web-ui root in cwd...')
             return process.cwd()
         }
     } catch(e) {}
+    console.log('[&] Linking web-ui in reference to monorepo root...')
     return process.cwd() + '/applications/web-ui'
 }
 
