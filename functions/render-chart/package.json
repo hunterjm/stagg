@@ -1,6 +1,6 @@
 {
   "name": "stagg-faas-render-chart",
-  "version": "1.2.5",
+  "version": "1.2.7",
   "private": true,
   "main": "index.js",
   "license": "GPL-3.0",
