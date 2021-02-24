@@ -146,7 +146,7 @@ export const useConfig = async (objRef:{}):Promise<void> => {
         try {
             const fileContents = await getConfigFile(file)
             config = merge(config, JSON.parse(fileContents))
-        } catch(e) { console.log('[!] Config load failure:', e) }
+        } catch(e) { console.log(`[?] Config file "${file}" not found...`) }
     }
     await recursiveRefHydration(config)
     config.network.port = recursivePortDiscovery(config.network.host)
@@ -183,7 +183,6 @@ const recursiveRefHydration = async (obj:object) => {
         if (typeof obj[key] === typeof 'str' && obj[key].match(/\$\{[^\}]+\}/)) {
             const varKey = obj[key].replace(/\$\{([^\}]+)\}/, '$1')
             const varVal = await getEnvSecret(varKey)
-            console.log('[>] Hydrating secret var', varKey, 'with', varVal)
             obj[key] = obj[key].replace('${'+varKey+'}', varVal)
         }
     }

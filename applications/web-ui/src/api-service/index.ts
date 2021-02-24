@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Dispatch } from 'redux'
 import { Route } from '@stagg/api'
 import { useDispatch } from 'react-redux'
-import { API_URL } from 'config/ui'
+import { config } from 'config/ui'
 import { State } from 'src/redux/store'
 
 export const apiService = (dispatch:Dispatch=useDispatch(), errorHandler:Function=()=>{}) => {
@@ -20,7 +20,7 @@ export async function request<T>(
             url,
             method,
             data: payload,
-            baseURL: API_URL,
+            baseURL: config.network.host.api,
             headers: {
                 ...addHeaders
             },
@@ -90,7 +90,7 @@ class API {
                 url,
                 method,
                 data: payload,
-                baseURL: API_URL,
+                baseURL: config.network.host.api,
                 headers: {
                     ...addHeaders
                 },

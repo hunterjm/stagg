@@ -1,13 +1,15 @@
-import { DISCORD_JOIN_URL } from 'config/ui'
+import { config } from 'config/ui'
 
 const Page = () => {
-  try { window.location.href = DISCORD_JOIN_URL } catch(e) {}
+  console.log('Forwarding to:', config.network.host.discord.invite.welcome)
+  try { window.location.href = config.network.host.discord.invite.welcome } catch(e) {}
   return null
 }
 
 Page.getInitialProps = ({ res }) => {
+  console.log('Forwarding to:', config.network.host.discord.invite.welcome)
   if (res) {
-    res.writeHead(302, { location: DISCORD_JOIN_URL })
+    res.writeHead(302, { location: config.network.host.discord.invite.welcome })
     res.end()
   }
   return {}

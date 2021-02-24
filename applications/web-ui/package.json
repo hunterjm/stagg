@@ -4,13 +4,10 @@
   "description": "Web UI for Stagg.co",
   "private": true,
   "scripts": {
-    "dev": "yarn build:env && next dev -p 8080",
-    "build": "rimraf .next && next build",
+    "dev": "cross-env NODE_ENV=development yarn build:env && next dev -p 8080",
+    "build": "yarn build:env && rimraf .next && next build",
     "start": "next start -p 8080",
-    "build:env": "node src/env",
-    "build:clean": "rimraf .next && next build",
-    "docker:build": "docker build -t stagg/web-ui .",
-    "docker:run": "docker run -d -p 8080:8080 stagg/web-ui"
+    "build:env": "node env"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

@@ -1,7 +1,7 @@
 import { Model } from '@stagg/api'
 import { useSelector, useDispatch } from 'react-redux'
 import { AccountCard } from 'src/components/AccountCard'
-import { DISCORD_OAUTH_URL } from 'config/ui'
+import { config } from 'config/ui'
 import { State } from 'src/redux/store'
 
 export const AccountCardDiscord = () => {
@@ -24,7 +24,7 @@ export const AccountCardDiscord = () => {
             providerName="Discord"
             providerIcon="icon-discord"
             locked={Boolean(accountState?.id)}
-            authorizeUrl={ DISCORD_OAUTH_URL }
+            authorizeUrl={ config.network.host.discord.oauth.authorize }
             deauthorize={() => dispatch({ type: 'PROVISIONED_DISCORD', payload: undefined })}
             permissions={[
                 'Send you messages and invites',
