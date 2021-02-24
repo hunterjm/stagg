@@ -13,21 +13,26 @@ function genEnvPath() {
     return process.cwd() + '/applications/web-ui'
 }
 
-async function createEnvFile() {
+const createEnvFile = async () => {
     const config = {}
     console.log('[#] Provisioning configuration for local env...')
-    await useConfig(config)
-    const localEnvPath = `${genEnvPath()}/.env.local`
-    console.log(`[+] Generating env at "${localEnvPath}"...`)
-    writeFileSync(localEnvPath, [
-        `NEXT_PUBLIC_MEMBERSHIP_PRICE_MONTH=${config.membership.price.month}`,
-        `NEXT_PUBLIC_MEMBERSHIP_PRICE_YEAR=${config.membership.price.year}`,
-        `NEXT_PUBLIC_HOST_API=${config.network.host.api}`,
-        `NEXT_PUBLIC_HOST_DISCORD_INVITE_HELP=${config.network.host.discord.invite.help}`,
-        `NEXT_PUBLIC_HOST_DISCORD_INVITE_WELCOME=${config.network.host.discord.invite.welcome}`,
-        `NEXT_PUBLIC_HOST_DISCORD_OAUTH=https://discord.com/oauth2/authorize?response_type=code&scope=identify&state=&client_id=${config.discord.client.id}&redirect_uri=${config.network.host.discord.oauth.redirect}`,
-        ''
-    ].join('\n'))
-    console.log('[$] Env generation completed successfully')
+    try {
+        await useConfig(config)
+        const localEnvPath = `${genEnvPath()}/.env.local`
+        console.log(`[+] Generating env at "${localEnvPath}"...`)
+        writeFileSync(localEnvPath, [
+            `NEXT_PUBLIC_MEMBERSHIP_PRICE_MONTH=${config.membership.price.month}`,
+            `NEXT_PUBLIC_MEMBERSHIP_PRICE_YEAR=${config.membership.price.year}`,
+            `NEXT_PUBLIC_HOST_API=${config.network.host.api}`,
+            `NEXT_PUBLIC_HOST_DISCORD_INVITE_HELP=${config.network.host.discord.invite.help}`,
+            `NEXT_PUBLIC_HOST_DISCORD_INVITE_WELCOME=${config.network.host.discord.invite.welcome}`,
+            `NEXT_PUBLIC_HOST_DISCORD_OAUTH=https://discord.com/oauth2/authorize?response_type=code&scope=identify&state=&client_id=${config.discord.client.id}&redirect_uri=${config.network.host.discord.oauth.redirect}`,
+            ''
+        ].join('\n'))
+        console.log('[$] Env generation completed successfully')
+    } catch(e) {
+        console.log('[!] Env generation failure:', e)
+    }
 }
+
 createEnvFile()
