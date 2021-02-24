@@ -1,7 +1,7 @@
 import { validateNetworkAuth } from '@stagg/gcp'
 import { createConnection } from 'typeorm'
 import * as Events from '@stagg/events'
-import { initializeConfig, useConnection } from './config'
+import { useConnection } from './config'
 import { DbService } from './service'
 import { Worker } from './worker'
 
@@ -21,7 +21,6 @@ export default async (req, res) => {
         res.send({ error: 'invalid account_id'})
         return
     }
-    await initializeConfig()
     await dbConnect()
     const dbService = new DbService()
     const account = await dbService.getAccount(account_id)

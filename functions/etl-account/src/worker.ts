@@ -18,7 +18,7 @@ import * as DB from '@stagg/db'
 import * as CallOfDuty from '@callofduty/types'
 import CallOfDutyAPI from '@callofduty/api'
 import { ScraperService } from './service'
-import { CONFIG, SECRETS } from './config'
+import { config } from './config'
 
 export class Worker {
     private api:CallOfDutyAPI
@@ -58,17 +58,17 @@ export class Worker {
         }
     }
     private async SpawnSiblingInstance() {
-        const siblingUrl = `${CONFIG.SELF_HOST}?redundancy=true`+
+        const siblingUrl = `${config.network.host.faas.etl.account}?redundancy=true`+
             `&account_id=${this.account.account_id}`+
             `&mw_end=${this.startTimes.mw}`+
             `&wz_end=${this.startTimes.wz}`+
             `&cw_end=${this.startTimes.cw}`
         console.log(`[$] Spawning sibling instance ${siblingUrl}`)
-        axios.get(siblingUrl, { headers: { 'x-network-key': SECRETS.NETWORK_KEY } })
+        axios.get(siblingUrl, { headers: { 'x-network-key': config.network.key } })
     }
     private ShouldSpawnSibling(): boolean {
         const [execTimeSec] = process.hrtime(this.hrtimeStart)
-        return execTimeSec >= CONFIG.MAX_EXECUTION_TIME
+        return execTimeSec >= config.network.timing.faas.etl.account.respawn
     }
     private async SetPreferredIdentity() {
         const { titleIdentities: [firstTitleIdentity] } = await this.api.Identity()

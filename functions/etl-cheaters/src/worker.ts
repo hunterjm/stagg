@@ -2,17 +2,17 @@ import API from '@callofduty/api'
 import { MW } from '@callofduty/types'
 import { CallOfDuty } from '@stagg/db'
 import { DbService } from './service'
-import { CONFIG, SECRETS } from './config'
+import { config } from './config'
 
 const isSus = (record:MW.Match.WZ):string[] => {
     const reasons:string[] = []
-    for(const key in CONFIG.SUSPICION) {
+    for(const key in config.callofduty.wz.sus) {
         if (key === 'ratios') continue
-        if (record.playerStats[key] >= CONFIG.SUSPICION[key]) {
+        if (record.playerStats[key] >= config.callofduty.wz.sus[key]) {
             reasons.push(`unreasonable ${key}`)
         }
     }
-    for(const ratio of CONFIG.SUSPICION.ratios) {
+    for(const ratio of config.callofduty.wz.sus.ratios) {
         if (ratio.threshold) {
             if (ratio.threshold.top > record.playerStats[ratio.top]) continue
             if (ratio.threshold.bottom > record.playerStats[ratio.bottom]) continue
@@ -40,7 +40,7 @@ export const worker = async (match_id:string):Promise<CallOfDuty.WZ.Suspect.Enti
         const reasons = isSus(record)
         if (reasons.length) {
             let uno_username = ''
-            const api = new API(SECRETS.BOT_COD_AUTH_TOKENS)
+            const api = new API(config.callofduty.bot.auth)
             await api.FriendAction(record.player.uno, 'invite')
             const friends = await api.Friends()
             for(const inv of friends.outgoingInvitations) {

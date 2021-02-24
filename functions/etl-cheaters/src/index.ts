@@ -1,6 +1,6 @@
 import { validateNetworkAuth } from '@stagg/gcp'
 import { createConnection } from 'typeorm'
-import { initializeConfig, useConnection } from './config'
+import { useConnection } from './config'
 import { worker } from './worker'
 
 let isConnected:boolean = false
@@ -19,7 +19,6 @@ export default async (req, res) => {
         res.send({ error: 'invalid match_id'})
         return
     }
-    await initializeConfig()
     await dbConnect()
     try {
         const suspects = await worker(match_id)

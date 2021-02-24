@@ -59,7 +59,7 @@ export interface Config {
             sus: {
                 kills: number
                 damageTaken: number
-                ratios: { top: string, bottom: string, limit: number, threshold?: { top?: number, bottom?: number } }
+                ratios: { top: string, bottom: string, limit: number, threshold?: { top?: number, bottom?: number } }[]
             }
             ranking: {
                 tiers: string[]

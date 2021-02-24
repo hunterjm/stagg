@@ -9,8 +9,8 @@ async function startup() {
     await useConfig(config)
     app.use(bodyParser.json())
     app.use('/', faas)
-    app.listen(config.network.port.faas.etl.discord.role, () => {
-        console.log(`[>] FaaS running on http://localhost:${config.network.port.faas.etl.discord.role}`)
+    app.listen(config.network.port.faas.event.handler, () => {
+        console.log(`[>] FaaS running on http://localhost:${config.network.port.faas.event.handler}`)
     })
 }
 startup()

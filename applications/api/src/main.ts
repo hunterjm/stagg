@@ -8,7 +8,6 @@ import { dbConnect } from './db'
 
 async function bootstrap() {
   await useConfig(config)
-  console.log(config)
   await dbConnect()
   console.log(
       `${'\x1b[32m' /* green */}${'\x1b[1m' /* bright/bold */}`+

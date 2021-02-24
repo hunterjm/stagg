@@ -141,7 +141,6 @@ export class CallOfDutyDB {
         FROM "callofduty/wz/matches"
         WHERE ${whereClause}
     `
-    console.log(query)
     const manager = getManager()
     const maxCircleId = Math.max(...Assets.MW.Circles.map(c => c.circleId))
     const finalCircleTime = Assets.MW.CircleStartTime(maxCircleId-3) * 1000 // convert to ms

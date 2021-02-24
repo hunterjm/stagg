@@ -63,7 +63,7 @@ async function persistRoles(guild:Discord.Guild) {
             data: {
                 position: tierIndex + 1,
                 name: `WZ ${missingRoleTierName}`,
-                color: CONFIG.TIER_COLORS[tierIndex],
+                color: config.discord.roles.ranking.colors[tierIndex],
             },
             reason: `Missing ranked role for ${missingRoleTierName} tier`
         })
