@@ -14,7 +14,7 @@ async function bootstrap() {
       `${'\x1b[32m' /* green */}${'\x1b[1m' /* bright/bold */}`+
       `----------------------------------------------------------\n`+
       `| Stagg API Service\n`+
-      `| http://localhost:${process.env.PORT || config.network.port.api || 8080}\n`+
+      `| http://localhost:${config.network.port.api}\n`+
       `----------------------------------------------------------${'\x1b[0m' /* reset */}`
   )
   const app = await NestFactory.create(RootModule)
@@ -22,6 +22,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   app.use(bodyParser.json({ limit: '1mb' }))
   app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }))
-  await app.listen(process.env.PORT || config.network.port.api || 8080)
+  await app.listen(config.network.port.api)
 }
 bootstrap()
