@@ -1,19 +1,9 @@
-import { createConnection } from 'typeorm'
-import { useConnection, initializeConfig } from './config'
+import { validateNetworkAuth } from '@stagg/gcp'
 import { GlobalEventHandler } from './events'
 
-let isConnected:boolean = false
-
-const dbConnect = async () => {
-    if (isConnected) return
-    await createConnection(useConnection())
-    console.log('[+] Connected, executing...')
-    isConnected = true
-}
-
 export default async (req, res) => {
-    await initializeConfig()
-    await dbConnect()
+    try { await validateNetworkAuth(req,res) } catch(e) { return }
+    console.log(`[+] Received event "${req.body.type}"`)
     new GlobalEventHandler(req.body)
     res.status(200)
     res.send({ success: true })

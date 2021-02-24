@@ -1,15 +1,13 @@
 {
-  "name": "stagg-web",
-  "version": "1.2.4",
+  "name": "stagg-app-web",
+  "version": "1.2.8",
   "description": "Web UI for Stagg.co",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8080",
-    "build": "rimraf .next && next build",
+    "dev": "cross-env NODE_ENV=development yarn build:env && next dev -p 8080",
+    "build": "yarn build:env && rimraf .next && next build",
     "start": "next start -p 8080",
-    "build:clean": "rimraf .next && next build",
-    "docker:build": "docker build -t stagg/web-ui .",
-    "docker:run": "docker run -d -p 8080:8080 stagg/web-ui"
+    "build:env": "node env"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
@@ -30,10 +28,10 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@callofduty/assets": "^1.2.4",
-    "@callofduty/types": "^1.2.4",
-    "@stagg/api": "^1.2.4",
-    "@stagg/gcp": "^1.2.4",
+    "@callofduty/assets": "^1.2.5",
+    "@callofduty/types": "^1.2.5",
+    "@stagg/api": "^1.2.8",
+    "@stagg/gcp": "^1.2.8",
     "axios": "^0.21.1",
     "js-cookie": "^2.2.1",
     "jsonwebtoken": "^8.5.1",

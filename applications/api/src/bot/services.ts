@@ -2,14 +2,14 @@ import * as DB from '@stagg/db'
 import * as Discord from 'discord.js'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { SECRETS, CONFIG } from 'src/config'
+import { config } from 'src/config'
 import { VoiceStateHandler } from './handlers/voice'
 import { MessageHandler, format, BotMessage } from './handlers/message'
 import {
     Feature,
     BotHelp,
     BarracksWZ,
-    // BarracksMW,
+    AliasBarracksWZ,
     AddFriendViaMessage,
     RemoveFriendViaMessage,
     RefreshFriendsViaInvite,
@@ -22,8 +22,8 @@ export class BotService {
   public readonly client:Discord.Client
   public readonly features = <Feature[]>[
     BotHelp,
-    // BarracksMW,
     BarracksWZ,
+    AliasBarracksWZ,
     AddFriendViaMessage,
     RemoveFriendViaMessage,
     RefreshFriendsViaInvite,
@@ -43,7 +43,7 @@ export class BotService {
   constructor() {
     this.initFeatures()
     this.client = new Discord.Client()
-    this.client.login(SECRETS.DISCORD_TOKEN)
+    this.client.login(config.discord.client.token)
     this.client.on('ready', this.onReady.bind(this))
     this.client.on('message', this.onMessage.bind(this))
     this.client.on('voiceStateUpdate', this.onVoiceStateUpdate.bind(this))
@@ -76,24 +76,35 @@ export class BotService {
   private async onMessage(m:Discord.Message) {
     const handler = new MessageHandler(this, m)
     try { await handler.process() } catch(e) { return }
-    let consumableFeatureFound = false
-    for(const feature of this.features) {
-      if (feature.onMessage) {
-        let namespaceMatch = true
-        const splitNamespace = feature.namespace.replace(/ +/g, ' ').trim().split(' ')
-        for(const i in splitNamespace) {
-          if (handler.chain[i] !== splitNamespace[i]) {
-            namespaceMatch = false
-          }
+    const featureNamespaceMatchDepths = []
+    for(const featureIndex in this.features) {
+      if (!this.features[featureIndex].onMessage) {
+        featureNamespaceMatchDepths[featureIndex] = 0
+        continue
+      }
+      const namespaceBlocks = this.features[featureIndex].namespace.split(' ')
+      for(const blockIndex in namespaceBlocks) {
+        if (featureNamespaceMatchDepths[featureIndex] === undefined) {
+          featureNamespaceMatchDepths[featureIndex] = 0
         }
-        if (namespaceMatch) {
-          feature.onMessage(handler)
-          consumableFeatureFound = true
+        if (handler.chain[blockIndex]?.toLowerCase() !== namespaceBlocks[blockIndex]?.toLowerCase()) {
+          break
         }
+        featureNamespaceMatchDepths[featureIndex]++
+      }
+      if (featureNamespaceMatchDepths[featureIndex] !== namespaceBlocks.length) {
+        featureNamespaceMatchDepths[featureIndex] = 0
       }
     }
-    if (!consumableFeatureFound) {
-      await handler.reply(CONFIG.DISCORD_INVALID_REPLY)
+
+    const consumableFeatureMatchDepth = Math.max(...featureNamespaceMatchDepths.filter(n => n))
+    if (consumableFeatureMatchDepth <= 0) {
+      return handler.reply(config.discord.messages.invalid)
+    }
+    for(const featureIndex in featureNamespaceMatchDepths) {
+      if (featureNamespaceMatchDepths[featureIndex] === consumableFeatureMatchDepth) {
+        this.features[featureIndex].onMessage(handler)
+      }
     }
   }
   private async onVoiceStateUpdate(oldState:Discord.VoiceState, newState:Discord.VoiceState) {

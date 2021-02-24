@@ -10,8 +10,8 @@ export class DbService {
         return this.susRepo.save(sus)
     }
     public async matchAlreadyInvestigated(match_id:string):Promise<Boolean> {
-        const exists = await this.wzRepo.findOne({ match_id })
-        return Boolean(exists)
+        const exists = await this.wzRepo.findAll({ match_id })
+        return Boolean(exists.length > 1)
     }
     
 }

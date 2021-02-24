@@ -1,6 +1,6 @@
 {
-  "name": "@stagg/etl-orchestrator",
-  "version": "1.2.4",
+  "name": "stagg-faas-etl-orchestrator",
+  "version": "1.2.8",
   "author": "Dan Lindsey",
   "main": "dist/index.js",
   "private": true,
@@ -12,8 +12,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stagg/db": "^1.2.4",
-    "@stagg/gcp": "^1.2.4",
+    "@stagg/db": "^1.2.7",
+    "@stagg/gcp": "^1.2.8",
     "axios": "^0.21.1",
     "typeorm": "^0.2.29"
   },

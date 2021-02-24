@@ -1,13 +1,13 @@
 import axios from 'axios'
 import * as Discord from 'discord.js'
-import { SECRETS, CONFIG } from './config'
+import { config } from './config'
 
 let active = false
 const client = new Discord.Client()
 
 const connectDiscord = () => new Promise<void>((resolve) => {
     if (active) return resolve()
-    client.login(SECRETS.DISCORD_CLIENT_TOKEN)
+    client.login(config.discord.client.token)
     client.on('ready', () => (active = true) && resolve())
 })
 
@@ -45,7 +45,7 @@ async function getGuildMember(guild:Discord.Guild, userId:string) {
 async function persistRoles(guild:Discord.Guild) {
     const roleMap = {}
     const tierNames = []
-    for(const tierName of CONFIG.TIER_NAMES) {
+    for(const tierName of config.callofduty.wz.ranking.tiers) {
         roleMap[tierName] = null
         tierNames.push(tierName)
     }
@@ -58,12 +58,12 @@ async function persistRoles(guild:Discord.Guild) {
     const missingRoleTierNames = Object.keys(roleMap).filter(k => !roleMap[k])
     for(const missingRoleTierName of missingRoleTierNames) {
         console.log(`[+] Creating ranked role for ${missingRoleTierName} in "${guild.name}" (${guild.id})...`)
-        const tierIndex = CONFIG.TIER_NAMES.indexOf(missingRoleTierName)
+        const tierIndex = config.callofduty.wz.ranking.tiers.indexOf(missingRoleTierName)
         roleMap[missingRoleTierName] = await guild.roles.create({
             data: {
                 position: tierIndex + 1,
                 name: `WZ ${missingRoleTierName}`,
-                color: CONFIG.TIER_COLORS[tierIndex],
+                color: config.discord.roles.ranking.colors[tierIndex],
             },
             reason: `Missing ranked role for ${missingRoleTierName} tier`
         })
@@ -73,17 +73,17 @@ async function persistRoles(guild:Discord.Guild) {
 
 async function assignRole(member:Discord.GuildMember, guild:Discord.Guild, limit:string='7d', skip:string='') {
     const queries = ['modesExcluded=dmz', limit ? `limit=${limit}` : null, skip ? `skip=${skip}` : null]
-    const apiUrl = `${CONFIG.API_HOST}/callofduty/db/discord/${member.user.id}/wz?${queries.filter(q => q).join('&')}`
+    const apiUrl = `${config.network.host.api}/callofduty/discord/${member.user.id}/wz?${queries.filter(q => q).join('&')}`
     console.log('[>] Requesting API:', apiUrl)
     const { data: { rank } } = await axios.get(apiUrl)
     console.log('[.] Received rank from API:', rank)
     const guildRoles = guild.roles.cache.array()
-    const allTierRoles = guildRoles.filter(({ name }) => CONFIG.TIER_NAMES.find(tier => name.includes(tier)))
+    const allTierRoles = guildRoles.filter(({ name }) => config.callofduty.wz.ranking.tiers.find(tier => name.includes(tier)))
     console.log('[-] Removing all previous rank role assignments...')
     for(const tierRole of allTierRoles) {
         await member.roles.remove(tierRole.id)
     }
-    const desiredGuildRole = guild.roles.cache.find(({ name }) => name.includes(CONFIG.TIER_NAMES[rank.tier]))
+    const desiredGuildRole = guild.roles.cache.find(({ name }) => name.includes(config.callofduty.wz.ranking.tiers[rank.tier]))
     console.log(`[+] Assigning ranked role "${desiredGuildRole.name}"...`)
     await member.roles.add(desiredGuildRole.id)
 }

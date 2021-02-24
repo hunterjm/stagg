@@ -1,6 +1,7 @@
-import Axios from 'axios'
+import { validateNetworkAuth } from '@stagg/gcp'
 import { createConnection } from 'typeorm'
-import { initializeConfig, useConnection, CONFIG } from './config'
+import * as Events from '@stagg/events'
+import { useConnection } from './config'
 import { DbService } from './service'
 import { Worker } from './worker'
 
@@ -13,13 +14,13 @@ const dbConnect = async () => {
 }
 
 export default async (req, res) => {
+    try { await validateNetworkAuth(req,res) } catch(e) { return }
     const { fresh, account_id, redundancy, mw_end, cw_end, wz_end } = req.query as {[key:string]:string}
     if (!account_id) {
         res.status(400)
         res.send({ error: 'invalid account_id'})
         return
     }
-    await initializeConfig()
     await dbConnect()
     const dbService = new DbService()
     const account = await dbService.getAccount(account_id)
@@ -37,7 +38,7 @@ export default async (req, res) => {
     const worker = new Worker(account, Boolean(redundancy || fresh), startTimes)
     await worker.Run()
     if (fresh) {
-        await Axios.get(`${CONFIG.API_HOST}/events/account/${account_id}/ready`)
+        await Events.Account.Ready.Trigger({ account })
     }
     res.status(200)
     res.send({ success: true })

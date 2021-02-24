@@ -1,14 +1,16 @@
 import * as Discord from 'discord.js'
-import { SECRETS } from './config'
+import { config } from './config'
 
 let active = false
 const client = new Discord.Client()
 
 const connectDiscord = () => new Promise<void>((resolve) => {
     if (active) return resolve()
-    client.login(SECRETS.DISCORD_CLIENT_TOKEN)
+    client.login(config.discord.client.token)
     client.on('ready', () => (active = true) && resolve())
 })
+
+export const format = (input:string[]) => input.map(l => `> ${l}`).join('\n')
 
 export async function sendUserMessage(userId:string, message:Discord.APIMessageContentResolvable) {
     await connectDiscord()

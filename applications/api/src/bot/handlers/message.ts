@@ -1,6 +1,6 @@
 import * as DB from '@stagg/db'
 import * as Discord from 'discord.js'
-import { CONFIG } from 'src/config'
+import { config } from 'src/config'
 import { BotService } from '../services'
 
 export function commaNum(num:number) {
@@ -56,7 +56,7 @@ export class MessageHandler {
     await this.parseMessage()
   }
   private async acknowledgementReply() {
-    return this.reply(CONFIG.DISCORD_INITIAL_REPLY)
+    return this.reply(config.discord.messages.loading)
   }
   private validateTrigger() {
     if (this.message.author.bot) {
@@ -79,7 +79,7 @@ export class MessageHandler {
   private async validateAuthor() {
     this.authorAccount = await this.service.acctRepo.findOne({ discord_id: this.message.author.id })
     if (!this.authorAccount) {
-      await this.reply(CONFIG.DISCORD_UNREGISTERED_REPLY)
+      await this.reply(config.discord.messages.account.unregistered)
       throw 'unregistered user not allowed'
     }
   }

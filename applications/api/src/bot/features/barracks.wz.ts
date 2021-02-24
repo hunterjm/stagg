@@ -1,11 +1,15 @@
-import { CONFIG } from 'src/config'
-import { MessageHandler } from '../handlers/message'
+import { config } from 'src/config'
+import { MessageHandler, format } from '../handlers/message'
 import { Feature } from '.'
 
 export class BarracksWZ implements Feature {
-    public namespace:string = 'wz barracks'
+    public namespace:string = 'wz'
+    public getParams(chain:string[]) {
+        const namespaceParams = this.namespace.split(' ').filter(n => n)
+        return chain.slice(namespaceParams.length)
+    }
     public async onMessage(handler:MessageHandler):Promise<void> {
-        const [,, ...params] = handler.chain
+        const params = this.getParams(handler.chain)
         const span = { limit: null, skip: null }
         for(const i in params) {
             const param = params[i].trim()
@@ -28,13 +32,19 @@ export class BarracksWZ implements Feature {
         if (span.skip !== null) {
             spanParams.push(`skip=${span.skip}`)
         }
-        const spanParamStr = !spanParams.length ? '' : `?${spanParams.join('&')}`
         for(const uname of unoUsernames) {
-            const webUrl = `/${uname.replace('#', '@')}/wz/barracks${spanParamStr}`
-            const imgUrl = `${webUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`
-            console.log('[>] Discord bot dispatching image from', `${CONFIG.HOST_RENDER_HTML}?url=${imgUrl}`)
-            handler.reply({ content: `> ${CONFIG.HOST_WEB}${webUrl}`, files: [`${CONFIG.HOST_RENDER_HTML}?url=${imgUrl}`] })
+            const playerUrl = `/${uname.replace('#', '@')}/wz/barracks`
+            const profileLinkUrl = config.network.host.web + playerUrl + `?${spanParams.join('&')}`
+            const renderHtmlUrl = `${config.network.host.faas.render.html}?url=${playerUrl}&${spanParams.join('&')}`
+            const renderHtmlUrlFinal =  `${renderHtmlUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`
+            const unameCmd = `% wz ${uname}${span.limit ? ` ${span.limit}` : ''}${span.skip ? ` ${span.skip}` : ''}`
+            console.log('[>] Discord bot dispatching image from', renderHtmlUrlFinal)
+            handler.reply({ content: format(['```', '', unameCmd, '', '```'+profileLinkUrl]), files: [renderHtmlUrlFinal] })
         }
     }
+}
+
+export class AliasBarracksWZ extends BarracksWZ {
+    public namespace:string = 'wz barracks'
 }
 

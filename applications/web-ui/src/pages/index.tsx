@@ -2,7 +2,7 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import { useState } from 'react'
 import { Template } from 'src/components/Template'
-import { PRICING_INDIVIDUAL } from 'config/ui'
+import { config } from 'config/ui'
 import { Spacer } from 'src/components/Spacer'
 import * as Reports from 'src/components/Reports'
 
@@ -187,7 +187,7 @@ const Page = () => {
           <p>
             <small>
               All features are 100% free to use in  <a href="/discord/join">our Discord server</a> 
-              &nbsp;with unlimited access in any server for ${PRICING_INDIVIDUAL}/mo
+              &nbsp;with unlimited access in any server for ${config.membership.price.month}/mo
             </small>
           </p>
       </div>

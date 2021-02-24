@@ -1,4 +1,3 @@
-import { CONFIG } from 'src/config'
 import { MessageHandler } from '../handlers/message'
 import { Feature } from '.'
 

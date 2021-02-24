@@ -1,8 +1,0 @@
-{
-    "RANK_LIMIT": "7d",
-    "API_HOST": "http://localhost:8081",
-    "SELF_HOST": "http://localhost:8110",
-    "HOST_ETL_CHEATERS": "http://localhost:8120",
-    "HOST_ETL_DISCORD_ROLE": "http://localhost:8300",
-    "MAX_EXECUTION_TIME": 90
-}
