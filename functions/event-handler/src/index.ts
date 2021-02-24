@@ -1,9 +1,7 @@
 import { validateNetworkAuth } from '@stagg/gcp'
-import { initializeConfig } from './config'
 import { GlobalEventHandler } from './events'
 
 export default async (req, res) => {
-    await initializeConfig()
     try { await validateNetworkAuth(req,res) } catch(e) { return }
     console.log(`[+] Received event "${req.body.type}"`)
     new GlobalEventHandler(req.body)

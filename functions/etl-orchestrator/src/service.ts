@@ -1,6 +1,6 @@
 import * as DB from '@stagg/db'
 import { getCustomRepository, LessThan, LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
-import { CONFIG } from './config'
+import { config } from './config'
 
 export class Service {
     constructor(
@@ -9,8 +9,8 @@ export class Service {
     async getAccounts():Promise<DB.Account.Entity[]> {
         const premiumThreshold = new Date()
         const standardThreshold = new Date()
-        premiumThreshold.setTime(premiumThreshold.getTime() - CONFIG.INTERVAL_PREMIUM * 60 * 1000)
-        standardThreshold.setTime(standardThreshold.getTime() - CONFIG.INTERVAL_STANDARD * 60 * 1000)
+        premiumThreshold.setTime(premiumThreshold.getTime() - config.network.timing.faas.etl.account.interval.premium * 1000)
+        standardThreshold.setTime(standardThreshold.getTime() - config.network.timing.faas.etl.account.interval.standard * 60 * 1000)
         console.log('[?] Pulling premium accounts with an updated datetime <= ', premiumThreshold)
         console.log('[?] Pulling standard accounts with an updated datetime <= ', standardThreshold)
         const premiumAccts = await this.acctRepo.findAll({

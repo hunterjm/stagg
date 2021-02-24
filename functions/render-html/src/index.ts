@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { initializeConfig, CONFIG } from './config'
+import { config } from './config'
 const htmlImg = require('node-html-to-image')
 
 const deriveNumericalOption = (queryParamValue:string, defaultValue:number, min=1):number => {
@@ -23,14 +23,13 @@ export default async function RenderHTML(req, res) {
       if (['f', 'url', 'width', 'height'].includes(param)) continue
       queryParams.push(`${param}=${req.query[param]}`)
     }
-    await initializeConfig()
-    const fetchableUrl = CONFIG.HOST_WEB_UI + '/' + url.replace(/^\/+/g, '') + '?' + queryParams.join('&')
+    const fetchableUrl = config.network.host.web + '/' + url.replace(/^\/+/g, '') + '?' + queryParams.join('&')
     if (!fetchableUrl) {
       return res.writeHead(403).end('invalid url')
     }
     console.log('[+] Rendering', fetchableUrl)
     const { data } = await axios.get(fetchableUrl, { headers: { 'x-render-report': true } })
-    const absolutePathsHtml = data.split('="/').join(`="${CONFIG.HOST_WEB_UI}/`)
+    const absolutePathsHtml = data.split('="/').join(`="${config.network.host.web}/`)
     const image = await htmlImg({
       html: absolutePathsHtml,
       type: 'jpeg',

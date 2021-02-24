@@ -1,11 +1,16 @@
+import { useConfig } from '@stagg/gcp'
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import { PORT } from './config'
+import { config } from './config'
 import faas from '.'
 
-const app = express()
-app.use(bodyParser.json())
-app.use('/', faas)
-app.listen(PORT, () => {
-    console.log(`[>] FaaS running on http://localhost:${PORT}`)
-})
+async function startup() {
+    const app = express()
+    await useConfig(config)
+    app.use(bodyParser.json())
+    app.use('/', faas)
+    app.listen(config.network.port.faas.etl.discord.role, () => {
+        console.log(`[>] FaaS running on http://localhost:${config.network.port.faas.etl.discord.role}`)
+    })
+}
+startup()

@@ -36,6 +36,10 @@ export interface Config {
                 colors: string[]
             }
         }
+        channels: {
+            public: { reporting: string }
+            private: { reporting: string }
+        }
         messages: {
             help: string[]
             loading: string[]

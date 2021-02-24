@@ -131,6 +131,14 @@
                 "colors": ["#be6f26", "#a0afb8", "#e4a400", "#5081a0", "#2ecaca", "#c251e8"]
             }
         },
+        "channels": {
+            "public": {
+                "reporting": "729782176358596648"
+            },
+            "private": {
+                "reporting": "773941661604118610"
+            }
+        },
         "messages": {
             "loading": ["One moment..."],
             "invalid": ["Invalid command, try `% help`..."],

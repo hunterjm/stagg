@@ -1,6 +1,6 @@
 import * as Events from '@stagg/events'
 import { EventInput, EventHandler, http } from '.'
-import { CONFIG } from '../config'
+import { config } from '../config'
 
 export namespace WZ {
     export namespace Rank {
@@ -39,7 +39,7 @@ export namespace WZ {
             public async callback({ payload: { account, match } }:EventInput<Events.CallOfDuty.WZ.Match.Payload>):Promise<void> {
                 console.log('[+] Assign Discord rank role')
                 // if (match.end_time >= ) // only kickoff if relevant to rank
-                http.get(`${CONFIG.host.etl.discord.role}?discord_id=${account.discord_id}&limit=${CONFIG.bot.ranking.limit}`)
+                http.get(`${config.network.host.faas.etl.discord.role}?discord_id=${account.discord_id}&limit=${config.discord.roles.ranking.limit}`)
                 // console.log('[+] Message report to user for match')
                 // Events.CallOfDuty.WZ.Rank.Up.Trigger({ account, oldRank: 0, newRank: 0 })
             }
@@ -48,7 +48,7 @@ export namespace WZ {
             public readonly eventType:string = Events.CallOfDuty.WZ.Match.Discovered.Type
             public async callback({ payload: { account, match } }:EventInput<Events.CallOfDuty.WZ.Match.Payload>):Promise<void> {
                 console.log('[+] Check cheaters for match', match.match_id)
-                http.get(`${CONFIG.host.etl.cheaters}?match_id=${match.match_id}`)
+                http.get(`${config.network.host.faas.etl.cheaters}?match_id=${match.match_id}`)
             }
         }
     }
