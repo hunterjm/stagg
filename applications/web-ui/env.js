@@ -15,9 +15,11 @@ function genEnvPath() {
 
 async function createEnvFile() {
     const config = {}
+    console.log('[#] Provisioning configuration for local env...')
     await useConfig(config)
-    console.log(`[+] Generating env at "${genEnvPath()}/.env.local"`)
-    writeFileSync(`${genEnvPath()}/.env.local`, [
+    const localEnvPath = `${genEnvPath()}/.env.local`
+    console.log(`[+] Generating env at "${localEnvPath}"...`)
+    writeFileSync(localEnvPath, [
         `NEXT_PUBLIC_MEMBERSHIP_PRICE_MONTH=${config.membership.price.month}`,
         `NEXT_PUBLIC_MEMBERSHIP_PRICE_YEAR=${config.membership.price.year}`,
         `NEXT_PUBLIC_HOST_API=${config.network.host.api}`,
@@ -26,5 +28,6 @@ async function createEnvFile() {
         `NEXT_PUBLIC_HOST_DISCORD_OAUTH=https://discord.com/oauth2/authorize?response_type=code&scope=identify&state=&client_id=${config.discord.client.id}&redirect_uri=${config.network.host.discord.oauth.redirect}`,
         ''
     ].join('\n'))
+    console.log('[$] Env generation completed successfully')
 }
 createEnvFile()
