@@ -23,7 +23,7 @@ export class Ready implements EventHandler {
         console.log('[+] Send Discord welcome alert to', config.discord.channels.public.reporting)
         http.post(config.network.host.faas.bot.message, { channel: config.discord.channels.public.reporting, payload: [
             `**Welcome <@!${account.discord_id}> aka \`${account.callofduty_uno_username}\`!!!** 👋🥳🎉`,
-            `${config.network.host.web}/${account.callofduty_uno_username.replace('#', '@')}/wz/barracks`,
+            `${config.network.host.web}/${account.callofduty_uno_username.replace('#', '@')}/wz`,
             '```',
             `% wz ${account.callofduty_uno_username} 7d`,
             '```',
