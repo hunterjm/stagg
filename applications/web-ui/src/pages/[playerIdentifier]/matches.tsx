@@ -27,7 +27,7 @@ Page.getInitialProps = async ({ store, res, req, query }:NextPageContext) => {
     const limit = query.limit as string
     const skip = query.skip as string
     const unoUsername = query.playerIdentifier as string
-    const apiUrl = `${config.network.host.api}/callofduty/uno/${unoUsername.replace('@', '%23')}/wz/list?limit=10m`
+    const apiUrl = `${config.network.host.api}/callofduty/uno/${unoUsername.replace('@', '%23')}/wz/matches?limit=10m`
     console.log(apiUrl)
     const { data: { results } } = await axios.get(apiUrl)
     return { results }

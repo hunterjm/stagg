@@ -2,7 +2,7 @@
     "network": {
         "key": "${NETWORK_KEY}",
         "host": {
-            "web": "https://stagg.co",
+            "web": "https://warzone.ai",
             "api": "https://api.stagg.co",
             "faas": {
                 "bot": {
@@ -26,7 +26,7 @@
             },
             "discord": {
                 "oauth": {
-                    "redirect": "https://stagg.co/discord/oauth",
+                    "redirect": "https://warzone.ai/discord/oauth",
                     "identify": "https://discord.com/api/v6/users/@me",
                     "exchange": "https://discord.com/api/v6/oauth2/token"
                 },
@@ -148,7 +148,7 @@
             "account": {
                 "unregistered": [
                     "Looks like we aren't acquainted yet :(",
-                    "Head over to https://stagg.co/start to get started, it's quick and easy!"
+                    "Head over to https://warzone.ai/start to get started, it's quick and easy!"
                 ],
                 "ready": [
                     "**------------------------------------------**",

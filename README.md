@@ -1,17 +1,16 @@
-# Stagg.co
+# WARZONE.AI
 
 Built with TypeScript, NextJS, NestJS, and PostgreSQL; monorepo and package management provided by Lerna.
 
 ## Check it out!
 
-To see the platform in action, head over to [Stagg.co](https://stagg.co); after linking your Call of Duty and Discord accounts, you'll be up and running in a matter of seconds. Feel free to [join our Discord server](https://stagg.co/discord/join) and ask questions, make suggestions, or squad up for a quick game.
+To see the platform in action, head over to [WARZONE.AI](https://warzone.ai); after linking your Call of Duty and Discord accounts, you'll be up and running in a matter of seconds. Feel free to [join our Discord server](https://warzone.ai/discord/join) and ask questions, make suggestions, or squad up for a quick game.
 
-If you're looking for [the best Call of Duty API Postman Collection ever](https://docs.stagg.co), it's freely available at [docs.stagg.co](https://docs.stagg.co).
-
+If you're looking for [the best Call of Duty API Postman Collection ever](https://callofdutyapi.com), it's freely available at [callofdutyapi.com](https://callofdutyapi.com).
 
 ## What makes this cool?
 
-Glad you asked, there's a constantly growing list of features that separate Stagg from any other platform.
+Glad you asked, there's a constantly growing list of features that separate WARZONE.AI from any other platform.
 
 ### In-Game Friend Integration
 
@@ -47,7 +46,7 @@ Don't feel like implementing the nuances of the Call of Duty API yourself? Our A
 
 ## Contributing
 
-Before you can contribute, you must be authenticated in the Google Cloud project. If you'd like to request access, feel free to [join our Discord](https://stagg.co/discord/join) and request developer access. Once you've been granted access, proceed with installation and setup.
+Before you can contribute, you must be authenticated in the Google Cloud project. If you'd like to request access, feel free to [join our Discord](https://warzone.ai/discord/join) and request developer access. Once you've been granted access, proceed with installation and setup.
 
 This project uses yarn, so ensure you have it installed globally.
 

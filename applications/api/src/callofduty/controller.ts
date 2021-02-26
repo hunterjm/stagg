@@ -70,7 +70,7 @@ export class CallOfDutyController {
         return { rank, account: denormalizeAccount(account), results }
     }
     
-    @Get('/:platform/:identifier/wz/list')
+    @Get('/:platform/:identifier/wz/matches')
     async FetchMatchHistoryDataWZ(@Param() { platform, identifier }, @Query() query:FilterUrlQuery) {
         const account = await this.acctService.findAny(platform, identifier)
         if (!account) {

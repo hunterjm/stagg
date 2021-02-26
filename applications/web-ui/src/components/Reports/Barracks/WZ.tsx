@@ -101,7 +101,7 @@ export const View = (props:Props) => {
             cmdModifiers.push(`${props._propsLoader?.skip}`)
         }
     }
-    const fullCommand = `% wz barracks ${uno?.username} ${cmdModifiers.join(' ')}`
+    const fullCommand = `% wz ${uno?.username} ${cmdModifiers.join(' ')}`
     return (
         <BarracksWrapper>
             <CommandWrapper>

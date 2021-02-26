@@ -64,7 +64,7 @@ export class BotService {
     console.log(`[+] Using bot ${this.client.user.tag}`)
     this.client.user.setActivity(`for % in ${this.client.guilds.cache.array().length} servers`, {
       type: 'WATCHING',
-      url: 'https://stagg.co'
+      url: 'https://warzone.ai'
     })
     console.log(
         `${'\x1b[32m' /* green */}${'\x1b[1m' /* bright/bold */}`+

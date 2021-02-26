@@ -89,7 +89,7 @@ button[disabled]:hover {
     color: #fff;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: -0.3rem;
+    letter-spacing: -0.15rem;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
@@ -160,6 +160,10 @@ body header:first-of-type > .container > nav > ul > li.avatar > * {
     border-radius: 50%;
     width: 38px;
     cursor: pointer;
+}
+
+.brand .text-primary {
+    font-size: 1.04em;
 }
 
 h2.headline {

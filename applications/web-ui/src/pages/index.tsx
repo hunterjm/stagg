@@ -115,9 +115,9 @@ const Page = () => {
   return (
     <Template title="Welcome">
       <div className="container text-center">
-          <h2 className="headline">Call of Duty <span className="text-primary">Companion</span></h2>
+          <h2 className="headline">Discord <span className="text-primary">Companion</span></h2>
           <p className="text-lg">
-              Full support for Black Ops: Cold War, Modern Warfare, and Warzone
+              Fully interactive Call of Duty enhancement platform with real-time account integrations
           </p>
           <ButtonWrapper>
             <Link href="/start"><a><button className="primary">Get Started</button></a></Link>

@@ -11,7 +11,7 @@ export const ReportTemplate = ({ children }:ReportTemplateProps) => {
           { children }
         </main>
         <footer>
-          <p>Provided by Stagg.co</p>
+          <p>WARZONE.AI</p>
         </footer>
       </>
     )

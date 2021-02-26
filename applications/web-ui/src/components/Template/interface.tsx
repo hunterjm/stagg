@@ -18,15 +18,14 @@ export const InterfaceTemplate = ({ title, children, hideSignIn }:InterfaceTempl
     return (
       <>
         <Head>
-          <title>{ title } - Stagg.co</title>
+          <title>{ title } - WARZONE.AI</title>
         </Head>
         <header>
             <div className="container">
                 <h1 className="brand">
                     <Link href="/">
                         <a>
-                            <i className="icon-stagg-antlers"></i>
-                            Stagg
+                            Warzone<small>&nbsp;</small><span className="text-primary">AI</span>
                         </a>
                     </Link>
                 </h1>

@@ -18,7 +18,7 @@ class AppDocument extends Document {
       <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
-          <meta name="author" content="Stagg.co" />
+          <meta name="author" content="WARZONE.AI" />
           <meta name="description" content="Call of Duty Discord Bot Companion" />
           <link rel='shortcut icon' type='image/x-icon' href='/assets/images/favicon.ico' />
           <link rel="stylesheet" href="/assets/css/theme.css" media="all" />
@@ -40,8 +40,8 @@ class AppDocument extends Document {
       <html lang="en">
         <head>
           <meta charSet="utf-8" />
-          <title>Static Report - Stagg.co</title>
-          <meta name="author" content="Stagg.co" />
+          <title>Static Report - WARZONE.AI</title>
+          <meta name="author" content="WARZONE.AI" />
           <meta name="description" content="Call of Duty Discord Bot Companion" />
           <link rel='shortcut icon' type='image/x-icon' href='/assets/images/favicon.ico' />
           <link rel="stylesheet" href="/assets/css/report.css" media="all" />
