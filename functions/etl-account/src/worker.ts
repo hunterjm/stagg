@@ -38,9 +38,9 @@ export class Worker {
         // only execute if its fetching the latest data (eg: not a nested fetch/call)
         await this.SetPreferredIdentity()
         if (Math.max(...Object.values(this.startTimes)) === 0) {
-            await this.RefreshIdentities()
-            await this.RefreshFriends()
-            await this.RefreshProfileData()
+            try { await this.RefreshIdentities() } catch(e) { console.log('[!] RefreshIdentities failure:', e) }
+            try { await this.RefreshFriends() } catch(e) { console.log('[!] RefreshFriends failure:', e) }
+            try { await this.RefreshProfileData() } catch(e) { console.log('[!] RefreshProfileData failure:', e) }
         }
         while(!this.hardStopReached) {
             console.log(`[^] Executing cycle; execution time ${process.hrtime(this.hrtimeStart)[0]}s`)

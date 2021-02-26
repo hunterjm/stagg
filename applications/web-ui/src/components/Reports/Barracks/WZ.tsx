@@ -184,7 +184,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.results.top10FinishRate || 0 * 100).toFixed(1)}%
+                        {((props.results.top10FinishRate || 0) * 100).toFixed(1)}%
                     </h2>
                     <label>
                         TOP 10
@@ -193,7 +193,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.results.gulagWinRate || 0 * 100).toFixed(1)}%
+                        {((props.results.gulagWinRate || 0) * 100).toFixed(1)}%
                     </h2>
                     <label>
                         GULAG WIN
@@ -220,7 +220,7 @@ export const View = (props:Props) => {
                 </div>
                 <div className="stat">
                     <h2>
-                        {(props.results.timeMovingPercentage || 0 * 100).toFixed(1)}%
+                        {((props.results.timeMovingPercentage || 0) * 100).toFixed(1)}%
                     </h2>
                     <label>
                         TIME MOVING

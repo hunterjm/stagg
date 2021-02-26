@@ -154,10 +154,10 @@ const Page = () => {
           </div>
           <div className="feature">
             <i className="icon-trophy" />
-            <h3>Cash Tournaments</h3>
+            <h3>Role Ranking</h3>
             <p>
               <small>
-                Everyone can get paid to play with payouts over 90% and entry fees starting at $1.
+                Our proprietary ranking system accounts for unique play-styles in addition to skill-level.
               </small>
             </p>
           </div>

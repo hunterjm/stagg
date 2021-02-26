@@ -3,3 +3,5 @@ dispatch:
       service: api
     - url: stagg.co/*
       service: default
+    - url: warzone.ai/*
+      service: default

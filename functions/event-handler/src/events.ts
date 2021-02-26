@@ -27,7 +27,6 @@ export class GlobalEventHandler {
         for(const i in this.handlers) {
             const handler = <typeof EventHandler>this.handlers[i]
             const Constructor = <any>handler
-            console.log(`[@] Loading event handler "${handler.prototype.constructor.name}"`)
             this.handlers[i] = new Constructor(this)
         }
     }

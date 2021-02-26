@@ -79,11 +79,16 @@ async function assignRole(member:Discord.GuildMember, guild:Discord.Guild, limit
     console.log('[.] Received rank from API:', rank)
     const guildRoles = guild.roles.cache.array()
     const allTierRoles = guildRoles.filter(({ name }) => config.callofduty.wz.ranking.tiers.find(tier => name.includes(tier)))
-    console.log('[-] Removing all previous rank role assignments...')
-    for(const tierRole of allTierRoles) {
-        await member.roles.remove(tierRole.id)
-    }
+    const allTierRoleIds = allTierRoles.map(r => r.id)
+    const memberTierRoles = member.roles.cache.filter(r => allTierRoleIds.includes(r.id)).array()
+    const memberTierRoleIds = memberTierRoles.map(r => r.id)
     const desiredGuildRole = guild.roles.cache.find(({ name }) => name.includes(config.callofduty.wz.ranking.tiers[rank.tier]))
-    console.log(`[+] Assigning ranked role "${desiredGuildRole.name}"...`)
-    await member.roles.add(desiredGuildRole.id)
+    if (!memberTierRoleIds.includes(desiredGuildRole.id)) {
+        await member.roles.add(desiredGuildRole.id)
+    }
+    for(const id of memberTierRoleIds) {
+        if (id !== desiredGuildRole.id) {
+            await member.roles.remove(id)
+        }
+    }
 }

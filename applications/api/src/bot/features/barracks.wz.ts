@@ -33,7 +33,7 @@ export class BarracksWZ implements Feature {
             spanParams.push(`skip=${span.skip}`)
         }
         for(const uname of unoUsernames) {
-            const playerUrl = `/${uname.replace('#', '@')}/wz/barracks`
+            const playerUrl = `/${uname.replace('#', '@')}/wz`
             const profileLinkUrl = config.network.host.web + playerUrl + `?${spanParams.join('&')}`
             const renderHtmlUrl = `${config.network.host.faas.render.html}?url=${playerUrl}&${spanParams.join('&')}`
             const renderHtmlUrlFinal =  `${renderHtmlUrl}&width=1000&f=/${uname.replace('#', '_')}.wz.barracks.jpg`

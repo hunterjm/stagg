@@ -1,6 +1,6 @@
 {
   "name": "@stagg/events",
-  "version": "1.2.9",
+  "version": "1.3.0",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -17,8 +17,8 @@
   },
   "gitHead": "032ee186093c2e69aaa984284b035630792c5d98",
   "dependencies": {
-    "@stagg/db": "^1.2.9",
-    "@stagg/gcp": "^1.2.9",
+    "@stagg/db": "^1.3.0",
+    "@stagg/gcp": "^1.3.0",
     "axios": "^0.21.1"
   }
 }

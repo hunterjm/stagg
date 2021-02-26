@@ -24,7 +24,8 @@ class AppDocument extends Document {
           <link rel="stylesheet" href="/assets/css/theme.css" media="all" />
           <link rel="stylesheet" href="/assets/css/utilities.css" media="all" />
           <link rel="stylesheet" href="/assets/icomoon/style.css" media="all" />
-          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-171798332-1" />
+          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-171798332-1"></script>
+          <script async src="/assets/js/ga.js"></script>
           {this.props.styleTags}
         </Head>
         <body>

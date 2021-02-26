@@ -75,8 +75,8 @@
                 "tiers": ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Champion"],
                 "weights": {
                     "scorePerGame": 1.0,
-                    "killsPerGame": 1.5,
-                    "killsPerDeath": 2.0
+                    "killsPerGame": 2.0,
+                    "killsPerDeath": 3.0
                 },
                 "thresholds": {
                     "scorePerGame": [

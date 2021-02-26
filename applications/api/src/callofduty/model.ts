@@ -108,7 +108,8 @@ export const denormalizeWzModes = (entities:CallOfDuty.WZ.Profile.Mode.Entity[])
 
 export const denormalizeWzMatch = (e:CallOfDuty.WZ.Match.Entity) => ({
     matchId: e.match_id,
-    mode: e.mode_id,
+    mapId: e.map_id,
+    modeId: e.mode_id,
     startTime: e.start_time,
     endTime: e.end_time,
     teamId: e.team_id,
